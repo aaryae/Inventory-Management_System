@@ -23,7 +23,7 @@ public class User {
     boolean password_expired;
 
     public enum Role{
-        ADMIN, USER;
+        ADMIN, USER, SUPERADMIN;
     }
 
 }

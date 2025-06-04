@@ -1,4 +1,4 @@
-package com.example.inventorymanagementsystem.DTO;
+package com.example.inventorymanagementsystem.dto;
 
 import lombok.Data;
 

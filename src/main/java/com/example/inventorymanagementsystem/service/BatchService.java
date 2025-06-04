@@ -1,6 +1,4 @@
 package com.example.inventorymanagementsystem.service;
 
-
-public interface ResourceService {
-
+public interface BatchService {
 }

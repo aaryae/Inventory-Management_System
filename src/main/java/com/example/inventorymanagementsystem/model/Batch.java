@@ -15,6 +15,9 @@ public class Batch {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long resource_batch_id;
 
+    @Column(unique = true)
+    private String batchCode;
+
     private LocalDate createdDate;
 
     private Integer quantity;

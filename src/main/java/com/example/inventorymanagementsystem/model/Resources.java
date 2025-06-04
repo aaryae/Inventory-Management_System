@@ -17,6 +17,9 @@ public class Resources {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long resource_id;
 
+    @Column(unique = true)
+    private String resourceCode;
+
     @Column(nullable = false)
     private String brand;
 

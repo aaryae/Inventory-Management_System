@@ -1,7 +1,6 @@
-package com.example.inventorymanagementsystem.DTO;
+package com.example.inventorymanagementsystem.dtos.response.resource;
 
 import lombok.Data;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 

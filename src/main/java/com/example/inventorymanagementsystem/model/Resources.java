@@ -1,10 +1,7 @@
 package com.example.inventorymanagementsystem.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,16 +15,37 @@ public class Resources {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int resource_id;
+    private Long resource_id;
 
-    LocalDate purchase_date;
-    LocalDate warranty_expiry;
-    int resource_status_id;
-    int batch_id;
-    int resource_class_id;
-    int resource_type_id;
-    String brand;
-    String model;
-    String specification;
+    @Column(unique = true)
+    private String resourceCode;
 
+    @Column(nullable = false)
+    private String brand;
+
+    @Column(nullable = false)
+    private String model;
+
+    private String specification;
+
+    private LocalDate purchaseDate;
+
+    private LocalDate warrantyExpiry;
+
+    // Foreign Keys
+    @ManyToOne
+    @JoinColumn(name = "resource_status_id")
+    private ResourceStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "resource_type_id")
+    private ResourceType type;
+
+    @ManyToOne
+    @JoinColumn(name = "resource_class_id")
+    private ResourceClass resourceClass;
+
+    @ManyToOne
+    @JoinColumn(name = "resource_batch_id", nullable = true)
+    private Batch batch;
 }

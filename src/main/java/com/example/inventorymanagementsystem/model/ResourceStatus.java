@@ -12,11 +12,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ResourceStatus {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-     int resource_status_id;
+    private Long resource_status_id;
+
 
     public enum Status{
         ACCEPT,REJECT;

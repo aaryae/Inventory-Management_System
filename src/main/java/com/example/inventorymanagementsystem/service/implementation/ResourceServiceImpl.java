@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,6 +26,8 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Autowired
     private BatchRepository batchRepository;
+
+
 
     @Override
     public ResourceResponseDTO createResources(ResourceRequestDTO request){
@@ -81,9 +84,65 @@ public class ResourceServiceImpl implements ResourceService {
         return response;
     }
 
+
+
     @Override
     public List<ResourceResponseDTO> createResourcesInBatch(List<ResourceRequestDTO> requestDTOList) {
-        return List.of();
+
+        List<Resources> resourceToSave = new ArrayList<>();
+
+        for (ResourceRequestDTO dto : requestDTOList){
+            //Validation of master data
+            ResourceType type = masterDataService.getResourceTypeById(requestDTOList.getFirst().getResource_type_id());
+            ResourceClass resourceClass = masterDataService.getResourceClassById(requestDTOList.getFirst().getResource_class_id());
+            ResourceStatus status = masterDataService.getResourceStatusById(requestDTOList.getFirst().getResource_status_id());
+
+            // Fetching the batch
+            Batch batch = null;
+            if (dto.getBatch_id() != null){
+                batch= batchRepository.findById(dto.getBatch_id())
+                        .orElseThrow(() -> new RuntimeException("Batch not found with id: " + dto.getBatch_id()));
+            }
+
+            // Generating the resource code
+            String resourceCode = generateUniqueResourceCode(type.getResource_type_name());
+
+            // Creating resource entity
+            Resources resource = new Resources();
+            resource.setBrand(dto.getBrand());
+            resource.setModel(dto.getModel());
+            resource.setSpecification(dto.getSpecification());
+            resource.setPurchaseDate(dto.getPurchase_date());
+            resource.setWarrantyExpiry(dto.getWarranty_expiry());
+            resource.setResourceCode(resourceCode);
+            resource.setType(type);
+            resource.setResourceClass(resourceClass);
+            resource.setStatus(status);
+            resource.setBatch(batch);
+
+            resourceToSave.add(resource);
+        }
+
+        // Saving all in the repository
+        List<Resources> savedResources = resourceRepository.saveAll(resourceToSave);
+
+        // Map to the ResponseDTO
+        return savedResources.stream().map(saved -> {
+            ResourceResponseDTO response = new ResourceResponseDTO();
+
+            response.setResource_id(saved.getResource_id());
+            response.setResourceCode(saved.getResourceCode());
+            response.setBrand(saved.getBrand());
+            response.setModel(saved.getModel());
+            response.setSpecification(saved.getSpecification());
+            response.setPurchase_date(saved.getPurchaseDate());
+            response.setWarranty_expiry(saved.getWarrantyExpiry());
+            response.setResource_type(saved.getType().getResource_type_name());
+            response.setResource_class(saved.getResourceClass().getResource_class_name());
+            response.setResource_status(saved.getStatus().getResource_status_name());
+            response.setBatchCode(saved.getBatch() != null ? saved.getBatch().getBatchCode() : null);
+            return response;
+        }).toList();
     }
 
     @Override

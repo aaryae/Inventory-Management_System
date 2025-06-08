@@ -1,4 +1,4 @@
-package com.example.inventorymanagementsystem.service;
+package com.example.inventorymanagementsystem.service.impl;
 
 import com.example.inventorymanagementsystem.dtos.ResourceUpdateDTO;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceRequestDTO;
@@ -6,6 +6,8 @@ import com.example.inventorymanagementsystem.dtos.response.resource.ResourceResp
 import com.example.inventorymanagementsystem.model.*;
 import com.example.inventorymanagementsystem.repository.BatchRepository;
 import com.example.inventorymanagementsystem.repository.ResourceRepository;
+import com.example.inventorymanagementsystem.service.MasterDataService;
+import com.example.inventorymanagementsystem.service.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

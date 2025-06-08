@@ -1,14 +1,14 @@
 package com.example.inventorymanagementsystem.dtos.request.security;
 
 
-import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
-public class LoginRequest {
+public class RegisterRequest {
+
     private String username;
     private String password;
 }

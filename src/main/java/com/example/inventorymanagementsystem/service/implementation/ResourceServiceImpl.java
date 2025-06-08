@@ -147,7 +147,23 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public ResourceResponseDTO getResourceById(Long resource_id) {
-        return null;
+        Resources resource = resourceRepository.findById(resource_id)
+                .orElseThrow(() -> new RuntimeException("Resource not found with id" + resource_id));
+
+        ResourceResponseDTO response = new ResourceResponseDTO();
+        response.setResource_id(resource.getResource_id());
+        response.setResourceCode(resource.getResourceCode());
+        response.setBrand(resource.getBrand());
+        response.setModel(resource.getModel());
+        response.setSpecification(resource.getSpecification());
+        response.setPurchase_date(resource.getPurchaseDate());
+        response.setWarranty_expiry(resource.getWarrantyExpiry());
+        response.setResource_type(resource.getType().getResource_type_name());
+        response.setResource_class(resource.getResourceClass().getResource_class_name());
+        response.setResource_status(resource.getStatus().getResource_status_name());
+        response.setBatchCode(resource.getBatch() != null ? resource.getBatch().getBatchCode() : null);
+
+        return response;
     }
 
     @Override

@@ -16,10 +16,5 @@ public class ResourceStatus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long resource_status_id;
 
-
-    public enum Status{
-        ACCEPT,REJECT;
-    }
-
-
+    private String resource_status_name;
 }

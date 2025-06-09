@@ -1,12 +1,19 @@
 package com.example.inventorymanagementsystem.service.security.impl;
 
 import com.example.inventorymanagementsystem.dtos.request.security.LoginRequest;
+import com.example.inventorymanagementsystem.dtos.request.security.RefreshTokenRequest;
 import com.example.inventorymanagementsystem.dtos.request.security.RegisterRequest;
+import com.example.inventorymanagementsystem.dtos.response.security.LoginResponse;
 import com.example.inventorymanagementsystem.model.User;
 import com.example.inventorymanagementsystem.repository.securityRepo.UserRepository;
 import com.example.inventorymanagementsystem.service.security.AuthService;
+import com.example.inventorymanagementsystem.service.security.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +25,8 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final UserDetailsService userDetailsService;
 
     @Override
     public ResponseEntity<?> register(RegisterRequest request) {
@@ -53,4 +62,23 @@ public class AuthServiceImpl implements AuthService {
 
         return ResponseEntity.ok("Login successful!");
     }
+
+
+    @Override
+    public ResponseEntity<?> refreshToken( RefreshTokenRequest request) {
+        String username = jwtService.validateToken(request.getRefreshToken());
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
+        }
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+        String newAccessToken = jwtService.generateToken(userDetails);
+        String newRefreshToken = jwtService.generateRefreshToken(userDetails);
+
+        return ResponseEntity.ok(new LoginResponse(newAccessToken, newRefreshToken));
+    }
+
+
+
 }

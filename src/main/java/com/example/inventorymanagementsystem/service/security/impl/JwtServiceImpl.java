@@ -9,10 +9,11 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import static ch.qos.logback.core.encoder.ByteArrayUtil.hexStringToByteArray;
 
-@Component
+@Service
 public class JwtServiceImpl implements JwtService {
 
     
@@ -20,12 +21,41 @@ public class JwtServiceImpl implements JwtService {
     private final Key jwtSigningKey = Keys.hmacShaKeyFor(hexStringToByteArray(SECRET));
 
     public String generateToken(UserDetails userDetails) {
+        try{
+            return Jwts.builder()
+                    .setSubject(userDetails.getUsername()) // main identity
+                    .setIssuedAt(new Date())
+                    .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                    .signWith(jwtSigningKey, SignatureAlgorithm.HS256) // secret key & algorithm
+                    .compact();
+        }
+        catch(Exception e){
+            return "error: " + e.getMessage();
+        }
+
+    }
+    @Override
+    public String generateRefreshToken(UserDetails userDetails) {
         return Jwts.builder()
-                .setSubject(userDetails.getUsername()) // main identity
+                .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours
-                .signWith(jwtSigningKey, SignatureAlgorithm.HS256) // secret key & algorithm
+                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 7))
+                .signWith(jwtSigningKey, SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    @Override
+    public String validateToken(String token) {
+        try {
+            return Jwts.parser()
+                    .setSigningKey(jwtSigningKey)
+                    .build()
+                    .parseClaimsJws(token) // will throw if token is invalid
+                    .getBody()
+                    .getSubject(); // return username
+        } catch (Exception e) {
+            return "error: " + e.getMessage();
+        }
     }
 
 

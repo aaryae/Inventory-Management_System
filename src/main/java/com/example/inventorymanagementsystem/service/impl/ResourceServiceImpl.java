@@ -191,7 +191,30 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public List<ResourceResponseDTO> getResourcesByStatus(Long status_id) {
-        return List.of();
+        // Validates if the status exists
+        ResourceStatus status = masterDataService.getResourceStatusById(status_id);
+
+        // Fetch all resources with this status
+        List<Resources> resources = resourceRepository.findByResourceStatus(status);
+
+        // Converts to response dto
+        return resources.stream().map(resource -> {
+            ResourceResponseDTO response = new ResourceResponseDTO();
+            response.setResource_id(resource.getResource_id());
+            response.setResourceCode(resource.getResourceCode());
+            response.setBrand(resource.getBrand());
+            response.setModel(resource.getModel());
+            response.setSpecification(resource.getSpecification());
+            response.setPurchase_date(resource.getPurchaseDate());
+            response.setWarranty_expiry(resource.getWarrantyExpiry());
+            response.setResource_type(resource.getType().getResource_type_name());
+            response.setResource_class(resource.getResourceClass().getResource_class_name());
+            response.setResource_status(resource.getStatus().getResource_status_name());
+            response.setBatchCode(resource.getBatch() != null ? resource.getBatch().getBatchCode() : null);
+
+            return response;
+        }).toList();
+
     }
 
     @Override

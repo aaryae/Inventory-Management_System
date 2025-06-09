@@ -17,7 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ResourceServiceImpl implements ResourceService {
+public abstract class ResourceServiceImpl implements ResourceService {
+
     @Autowired
     private ResourceRepository resourceRepository;
 

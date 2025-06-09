@@ -4,16 +4,13 @@ import jakarta.persistence.*;
 import lombok.*;
 
 
-
 @Entity
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
-
-
+@Table(name = "users")
 public class User {
 
     @Id
@@ -27,5 +24,6 @@ public class User {
     private String password;
 
     private String role;
+
 
 }

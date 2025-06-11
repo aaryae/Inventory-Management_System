@@ -1,13 +1,14 @@
 package com.example.inventorymanagementsystem.service;
 
-import com.example.inventorymanagementsystem.dtos.request.resource.ResourceRequestDTO;
+import com.example.inventorymanagementsystem.dtos.request.BatchRequestDTO;
+import com.example.inventorymanagementsystem.dtos.response.resource.BatchResponseDTO;
 import com.example.inventorymanagementsystem.dtos.response.resource.ResourceResponseDTO;
 
 import java.util.List;
 
 public interface BatchService {
 
-    ResourceResponseDTO createBatch(ResourceRequestDTO batchRequestDTO);
+    BatchResponseDTO createBatch(BatchRequestDTO batchRequestDTO);
 
     ResourceResponseDTO getBatchById (Long batch_id);
 

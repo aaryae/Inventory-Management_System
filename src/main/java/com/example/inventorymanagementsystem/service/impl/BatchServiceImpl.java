@@ -55,17 +55,27 @@ public class BatchServiceImpl implements BatchService {
     }
 
     @Override
-    public ResourceResponseDTO getBatchById(Long batch_id) {
-        return null;
+    public BatchResponseDTO getBatchById(Long batchId) {
+        Batch batch = batchRepository.findById(batchId)
+                .orElseThrow(() -> new RuntimeException("Batch not found with id: " + batchId));
+
+        BatchResponseDTO responseDTO = new BatchResponseDTO();
+        responseDTO.setBatchId(batch.getResourceBatchId());
+        responseDTO.setBatchCode(batch.getBatchCode());
+        responseDTO.setQuantity(batch.getQuantity());
+        responseDTO.setDescription(batch.getDescription());
+        responseDTO.setResourceType(batch.getType().getResourceTypeName());
+
+        return responseDTO;
     }
 
     @Override
-    public List<ResourceResponseDTO> getAllBatches() {
+    public List<BatchResponseDTO> getAllBatches() {
         return List.of();
     }
 
     @Override
-    public List<ResourceResponseDTO> getResourcesByBatchId(Long batch_id) {
+    public List<BatchResponseDTO> getResourcesByBatchId(Long batch_id) {
         return List.of();
     }
 

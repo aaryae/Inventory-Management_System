@@ -31,7 +31,7 @@ public class BatchServiceImpl implements BatchService {
         ResourceType resourceType = masterDataService.getResourceTypeById(batchRequestDTO.getResourceTypeId());
 
         // Generation of batch code
-        String batchCode = generateBatchCode(resourceType.getResource_type_name());
+        String batchCode = generateBatchCode(resourceType.getResourceTypeName());
 
         // Creating the batch entity
         Batch batch = new Batch();
@@ -45,11 +45,11 @@ public class BatchServiceImpl implements BatchService {
 
         // Map to the response DTO
         BatchResponseDTO response = new BatchResponseDTO();
-        response.setBatchId(saved.getResource_batch_id());
+        response.setBatchId(saved.getResourceBatchId());
         response.setBatchCode(saved.getBatchCode());
         response.setQuantity(saved.getQuantity());
         response.setDescription(saved.getDescription());
-        response.setResourceType(saved.getType().getResource_type_name());
+        response.setResourceType(saved.getType().getResourceTypeName());
 
         return response;
     }

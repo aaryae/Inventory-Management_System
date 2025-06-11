@@ -16,7 +16,7 @@ import java.time.LocalDate;
 public class Batch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long resource_batch_id;
+    private Long resourceBatchId;
 
     @Column(unique = true)
     private String batchCode;
@@ -30,6 +30,6 @@ public class Batch {
     private Integer quantity;
 
     @ManyToOne
-    @JoinColumn(name = "resource_type_id")
+    @JoinColumn(name = "resourceTypeId")
     private ResourceType type;
 }

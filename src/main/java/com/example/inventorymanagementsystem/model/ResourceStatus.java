@@ -14,7 +14,7 @@ import lombok.Setter;
 public class ResourceStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long resource_status_id;
+    private Long resourceStatusId;
 
-    private String resource_status_name;
+    private String resourceStatusName;
 }

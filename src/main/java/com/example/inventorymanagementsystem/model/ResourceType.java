@@ -12,12 +12,12 @@ public class ResourceType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long resource_type_id;
+    private Long resourceTypeId;
 
-    private String resource_type_name;
+    private String resourceTypeName;
 
     @ManyToOne
-    @JoinColumn(name = "resource_class_id")
+    @JoinColumn(name = "resourceClassId")
     private ResourceClass resourceClass;
 
 }

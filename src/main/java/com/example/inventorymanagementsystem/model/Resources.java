@@ -15,7 +15,7 @@ public class Resources {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long resource_id;
+    private Long resourceId;
 
     @Column(unique = true)
     private String resourceCode;
@@ -34,18 +34,18 @@ public class Resources {
 
     // Foreign Keys
     @ManyToOne
-    @JoinColumn(name = "resource_status_id")
+    @JoinColumn(name = "resourceStatusId")
     private ResourceStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "resource_type_id")
+    @JoinColumn(name = "resourceTypeId")
     private ResourceType type;
 
     @ManyToOne
-    @JoinColumn(name = "resource_class_id")
+    @JoinColumn(name = "resourceClassId")
     private ResourceClass resourceClass;
 
     @ManyToOne
-    @JoinColumn(name = "resource_batch_id", nullable = true)
+    @JoinColumn(name = "resourceBatchId", nullable = true)
     private Batch batch;
 }

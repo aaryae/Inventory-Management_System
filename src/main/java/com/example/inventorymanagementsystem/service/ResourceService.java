@@ -1,13 +1,25 @@
 package com.example.inventorymanagementsystem.service;
 
-import com.example.inventorymanagementsystem.repository.ResourceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.example.inventorymanagementsystem.dtos.ResourceUpdateDTO;
+import com.example.inventorymanagementsystem.dtos.request.resource.ResourceRequestDTO;
+import com.example.inventorymanagementsystem.dtos.response.resource.ResourceResponseDTO;
 
-@Service
-public class ResourceService {
+import java.util.List;
 
-    @Autowired
-    private ResourceRepository resourceRepository;
+public interface ResourceService {
+
+    ResourceResponseDTO createResources(ResourceRequestDTO request);
+
+    List<ResourceResponseDTO> createResourcesInBatch(List<ResourceRequestDTO> requestDTOList);
+
+    ResourceResponseDTO getResourceById(Long resource_id);
+
+    List<ResourceResponseDTO> getAllResources();
+
+    List<ResourceResponseDTO> getResourcesByStatus(Long status_id);
+
+    ResourceResponseDTO updateResource(Long resource_id, ResourceUpdateDTO updateDTO);
+
+    void deleteResource(Long resource_id);
 
 }

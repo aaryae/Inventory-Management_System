@@ -10,8 +10,8 @@ public class ResourceUpdateDTO {
     private String brand;
     private String specification;
 
-    private LocalDate purchase_date;
-    private LocalDate warranty_expiry;
+    private LocalDate purchaseDate;
+    private LocalDate warrantyExpiry;
 
-    private Long resource_status_id;
+    private Long resourceStatusId;
 }

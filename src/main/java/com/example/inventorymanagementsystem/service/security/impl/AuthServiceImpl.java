@@ -8,15 +8,15 @@ import com.example.inventorymanagementsystem.model.User;
 import com.example.inventorymanagementsystem.repository.securityRepo.UserRepository;
 import com.example.inventorymanagementsystem.service.security.AuthService;
 import com.example.inventorymanagementsystem.service.security.JwtService;
+import com.example.inventorymanagementsystem.service.security.exception.DuplicateResourceException;
+import com.example.inventorymanagementsystem.service.security.exception.ResourceNotFoundExceptionHandler;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -26,13 +26,13 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
     @Override
     public ResponseEntity<?> register(RegisterRequest request) {
         Optional<User> existingUser = userRepository.findByUsername(request.getUsername());
         if (existingUser.isPresent()) {
-            throw new RuntimeException("User already exists with this username.");
+            throw new DuplicateResourceException("User already exists with username " + request.getUsername());
         }
 
         User user = User.builder()
@@ -45,40 +45,34 @@ public class AuthServiceImpl implements AuthService {
         return ResponseEntity.ok("User registered successfully.");
     }
 
-
     @Override
-    public ResponseEntity<String> login(LoginRequest loginRequest) {
-        Optional<User> userOptional = userRepository.findByUsername(loginRequest.getUsername());
-
-        if (userOptional.isEmpty()) {
-            return ResponseEntity.status(401).body("Invalid username or password.");
-        }
-
-        User user = userOptional.get();
+    public ResponseEntity<?> login(LoginRequest loginRequest) {
+        User user = userRepository.findByUsername(loginRequest.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler("User", "username", loginRequest.getUsername()));
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            return ResponseEntity.status(401).body("Invalid username or password.");
+            throw new ResourceNotFoundExceptionHandler("User", "credentials", "Invalid username or password");
         }
-
-        return ResponseEntity.ok("Login successful!");
+            String token= jwtService.generateToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Login successful");
+        response.put("refreshToken", token);
+        response.put("accessToken", refreshToken);
+        return ResponseEntity.ok(response);
     }
 
-
     @Override
-    public ResponseEntity<?> refreshToken( RefreshTokenRequest request) {
+    public ResponseEntity<?> refreshToken(RefreshTokenRequest request) {
         String username = jwtService.validateToken(request.getRefreshToken());
         if (username == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
+            throw new ResourceNotFoundExceptionHandler("Token", "refreshToken", "Invalid or expired refresh token");
         }
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-        String newAccessToken = jwtService.generateToken(userDetails);
-        String newRefreshToken = jwtService.generateRefreshToken(userDetails);
+        User user = (User) userDetailsService.loadUserByUsername(username);
+        String newAccessToken = jwtService.generateToken(user);
+        String newRefreshToken = jwtService.generateRefreshToken(user);
 
         return ResponseEntity.ok(new LoginResponse(newAccessToken, newRefreshToken));
     }
-
-
-
 }

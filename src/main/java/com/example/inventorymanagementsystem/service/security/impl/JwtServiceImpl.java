@@ -3,6 +3,7 @@ package com.example.inventorymanagementsystem.service.security.impl;
 import java.security.Key;
 import java.util.Date;
 
+import com.example.inventorymanagementsystem.model.User;
 import com.example.inventorymanagementsystem.service.security.JwtService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -20,12 +21,13 @@ public class JwtServiceImpl implements JwtService {
     private final String SECRET = "413F4428472B4B6250655368566D5970337336763979244226452948404D6351";
     private final Key jwtSigningKey = Keys.hmacShaKeyFor(hexStringToByteArray(SECRET));
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(User user,String  tokenType) {
         try{
             return Jwts.builder()
-                    .setSubject(userDetails.getUsername()) // main identity
+                    .setSubject(user.getUsername()) // main identity
                     .setIssuedAt(new Date())
                     .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                    .claim("type", tokenType)
                     .signWith(jwtSigningKey, SignatureAlgorithm.HS256) // secret key & algorithm
                     .compact();
         }
@@ -34,16 +36,6 @@ public class JwtServiceImpl implements JwtService {
         }
 
     }
-    @Override
-    public String generateRefreshToken(UserDetails userDetails) {
-        return Jwts.builder()
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7))
-                .signWith(jwtSigningKey, SignatureAlgorithm.HS256)
-                .compact();
-    }
-
     @Override
     public String validateToken(String token) {
         try {
@@ -57,6 +49,19 @@ public class JwtServiceImpl implements JwtService {
             return "error: " + e.getMessage();
         }
     }
+    @Override
+    public String generateRefreshToken(User user) {
+        return Jwts.builder()
+                .setSubject(user.getUsername())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7))
+                .signWith(jwtSigningKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
 
+
+    // function boolean is adscess toekkn
+
+   // tokrn claims nikaler check garney
 
 }

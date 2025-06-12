@@ -10,10 +10,10 @@ public interface BatchService {
 
     BatchResponseDTO createBatch(BatchRequestDTO batchRequestDTO);
 
-    BatchResponseDTO getBatchById (Long batch_id);
+    BatchResponseDTO getBatchById (Long batchId);
 
     List<BatchResponseDTO> getAllBatches();
 
-    List<BatchResponseDTO> getResourcesByBatchId(Long batch_id);
+    List<ResourceResponseDTO> getResourcesByBatchId(Long batchId);
 
 }

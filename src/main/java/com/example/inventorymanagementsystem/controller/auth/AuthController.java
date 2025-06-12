@@ -18,7 +18,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-        return  authService.register(request);
+        return authService.register(request);
 
     }
 
@@ -27,7 +27,7 @@ public class AuthController {
         return authService.login(request);
     }
 
-    @GetMapping("/refresh")
+    @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest token) {
         return authService.refreshToken(token);
     }

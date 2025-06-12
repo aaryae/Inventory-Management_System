@@ -21,14 +21,13 @@ public class JwtServiceImpl implements JwtService {
     private final String SECRET = "413F4428472B4B6250655368566D5970337336763979244226452948404D6351";
     private final Key jwtSigningKey = Keys.hmacShaKeyFor(hexStringToByteArray(SECRET));
 
-    public String generateToken(User user,String  tokenType) {
+    public String generateToken(User user) {
         try{
             return Jwts.builder()
-                    .setSubject(user.getUsername()) // main identity
+                    .setSubject(user.getUsername())
                     .setIssuedAt(new Date())
                     .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
-                    .claim("type", tokenType)
-                    .signWith(jwtSigningKey, SignatureAlgorithm.HS256) // secret key & algorithm
+                    .signWith(jwtSigningKey, SignatureAlgorithm.HS256)
                     .compact();
         }
         catch(Exception e){

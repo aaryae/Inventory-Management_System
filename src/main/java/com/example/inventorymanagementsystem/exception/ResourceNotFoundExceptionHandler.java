@@ -1,4 +1,4 @@
-package com.example.inventorymanagementsystem.service.security.exception;
+package com.example.inventorymanagementsystem.exception;
 
 
 import lombok.Getter;

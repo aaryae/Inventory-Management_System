@@ -1,4 +1,4 @@
-package com.example.inventorymanagementsystem.service.security.exception;
+package com.example.inventorymanagementsystem.exception;
 
 
 import com.example.inventorymanagementsystem.dtos.response.ApiResponse;

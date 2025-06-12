@@ -1,4 +1,4 @@
-package com.example.inventorymanagementsystem.service.security.exception;
+package com.example.inventorymanagementsystem.exception;
 
 public class DuplicateResourceException extends RuntimeException {
     public DuplicateResourceException(String message) {

@@ -11,4 +11,8 @@ import java.util.List;
 public interface AdminService {
 
    public ResponseEntity<PagedResponse<UserResponse>>  getAllUsers(Pageable page);
+
+   public ResponseEntity<?> getUserById(Long id);
+
+   public ResponseEntity<?> deleteUserById(Long id);
 }

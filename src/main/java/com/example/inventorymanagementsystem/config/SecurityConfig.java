@@ -36,8 +36,8 @@ public class SecurityConfig   {
         JwtAuthenticationFilter jwtAuthFilter = new JwtAuthenticationFilter(jwtService, authenticationManager, userDetailsService);
 
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/register", "/api/auth/login","/api/admin/**","/ping").permitAll()
-//                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/auth/register", "/api/auth/login","/ping").permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
@@ -58,5 +58,7 @@ public class SecurityConfig   {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+
+
 
 }

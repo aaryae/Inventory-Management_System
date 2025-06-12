@@ -2,6 +2,7 @@ package com.example.inventorymanagementsystem.service.security.impl;
 
 import com.example.inventorymanagementsystem.dtos.response.PagedResponse;
 import com.example.inventorymanagementsystem.dtos.response.security.UserResponse;
+import com.example.inventorymanagementsystem.exception.DataNotFoundException;
 import com.example.inventorymanagementsystem.model.User;
 import com.example.inventorymanagementsystem.repository.securityRepo.UserRepository;
 import com.example.inventorymanagementsystem.service.security.AdminService;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -36,6 +38,33 @@ public class AdminServiceImpl implements AdminService {
 
         return ResponseEntity.ok(response);
     }
+
+    @Override
+    public ResponseEntity<?> getUserById(Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            UserResponse response = new UserResponse(user.getId(), user.getUsername(), user.getRole());
+            return ResponseEntity.ok(response);
+        } else {
+            throw new DataNotFoundException("User not found with id: " + id);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> deleteUserById(Long id) {
+        Optional<User> userOptional =  userRepository.findById(id);
+
+        if(userOptional.isPresent()){
+            userRepository.deleteById(id);
+            return ResponseEntity.ok("User deleted successfully.");
+        }
+        else{
+            throw new DataNotFoundException("User not found with id: " + id);
+        }
+    }
+
 
 
 

@@ -16,7 +16,7 @@ import java.time.LocalDate;
 public class Batch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long resourceBatchId;
+    private Long batchId;
 
     @Column(unique = true)
     private String batchCode;

@@ -17,37 +17,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public abstract class ResourceServiceImpl implements ResourceService {
+public  class ResourceServiceImpl implements ResourceService {
+
+   
+
+    private final ResourceRepository resourceRepository;
+
+    private final MasterDataService masterDataService;
+    private final BatchRepository batchRepository;
 
     @Autowired
-    private ResourceRepository resourceRepository;
+    public ResourceServiceImpl(ResourceRepository resourceRepository, MasterDataService masterDataService, BatchRepository batchRepository) {
+        this.resourceRepository = resourceRepository;
+        this.masterDataService = masterDataService;
+        this.batchRepository = batchRepository;
+    }
 
-    @Autowired
-    private MasterDataService masterDataService;
-
-    @Autowired
-    private BatchRepository batchRepository;
 
 
 
     @Override
     public ResourceResponseDTO createResources(ResourceRequestDTO request){
         // Validating master data using MasterDataService
-        ResourceType type = masterDataService.getResourceTypeById(request.getResource_type_id());
-        ResourceClass resourceClass = masterDataService.getResourceClassById(request.getResource_class_id());
-        ResourceStatus status = masterDataService.getResourceStatusById(request.getResource_status_id());
+        ResourceType type = masterDataService.getResourceTypeById(request.getResourceTypeId());
+        ResourceClass resourceClass = masterDataService.getResourceClassById(request.getResourceClassId());
+        ResourceStatus status = masterDataService.getResourceStatusById(request.getResourceStatusId());
 
 
         // Fetch batch if the batch ID is provided
         Batch batch = null;
-        if (request.getBatch_id() != null){
-            batch = batchRepository.findById(request.getBatch_id())
-                    .orElseThrow(() -> new RuntimeException("Batch not found with id: " + request.getBatch_id()));
+        if (request.getBatchId() != null){
+            batch = batchRepository.findById(request.getBatchId())
+                    .orElseThrow(() -> new RuntimeException("Batch not found with id: " + request.getBatchId()));
         }
 
 
         // It generates unique resource code
-        String resourceCode = generateUniqueResourceCode(type.getResource_type_name());
+        String resourceCode = generateUniqueResourceCode(type.getResourceTypeName());
 
 
         // It creates the resource entity
@@ -55,8 +61,8 @@ public abstract class ResourceServiceImpl implements ResourceService {
         resource.setBrand(request.getBrand());
         resource.setModel(request.getModel());
         resource.setSpecification(request.getSpecification());
-        resource.setPurchaseDate(request.getPurchase_date());
-        resource.setWarrantyExpiry(request.getWarranty_expiry());
+        resource.setPurchaseDate(request.getPurchaseDate());
+        resource.setWarrantyExpiry(request.getWarrantyExpiry());
         resource.setResourceCode(resourceCode);
         resource.setType(type);
         resource.setResourceClass(resourceClass);
@@ -69,20 +75,7 @@ public abstract class ResourceServiceImpl implements ResourceService {
 
 
         // It maps the entity to respond DTO
-        ResourceResponseDTO response = new ResourceResponseDTO();
-        response.setResource_id(saved.getResource_id());
-        response.setResourceCode(saved.getResourceCode());
-        response.setBrand(saved.getBrand());
-        response.setModel(saved.getModel());
-        response.setSpecification(saved.getSpecification());
-        response.setPurchase_date(saved.getPurchaseDate());
-        response.setWarranty_expiry(saved.getWarrantyExpiry());
-        response.setResource_type(saved.getType().getResource_type_name());
-        response.setResource_class(saved.getResourceClass().getResource_class_name());
-        response.setResource_status(saved.getStatus().getResource_status_name());
-        response.setBatchCode(saved.getBatch() != null ? saved.getBatch().getBatchCode() : null);
-
-        return response;
+        return convertToDto(saved);
     }
 
 
@@ -94,27 +87,27 @@ public abstract class ResourceServiceImpl implements ResourceService {
 
         for (ResourceRequestDTO dto : requestDTOList){
             //Validation of master data
-            ResourceType type = masterDataService.getResourceTypeById(requestDTOList.getFirst().getResource_type_id());
-            ResourceClass resourceClass = masterDataService.getResourceClassById(requestDTOList.getFirst().getResource_class_id());
-            ResourceStatus status = masterDataService.getResourceStatusById(requestDTOList.getFirst().getResource_status_id());
+            ResourceType type = masterDataService.getResourceTypeById(requestDTOList.getFirst().getResourceTypeId());
+            ResourceClass resourceClass = masterDataService.getResourceClassById(requestDTOList.getFirst().getResourceClassId());
+            ResourceStatus status = masterDataService.getResourceStatusById(requestDTOList.getFirst().getResourceStatusId());
 
             // Fetching the batch
             Batch batch = null;
-            if (dto.getBatch_id() != null){
-                batch= batchRepository.findById(dto.getBatch_id())
-                        .orElseThrow(() -> new RuntimeException("Batch not found with id: " + dto.getBatch_id()));
+            if (dto.getBatchId() != null){
+                batch= batchRepository.findById(dto.getBatchId())
+                        .orElseThrow(() -> new RuntimeException("Batch not found with id: " + dto.getBatchId()));
             }
 
             // Generating the resource code
-            String resourceCode = generateUniqueResourceCode(type.getResource_type_name());
+            String resourceCode = generateUniqueResourceCode(type.getResourceTypeName());
 
             // Creating resource entity
             Resources resource = new Resources();
             resource.setBrand(dto.getBrand());
             resource.setModel(dto.getModel());
             resource.setSpecification(dto.getSpecification());
-            resource.setPurchaseDate(dto.getPurchase_date());
-            resource.setWarrantyExpiry(dto.getWarranty_expiry());
+            resource.setPurchaseDate(dto.getPurchaseDate());
+            resource.setWarrantyExpiry(dto.getWarrantyExpiry());
             resource.setResourceCode(resourceCode);
             resource.setType(type);
             resource.setResourceClass(resourceClass);
@@ -128,22 +121,7 @@ public abstract class ResourceServiceImpl implements ResourceService {
         List<Resources> savedResources = resourceRepository.saveAll(resourceToSave);
 
         // Map to the ResponseDTO
-        return savedResources.stream().map(saved -> {
-            ResourceResponseDTO response = new ResourceResponseDTO();
-
-            response.setResource_id(saved.getResource_id());
-            response.setResourceCode(saved.getResourceCode());
-            response.setBrand(saved.getBrand());
-            response.setModel(saved.getModel());
-            response.setSpecification(saved.getSpecification());
-            response.setPurchase_date(saved.getPurchaseDate());
-            response.setWarranty_expiry(saved.getWarrantyExpiry());
-            response.setResource_type(saved.getType().getResource_type_name());
-            response.setResource_class(saved.getResourceClass().getResource_class_name());
-            response.setResource_status(saved.getStatus().getResource_status_name());
-            response.setBatchCode(saved.getBatch() != null ? saved.getBatch().getBatchCode() : null);
-            return response;
-        }).toList();
+        return savedResources.stream().map(this::convertToDto).toList();
     }
 
     @Override
@@ -151,40 +129,59 @@ public abstract class ResourceServiceImpl implements ResourceService {
         Resources resource = resourceRepository.findById(resource_id)
                 .orElseThrow(() -> new RuntimeException("Resource not found with id" + resource_id));
 
-        ResourceResponseDTO response = new ResourceResponseDTO();
-        response.setResource_id(resource.getResource_id());
-        response.setResourceCode(resource.getResourceCode());
-        response.setBrand(resource.getBrand());
-        response.setModel(resource.getModel());
-        response.setSpecification(resource.getSpecification());
-        response.setPurchase_date(resource.getPurchaseDate());
-        response.setWarranty_expiry(resource.getWarrantyExpiry());
-        response.setResource_type(resource.getType().getResource_type_name());
-        response.setResource_class(resource.getResourceClass().getResource_class_name());
-        response.setResource_status(resource.getStatus().getResource_status_name());
-        response.setBatchCode(resource.getBatch() != null ? resource.getBatch().getBatchCode() : null);
-
-        return response;
+        return convertToDto(resource);
     }
 
     @Override
     public List<ResourceResponseDTO> getAllResources() {
-        return List.of();
+        List<Resources> resources = resourceRepository.findAll();
+
+        return resources.stream().map(this::convertToDto).toList();
     }
 
     @Override
     public List<ResourceResponseDTO> getResourcesByStatus(Long status_id) {
-        return List.of();
+        // Validates if the status exists
+        ResourceStatus status = masterDataService.getResourceStatusById(status_id);
+
+        // Fetch all resources with this status
+        List<Resources> resources = resourceRepository.findByResourceStatus(status);
+
+        // Converts to response dto
+        return resources.stream().map(this::convertToDto).toList();
+
     }
 
     @Override
     public ResourceResponseDTO updateResource(Long resource_id, ResourceUpdateDTO updateDTO) {
-        return null;
+        // Fetches the existing resource
+        Resources resource = resourceRepository.findById(resource_id)
+                .orElseThrow(()-> new RuntimeException("Resource not found with id: " + resource_id));
+
+
+        // Validation of new status
+        ResourceStatus status = masterDataService.getResourceStatusById(updateDTO.getResourceStatusId());
+
+        resource.setModel(updateDTO.getModel());
+        resource.setBrand(updateDTO.getBrand());
+        resource.setSpecification(updateDTO.getSpecification());
+        resource.setPurchaseDate(updateDTO.getPurchaseDate());
+        resource.setWarrantyExpiry(updateDTO.getWarrantyExpiry());
+        resource.setStatus(status);
+
+        // Save and update the resources
+        Resources updated = resourceRepository.save(resource);
+
+        // Mapping to response DTO
+        return convertToDto(updated);
     }
+
 
     @Override
     public void deleteResource(Long resource_id) {
-
+        Resources resource = resourceRepository.findById(resource_id)
+                .orElseThrow(() -> new RuntimeException("Resource not found with id: " + resource_id));
+        resourceRepository.delete(resource);
     }
 
 
@@ -194,5 +191,20 @@ public abstract class ResourceServiceImpl implements ResourceService {
         return typePrefix.toUpperCase() + "-" + date + "-" + String.format("%03d", random);
     }
 
+    private ResourceResponseDTO convertToDto(Resources resource) {
+        ResourceResponseDTO response = new ResourceResponseDTO();
+        response.setResourceId(resource.getResourceId());
+        response.setResourceCode(resource.getResourceCode());
+        response.setBrand(resource.getBrand());
+        response.setModel(resource.getModel());
+        response.setSpecification(resource.getSpecification());
+        response.setPurchaseDate(resource.getPurchaseDate());
+        response.setWarrantyExpiry(resource.getWarrantyExpiry());
+        response.setResourceType(resource.getType().getResourceTypeName());
+        response.setResourceClass(resource.getResourceClass().getResourceClassName());
+        response.setResourceStatus(resource.getStatus().getResourceStatusName());
+        response.setBatchCode(resource.getBatch() != null ? resource.getBatch().getBatchCode() : null);
 
+        return response;
+    }
 }

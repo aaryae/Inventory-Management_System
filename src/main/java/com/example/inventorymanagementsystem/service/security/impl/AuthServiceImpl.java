@@ -3,22 +3,28 @@ package com.example.inventorymanagementsystem.service.security.impl;
 import com.example.inventorymanagementsystem.dtos.request.security.LoginRequest;
 import com.example.inventorymanagementsystem.dtos.request.security.RefreshTokenRequest;
 import com.example.inventorymanagementsystem.dtos.request.security.RegisterRequest;
+import com.example.inventorymanagementsystem.helper.Role;
+import com.example.inventorymanagementsystem.helper.Status;
 import com.example.inventorymanagementsystem.model.User;
 import com.example.inventorymanagementsystem.repository.securityRepo.UserRepository;
+import com.example.inventorymanagementsystem.service.MailService;
 import com.example.inventorymanagementsystem.service.security.AuthService;
 import com.example.inventorymanagementsystem.service.security.JwtService;
 import com.example.inventorymanagementsystem.exception.DuplicateResourceException;
 import com.example.inventorymanagementsystem.exception.ResourceNotFoundExceptionHandler;
 import io.jsonwebtoken.JwtException;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +34,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final CustomUserDetailsService customUserDetailsService;
+    private final MailService mailService;
 
     @Override
     public ResponseEntity<?> register(RegisterRequest request) {
@@ -39,7 +46,7 @@ public class AuthServiceImpl implements AuthService {
         User user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role("USER")
+                .role(Role.USER)
                           .build();
         userRepository.save(user);
 
@@ -62,6 +69,26 @@ public class AuthServiceImpl implements AuthService {
         response.put("accessToken", refreshToken);
         return ResponseEntity.ok(response);
     }
+
+
+    @Override
+    public ResponseEntity<?> forgotPassword(LoginRequest loginRequest, String siteUrl) throws MessagingException, UnsupportedEncodingException {
+        User user= userRepository.findByUsername(loginRequest.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler("User", "username", loginRequest.getUsername()));
+
+        if(user!=null){
+            user.setPassword(passwordEncoder.encode(loginRequest.getPassword()));
+            user.setVerificationCode(new Random().nextInt(999999));
+            user.setStatus(Status.INACTIVE);
+            userRepository.save(user);
+            mailService.sendVerification(user,siteUrl);
+            return ResponseEntity.ok("Verify link send in Email");
+
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid username or password. Please try again.");
+
+    }
+
 
     @Override
     public ResponseEntity<?> refreshToken(RefreshTokenRequest request) {

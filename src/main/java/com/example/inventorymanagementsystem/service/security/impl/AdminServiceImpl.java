@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailSender;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class AdminServiceImpl implements AdminService {
         private final UserRepository userRepository;
+        private final MailSender mailSender;
 
     @Override
     public ResponseEntity<PagedResponse<UserResponse>> getAllUsers(Pageable pageable) {
@@ -45,7 +48,7 @@ public class AdminServiceImpl implements AdminService {
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            UserResponse response = new UserResponse(user.getId(), user.getUsername(), user.getRole());
+            UserResponse response = new UserResponse(user.getId(), user.getUsername(),user.getRole());
             return ResponseEntity.ok(response);
         } else {
             throw new DataNotFoundException("User not found with id: " + id);
@@ -80,6 +83,8 @@ public class AdminServiceImpl implements AdminService {
             throw new DataNotFoundException("User not found with id: " + id);
         }
     }
+
+
 
 
 

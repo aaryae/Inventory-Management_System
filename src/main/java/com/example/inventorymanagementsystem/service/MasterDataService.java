@@ -3,9 +3,11 @@ package com.example.inventorymanagementsystem.service;
 import com.example.inventorymanagementsystem.model.ResourceClass;
 import com.example.inventorymanagementsystem.model.ResourceStatus;
 import com.example.inventorymanagementsystem.model.ResourceType;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public interface MasterDataService {
 
     // This is used to fetch all the master data

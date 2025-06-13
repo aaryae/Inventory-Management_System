@@ -53,6 +53,22 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public ResponseEntity<?> updateUserById(Long id, UserResponse userResponse){
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if(userOptional.isPresent()){
+            User user = userOptional.get();
+            user.setUsername(userResponse.getUsername());
+            userRepository.save(user);
+            return ResponseEntity.ok("User updated successfully.");
+        }
+        else{
+            throw new DataNotFoundException("User not found with id: " + id);
+        }
+
+    }
+
+    @Override
     public ResponseEntity<?> deleteUserById(Long id) {
         Optional<User> userOptional =  userRepository.findById(id);
 

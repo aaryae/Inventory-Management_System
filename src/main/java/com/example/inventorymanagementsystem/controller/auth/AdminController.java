@@ -29,6 +29,12 @@ public class AdminController {
         return adminService.getUserById(id);
     }
 
+
+    @PutMapping("/users/{id}")
+    public ResponseEntity<?> updateUserById(@PathVariable Long id, @RequestBody UserResponse userResponse){
+        return adminService.updateUserById(id, userResponse);
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/users/{id}")
     public ResponseEntity<?> deleteUserById(@PathVariable Long id){

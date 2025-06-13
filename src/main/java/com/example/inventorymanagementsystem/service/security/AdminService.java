@@ -14,5 +14,7 @@ public interface AdminService {
 
    public ResponseEntity<?> getUserById(Long id);
 
+   public ResponseEntity<?> updateUserById(Long id, UserResponse userResponse);
+
    public ResponseEntity<?> deleteUserById(Long id);
 }

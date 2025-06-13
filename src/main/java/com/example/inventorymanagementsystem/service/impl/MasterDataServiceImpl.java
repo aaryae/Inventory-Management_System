@@ -7,9 +7,10 @@ import com.example.inventorymanagementsystem.repository.ResourceClassRepository;
 import com.example.inventorymanagementsystem.repository.ResourceStatusRepository;
 import com.example.inventorymanagementsystem.repository.ResourceTypeRepository;
 import com.example.inventorymanagementsystem.service.MasterDataService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class MasterDataServiceImpl implements MasterDataService {
 
     private final ResourceTypeRepository resourceTypeRepository;

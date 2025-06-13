@@ -35,7 +35,7 @@ public class Resources {
     // Foreign Keys
     @ManyToOne
     @JoinColumn(name = "resourceStatusId")
-    private ResourceStatus status;
+    private ResourceStatus resourceStatus;
 
     @ManyToOne
     @JoinColumn(name = "resourceTypeId")

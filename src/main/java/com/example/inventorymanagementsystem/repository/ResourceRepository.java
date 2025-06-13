@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ResourceRepository extends JpaRepository<Resources, Long> {
-    List<Resources> findByResourceStatus(ResourceStatus status);
+    List<Resources> findByResourceStatus(ResourceStatus resourceStatus);
 
     List<Resources> findByBatch(Batch batch);
 }

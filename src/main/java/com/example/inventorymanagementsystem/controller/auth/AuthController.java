@@ -33,10 +33,13 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<?> forgotPassword(@RequestBody LoginRequest loginRequest, HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
-        String siteUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
-        return authService.forgotPassword(loginRequest, siteUrl);
+    public ResponseEntity<?> forgotPassword(@RequestBody LoginRequest loginRequest, HttpServletRequest httpServletRequest) throws MessagingException, UnsupportedEncodingException {
+        return authService.forgotPassword(loginRequest, getSiteURL(httpServletRequest));
     }
+    private String getSiteURL(HttpServletRequest request) {
+        return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+    }
+
 
     @GetMapping("/verify")
     public ResponseEntity<String> verifyEmail(@RequestParam String code) {

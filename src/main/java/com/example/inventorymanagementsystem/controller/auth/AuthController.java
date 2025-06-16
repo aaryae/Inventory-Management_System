@@ -36,6 +36,8 @@ public class AuthController {
     public ResponseEntity<?> forgotPassword(@RequestBody LoginRequest loginRequest, HttpServletRequest httpServletRequest) throws MessagingException, UnsupportedEncodingException {
         return authService.forgotPassword(loginRequest, getSiteURL(httpServletRequest));
     }
+
+
     private String getSiteURL(HttpServletRequest request) {
         return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
     }

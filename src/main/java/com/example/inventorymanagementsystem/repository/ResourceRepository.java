@@ -17,5 +17,9 @@ public interface ResourceRepository extends JpaRepository<Resources, Long> {
     @Query("SELECT r.brand, COUNT(r) FROM Resources r GROUP BY r.brand")
     List<Object[]> countByBrand();
 
+    @Query("SELECT r.model, COUNT(r) FROM Resources r GROUP BY r.model")
+    List<Object[]> countByModel();
 
+    @Query("SELECT r.specification, COUNT(r) FROM Resources r GROUP BY r.specification")
+    List<Object[]> countBySpecification();
 }

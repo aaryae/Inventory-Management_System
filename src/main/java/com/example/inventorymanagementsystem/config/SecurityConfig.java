@@ -38,7 +38,7 @@ public class SecurityConfig   {
         JwtAuthenticationFilter jwtAuthFilter = new JwtAuthenticationFilter(jwtService, authenticationManager, userDetailsService);
 
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/register", "/api/auth/login","/ping","/api/auth/forgot-password").permitAll()
+                        .requestMatchers("/api/auth/register", "/api/auth/login","/ping","/api/auth/forgot-password","/resources/**","/batches","/master").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated())

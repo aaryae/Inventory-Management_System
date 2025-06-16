@@ -8,6 +8,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@Table(name = "resource_type")
 public class ResourceType {
 
     @Id

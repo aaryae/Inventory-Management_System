@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @Setter
+@Table(name = "resources")
 public class Resources {
 
 

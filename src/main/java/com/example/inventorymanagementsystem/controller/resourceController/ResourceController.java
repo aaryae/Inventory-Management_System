@@ -26,7 +26,7 @@ public class ResourceController {
     }
 
     @PostMapping("/batch")
-    public ResponseEntity<List<ResourceResponseDTO>> createResourceBatch(List<ResourceRequestDTO> requestDTOList){
+    public ResponseEntity<List<ResourceResponseDTO>> createResourceBatch(@RequestBody List<ResourceRequestDTO> requestDTOList){
         List<ResourceResponseDTO> responseDTOList = resourceService.createResourcesInBatch(requestDTOList);
         return ResponseEntity.ok(responseDTOList);
     }
@@ -50,7 +50,7 @@ public class ResourceController {
     }
 
     @PutMapping("/{resourceId}")
-    public ResponseEntity<ResourceResponseDTO> updateResource(@PathVariable("resourceId") Long resourceId, ResourceUpdateDTO resourceUpdate){
+    public ResponseEntity<ResourceResponseDTO> updateResource(@PathVariable("resourceId") Long resourceId, @RequestBody ResourceUpdateDTO resourceUpdate){
         ResourceResponseDTO responseDTO = resourceService.updateResource(resourceId, resourceUpdate);
         return ResponseEntity.ok(responseDTO);
     }

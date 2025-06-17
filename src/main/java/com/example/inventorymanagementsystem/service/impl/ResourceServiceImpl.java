@@ -66,7 +66,7 @@ public  class ResourceServiceImpl implements ResourceService {
         resource.setResourceCode(resourceCode);
         resource.setType(type);
         resource.setResourceClass(resourceClass);
-        resource.setStatus(status);
+        resource.setResourceStatus(status);
         resource.setBatch(batch);
 
 
@@ -111,7 +111,7 @@ public  class ResourceServiceImpl implements ResourceService {
             resource.setResourceCode(resourceCode);
             resource.setType(type);
             resource.setResourceClass(resourceClass);
-            resource.setStatus(status);
+            resource.setResourceStatus(status);
             resource.setBatch(batch);
 
             resourceToSave.add(resource);
@@ -167,7 +167,7 @@ public  class ResourceServiceImpl implements ResourceService {
         resource.setSpecification(updateDTO.getSpecification());
         resource.setPurchaseDate(updateDTO.getPurchaseDate());
         resource.setWarrantyExpiry(updateDTO.getWarrantyExpiry());
-        resource.setStatus(status);
+        resource.setResourceStatus(status);
 
         // Save and update the resources
         Resources updated = resourceRepository.save(resource);
@@ -202,7 +202,7 @@ public  class ResourceServiceImpl implements ResourceService {
         response.setWarrantyExpiry(resource.getWarrantyExpiry());
         response.setResourceType(resource.getType().getResourceTypeName());
         response.setResourceClass(resource.getResourceClass().getResourceClassName());
-        response.setResourceStatus(resource.getStatus().getResourceStatusName());
+        response.setResourceStatus(resource.getResourceStatus().getResourceStatusName());
         response.setBatchCode(resource.getBatch() != null ? resource.getBatch().getBatchCode() : null);
 
         return response;

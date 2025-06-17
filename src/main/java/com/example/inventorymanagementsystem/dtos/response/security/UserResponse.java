@@ -1,5 +1,6 @@
 package com.example.inventorymanagementsystem.dtos.response.security;
 
+import com.example.inventorymanagementsystem.helper.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -9,5 +10,5 @@ import lombok.Data;
 public class UserResponse {
     private Long id;
     private String username;
-    private String role;
+    Role role;
 }

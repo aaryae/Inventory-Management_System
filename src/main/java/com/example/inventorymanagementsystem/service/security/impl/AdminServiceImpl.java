@@ -7,18 +7,23 @@ import com.example.inventorymanagementsystem.model.User;
 import com.example.inventorymanagementsystem.repository.securityRepo.UserRepository;
 import com.example.inventorymanagementsystem.service.security.AdminService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailSender;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
         private final UserRepository userRepository;
+        private final MailSender mailSender;
+        private String uuu;
 
     @Override
     public ResponseEntity<PagedResponse<UserResponse>> getAllUsers(Pageable pageable) {
@@ -45,11 +50,27 @@ public class AdminServiceImpl implements AdminService {
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            UserResponse response = new UserResponse(user.getId(), user.getUsername(), user.getRole());
+            UserResponse response = new UserResponse(user.getId(), user.getUsername(),user.getRole());
             return ResponseEntity.ok(response);
         } else {
             throw new DataNotFoundException("User not found with id: " + id);
         }
+    }
+
+    @Override
+    public ResponseEntity<?> updateUserById(Long id, UserResponse userResponse){
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if(userOptional.isPresent()){
+            User user = userOptional.get();
+            user.setUsername(userResponse.getUsername());
+            userRepository.save(user);
+            return ResponseEntity.ok("User updated successfully.");
+        }
+        else{
+            throw new DataNotFoundException("User not found with id: " + id);
+        }
+
     }
 
     @Override
@@ -68,4 +89,7 @@ public class AdminServiceImpl implements AdminService {
 
 
 
+
+
 }
+

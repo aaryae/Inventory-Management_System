@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/admin")
 @AllArgsConstructor
 public class AdminController {
+
     private final AdminService adminService;
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -27,6 +28,12 @@ public class AdminController {
     @GetMapping("/users/{id}")
     public ResponseEntity<?> getUserById( @PathVariable Long id){
         return adminService.getUserById(id);
+    }
+
+
+    @PutMapping("/users/{id}")
+    public ResponseEntity<?> updateUserById(@PathVariable Long id, @RequestBody UserResponse userResponse){
+        return adminService.updateUserById(id, userResponse);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

@@ -49,7 +49,7 @@ public class BatchServiceImpl implements BatchService {
 
         // Map to the response DTO
         BatchResponseDTO response = new BatchResponseDTO();
-        response.setBatchId(saved.getResourceBatchId());
+        response.setBatchId(saved.getBatchId());
         response.setBatchCode(saved.getBatchCode());
         response.setQuantity(saved.getQuantity());
         response.setDescription(saved.getDescription());
@@ -64,7 +64,7 @@ public class BatchServiceImpl implements BatchService {
                 .orElseThrow(() -> new RuntimeException("Batch not found with id: " + batchId));
 
         BatchResponseDTO responseDTO = new BatchResponseDTO();
-        responseDTO.setBatchId(batch.getResourceBatchId());
+        responseDTO.setBatchId(batch.getBatchId());
         responseDTO.setBatchCode(batch.getBatchCode());
         responseDTO.setQuantity(batch.getQuantity());
         responseDTO.setDescription(batch.getDescription());
@@ -79,7 +79,7 @@ public class BatchServiceImpl implements BatchService {
 
         return batches.stream().map(batch -> {
             BatchResponseDTO responseDTO = new BatchResponseDTO();
-            responseDTO.setBatchId(batch.getResourceBatchId());
+            responseDTO.setBatchId(batch.getBatchId());
             responseDTO.setBatchCode(batch.getBatchCode());
             responseDTO.setQuantity(batch.getQuantity());
             responseDTO.setDescription(batch.getDescription());
@@ -110,7 +110,7 @@ public class BatchServiceImpl implements BatchService {
             responseDTO.setWarrantyExpiry(resource.getWarrantyExpiry());
             responseDTO.setResourceType(resource.getType().getResourceTypeName());
             responseDTO.setResourceClass(resource.getResourceClass().getResourceClassName());
-            responseDTO.setResourceStatus(resource.getStatus().getResourceStatusName());
+            responseDTO.setResourceStatus(resource.getResourceStatus().getResourceStatusName());
             responseDTO.setBatchCode(resource.getBatch().getBatchCode());
 
             return responseDTO;

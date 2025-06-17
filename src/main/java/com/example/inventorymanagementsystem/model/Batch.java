@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @Setter
+@Table(name = "batch")
 @EntityListeners(AuditingEntityListener.class)
 public class Batch {
     @Id
@@ -29,7 +30,7 @@ public class Batch {
 
     private Integer quantity;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resourceTypeId")
     private ResourceType type;
 }

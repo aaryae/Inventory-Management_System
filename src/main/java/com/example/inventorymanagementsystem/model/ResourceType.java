@@ -8,6 +8,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@Table(name = "resource_type")
 public class ResourceType {
 
     @Id
@@ -16,7 +17,7 @@ public class ResourceType {
 
     private String resourceTypeName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resourceClassId")
     private ResourceClass resourceClass;
 

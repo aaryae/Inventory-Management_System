@@ -6,9 +6,11 @@ import com.example.inventorymanagementsystem.dtos.response.resource.ResourceResp
 import com.example.inventorymanagementsystem.model.*;
 import com.example.inventorymanagementsystem.repository.BatchRepository;
 import com.example.inventorymanagementsystem.repository.ResourceRepository;
+import com.example.inventorymanagementsystem.repository.ResourceSpecifications;
 import com.example.inventorymanagementsystem.service.MasterDataService;
 import com.example.inventorymanagementsystem.service.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -32,9 +34,6 @@ public  class ResourceServiceImpl implements ResourceService {
         this.masterDataService = masterDataService;
         this.batchRepository = batchRepository;
     }
-
-
-
 
     @Override
     public ResourceResponseDTO createResources(ResourceRequestDTO request){
@@ -77,8 +76,6 @@ public  class ResourceServiceImpl implements ResourceService {
         // It maps the entity to respond DTO
         return convertToDto(saved);
     }
-
-
 
     @Override
     public List<ResourceResponseDTO> createResourcesInBatch(List<ResourceRequestDTO> requestDTOList) {
@@ -176,14 +173,12 @@ public  class ResourceServiceImpl implements ResourceService {
         return convertToDto(updated);
     }
 
-
     @Override
     public void deleteResource(Long resource_id) {
         Resources resource = resourceRepository.findById(resource_id)
                 .orElseThrow(() -> new RuntimeException("Resource not found with id: " + resource_id));
         resourceRepository.delete(resource);
     }
-
 
     public String generateUniqueResourceCode(String typePrefix){
         String date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
@@ -207,4 +202,30 @@ public  class ResourceServiceImpl implements ResourceService {
 
         return response;
     }
+
+    @Override
+    public List<Resources> filterResources(String brand, String model, LocalDate purchaseDate, Long typeId) {
+        Specification<Resources> spec = (root, query, cb) -> cb.conjunction();
+        if (brand != null) {
+            spec = spec.and(ResourceSpecifications.brandContains(brand));
+        }
+
+        if (model != null) {
+            spec = spec.and(ResourceSpecifications.modelContains(model));
+        }
+
+        if (purchaseDate != null) {
+            spec = spec.and(ResourceSpecifications.purchasedAfter(purchaseDate));
+        }
+
+        if (typeId != null) {
+            spec = spec.and(ResourceSpecifications.typeEquals(typeId));
+        }
+
+        return resourceRepository.findAll(spec);
+    }
+
+
+
+
 }

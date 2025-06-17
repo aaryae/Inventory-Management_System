@@ -6,8 +6,12 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.tags.Tag;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @SecurityScheme(
@@ -27,6 +31,9 @@ public class SwaggerConfig {
                         .title("Inventory Management API")
                         .version("1.0")
                         .description("API documentation for Inventory Management System"))
+                .tags(Collections.singletonList(
+                        new Tag().name("Authentication")
+                ))
                 .addSecurityItem(new io.swagger.v3.oas.models.security.SecurityRequirement().addList("bearerAuth"))
                 .components(new io.swagger.v3.oas.models.Components()
                         .addSecuritySchemes("bearerAuth",

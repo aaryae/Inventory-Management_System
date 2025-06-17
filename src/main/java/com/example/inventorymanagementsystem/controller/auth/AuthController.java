@@ -1,10 +1,14 @@
 package com.example.inventorymanagementsystem.controller.auth;
 
+import com.example.inventorymanagementsystem.dtos.request.PasswordResetRequest;
 import com.example.inventorymanagementsystem.dtos.request.security.LoginRequest;
 import com.example.inventorymanagementsystem.dtos.request.security.RefreshTokenRequest;
 import com.example.inventorymanagementsystem.dtos.request.security.RegisterRequest;
+import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
 import com.example.inventorymanagementsystem.service.MailService;
 import com.example.inventorymanagementsystem.service.security.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -14,53 +18,47 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 
-@Slf4j
+//@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/auth")
+@Tag(name = "Authentication", description = "Authentication API")
 public class AuthController {
 
     private final AuthService authService;
-    private final MailService mailService;
+
 
     @PostMapping("/register")
+    @Operation(summary = "Register user")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         return authService.register(request);
 
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Login user")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         return authService.login(request);
     }
 
-    @PostMapping("/forgot-password")
-    public ResponseEntity<?> forgotPassword(@RequestBody LoginRequest loginRequest, HttpServletRequest httpServletRequest) throws MessagingException, UnsupportedEncodingException {
 
-        String siteURL = getSiteURL(httpServletRequest);
-        log.info("siteURL: {}", siteURL);
-
-        return authService.forgotPassword(loginRequest, siteURL);
+    @PostMapping("/request-reset")
+    @Operation(summary = "Request password reset code")
+    public ResponseEntity<?> requestReset(@RequestBody LoginRequest loginRequest) {
+        authService.sendResetCode(loginRequest.getEmail());
+        return ResponseEntity.ok().body(new ApiResponse( "Password reset code sent to your email.",true) );
     }
 
-
-    private String getSiteURL(HttpServletRequest request) {
-        return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-    }
-
-
-    @GetMapping("/verify")
-    public ResponseEntity<String> verifyEmail(@RequestParam String code) {
-        boolean verified = mailService.verify(code);
-        if (verified) {
-            return ResponseEntity.ok("Your email has been successfully verified!");
-        } else {
-            return ResponseEntity.badRequest().body("Verification failed: Invalid or expired code.");
-        }
+    @PostMapping("/verify-reset")
+    @Operation(summary = "Verify password reset code and reset password")
+    public ResponseEntity<?> verifyReset(@RequestBody PasswordResetRequest request) {
+        authService.verifyAndResetPassword(request);
+        return ResponseEntity.ok().body(new ApiResponse( "Password reset successfully.",true) );
     }
 
 
     @PostMapping("/refresh")
+    @Operation(summary = "Generates refresh token")
     public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest token) {
         return authService.refreshToken(token);
     }

@@ -1,8 +1,10 @@
 package com.example.inventorymanagementsystem.service.security.impl;
 
+import com.example.inventorymanagementsystem.dtos.request.PasswordResetRequest;
 import com.example.inventorymanagementsystem.dtos.request.security.LoginRequest;
 import com.example.inventorymanagementsystem.dtos.request.security.RefreshTokenRequest;
 import com.example.inventorymanagementsystem.dtos.request.security.RegisterRequest;
+import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
 import com.example.inventorymanagementsystem.helper.Role;
 import com.example.inventorymanagementsystem.helper.Status;
 import com.example.inventorymanagementsystem.model.User;
@@ -33,7 +35,6 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-//    private final CustomUserDetailsService customUserDetailsService;
     private final MailService mailService;
 
     @Override
@@ -51,7 +52,7 @@ public class AuthServiceImpl implements AuthService {
                           .build();
         userRepository.save(user);
 
-        return ResponseEntity.ok("User registered successfully.");
+        return ResponseEntity.ok().body(new ApiResponse("User registered successfully.", true));
     }
 
     @Override
@@ -73,22 +74,30 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public ResponseEntity<?> forgotPassword(LoginRequest loginRequest, String siteUrl) throws MessagingException, UnsupportedEncodingException {
-        User user= userRepository.findByUsername(loginRequest.getUsername())
-                .orElseThrow(() -> new ResourceNotFoundExceptionHandler("User", "username", loginRequest.getUsername()));
+    public void sendResetCode(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler("User", "email", email));
 
-        if(user!=null){
-            user.setPassword(passwordEncoder.encode(loginRequest.getPassword()));
-            user.setVerificationCode(new Random().nextInt(999999));
-            user.setStatus(Status.INACTIVE);
-            userRepository.save(user);
-//            mailService.sendVerification(user,siteUrl);
-            return ResponseEntity.ok("Verify link send in Email");
-
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid username or password. Please try again.");
-
+        mailService.sendPasswordReset(user);
     }
+
+
+    @Override
+    public void verifyAndResetPassword(PasswordResetRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler("User", "email", request.getEmail()));
+
+        boolean valid = mailService.verify(request.getCode(), user);
+
+        if (!valid) {
+            throw new IllegalArgumentException("Invalid or expired code.");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+    }
+
+
 
 
     @Override

@@ -30,7 +30,6 @@ public class SecurityConfig   {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
-                                                   AuthenticationManager authenticationManager,
                                                    JwtService jwtService) throws Exception {
 
         JwtAuthenticationFilter jwtAuthFilter = new JwtAuthenticationFilter(jwtService, userDetailsService);
@@ -39,7 +38,9 @@ public class SecurityConfig   {
                         .requestMatchers( "api/auth/register",
                                 "api/auth/login",
                                 "/ping",
-                                "/auth/forgot-password",
+                                "api/auth/request-reset/**",
+                                "/api/auth/verify-reset/**",
+                                "/api/auth/verify/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/resources/**",

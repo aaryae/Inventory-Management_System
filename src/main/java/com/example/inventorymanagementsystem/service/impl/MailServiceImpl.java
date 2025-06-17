@@ -13,57 +13,46 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
-
+import java.util.Random;
 @Service
 @RequiredArgsConstructor
 public class MailServiceImpl implements MailService {
 
-
-    private final UserRepository userRepository;
     private final JavaMailSender mailSender;
+    private final UserRepository userRepository;
 
     @Override
-    public boolean verify(String code) {
-        User user = userRepository.findByVerificationCode(Integer.parseInt(code));
-        if (user == null) {
-            return false;
-        } else {
-            user.setVerificationCode(0);
-            if ( user.getStatus()==Status.INACTIVE) {
-                user.setStatus(Status.ACTIVE);
-            }
-            userRepository.save(user);
-            return true;
-        }
+    public void sendPasswordReset(User user) {
+        String code = String.format("%06d", new Random().nextInt(999999));
+        user.setVerificationCode(Integer.parseInt(code));
+        userRepository.save(user);
+
+        String content = "<p>Hi " + user.getUsername() + ",</p>"
+                + "<p>Your password reset code is:</p>"
+                + "<h3>" + code + "</h3>"
+                + "<p>If you didn’t request this, ignore this email.</p>";
+
+        sendVerification(user, content);
     }
 
-    public void sendVerification(User user, String siteURL) {
+    @Override
+    public boolean verify(String code, User user) {
+        return user.getVerificationCode() == Integer.parseInt(code);
+    }
+
+    public void sendVerification(User user, String content) {
         try {
-            String toAddress = user.getEmail();
-            String fromAddress =MessageConstant.fromAddress ;
-            String senderName = MessageConstant.senderName;
-            String subject =  MessageConstant.subject;
-
-            String verifyURL = siteURL + "/api/auth/verify?code=" + user.getVerificationCode();
-
-            String content = "<p>Dear " + user.getUsername() + ",</p>"
-                    + "<p>Please click the link below to verify your account:</p>"
-                    + "<h3><a href=\"" + verifyURL + "\" target=\"_self\">VERIFY</a></h3>"
-                    + "<p>Thank you,<br>regards, aaryae</p>";
-
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-            helper.setFrom(fromAddress, senderName);
-            helper.setTo(toAddress);
-            helper.setSubject(subject);
+            helper.setFrom("no-reply@example.com", "YourApp");
+            helper.setTo(user.getEmail());
+            helper.setSubject("Password Reset Code");
             helper.setText(content, true);
 
             mailSender.send(message);
-
-        } catch (MessagingException | UnsupportedEncodingException e) {
-            throw new IllegalStateException("Failed to send verification email", e);
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to send email", e);
         }
     }
 }
-

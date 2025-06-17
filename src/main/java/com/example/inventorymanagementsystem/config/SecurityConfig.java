@@ -33,7 +33,7 @@ public class SecurityConfig   {
                                                    AuthenticationManager authenticationManager,
                                                    JwtService jwtService) throws Exception {
 
-        JwtAuthenticationFilter jwtAuthFilter = new JwtAuthenticationFilter(jwtService, authenticationManager, userDetailsService);
+        JwtAuthenticationFilter jwtAuthFilter = new JwtAuthenticationFilter(jwtService, userDetailsService);
 
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers( "api/auth/register",

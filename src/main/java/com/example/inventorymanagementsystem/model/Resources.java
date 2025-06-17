@@ -34,19 +34,19 @@ public class Resources {
     private LocalDate warrantyExpiry;
 
     // Foreign Keys
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resourceStatusId")
     private ResourceStatus resourceStatus;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resourceTypeId")
     private ResourceType type;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resourceClassId")
     private ResourceClass resourceClass;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resourceBatchId", nullable = true)
     private Batch batch;
 }

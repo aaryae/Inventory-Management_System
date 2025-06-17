@@ -30,7 +30,7 @@ public class Batch {
 
     private Integer quantity;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resourceTypeId")
     private ResourceType type;
 }

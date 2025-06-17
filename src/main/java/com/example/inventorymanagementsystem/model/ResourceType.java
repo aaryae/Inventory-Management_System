@@ -17,7 +17,7 @@ public class ResourceType {
 
     private String resourceTypeName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resourceClassId")
     private ResourceClass resourceClass;
 

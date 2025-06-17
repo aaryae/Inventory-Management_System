@@ -18,7 +18,7 @@ public class ResourceClass {
 
     private String resourceClassName;
 
-    @OneToMany(mappedBy = "resourceClass", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "resourceClass", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ResourceType> resourceTypes;
 
 }

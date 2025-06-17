@@ -3,7 +3,9 @@ package com.example.inventorymanagementsystem.service;
 import com.example.inventorymanagementsystem.dtos.ResourceUpdateDTO;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceRequestDTO;
 import com.example.inventorymanagementsystem.dtos.response.resource.ResourceResponseDTO;
+import jakarta.annotation.Resources;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ResourceService {
@@ -21,5 +23,6 @@ public interface ResourceService {
     ResourceResponseDTO updateResource(Long resource_id, ResourceUpdateDTO updateDTO);
 
     void deleteResource(Long resource_id);
+
 
 }

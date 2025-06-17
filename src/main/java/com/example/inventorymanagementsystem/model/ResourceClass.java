@@ -10,6 +10,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Table(name = "resource_class")
 public class ResourceClass {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +18,7 @@ public class ResourceClass {
 
     private String resourceClassName;
 
-    @OneToMany(mappedBy = "resourceClass", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "resourceClass", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ResourceType> resourceTypes;
 
 }

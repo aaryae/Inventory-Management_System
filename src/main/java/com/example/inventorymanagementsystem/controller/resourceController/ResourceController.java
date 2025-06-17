@@ -50,7 +50,7 @@ public class ResourceController {
     }
 
     @PutMapping("/{resourceId}")
-    public ResponseEntity<ResourceResponseDTO> updateResource(@PathVariable("resourceId") Long resourceId, ResourceUpdateDTO resourceUpdate){
+    public ResponseEntity<ResourceResponseDTO> updateResource(@PathVariable("resourceId") Long resourceId, @RequestBody ResourceUpdateDTO resourceUpdate){
         ResourceResponseDTO responseDTO = resourceService.updateResource(resourceId, resourceUpdate);
         return ResponseEntity.ok(responseDTO);
     }

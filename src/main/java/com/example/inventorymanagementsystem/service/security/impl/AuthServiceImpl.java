@@ -33,7 +33,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    private final CustomUserDetailsService customUserDetailsService;
+//    private final CustomUserDetailsService customUserDetailsService;
     private final MailService mailService;
 
     @Override
@@ -44,6 +44,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         User user = User.builder()
+                .email(request.getEmail())
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
@@ -81,7 +82,7 @@ public class AuthServiceImpl implements AuthService {
             user.setVerificationCode(new Random().nextInt(999999));
             user.setStatus(Status.INACTIVE);
             userRepository.save(user);
-            mailService.sendVerification(user,siteUrl);
+//            mailService.sendVerification(user,siteUrl);
             return ResponseEntity.ok("Verify link send in Email");
 
         }

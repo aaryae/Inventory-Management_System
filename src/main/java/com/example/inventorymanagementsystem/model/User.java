@@ -6,6 +6,8 @@ import com.example.inventorymanagementsystem.helper.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
+import static com.example.inventorymanagementsystem.helper.Status.INACTIVE;
+
 @Entity
 @Getter
 @Setter
@@ -33,9 +35,9 @@ public class User {
 
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status=INACTIVE;
 
     @Column(name = "verification_code")
-    private int verificationCode;
+    private Integer verificationCode=null;
 
 }

@@ -7,6 +7,7 @@ import com.example.inventorymanagementsystem.model.User;
 import com.example.inventorymanagementsystem.repository.securityRepo.UserRepository;
 import com.example.inventorymanagementsystem.service.security.AdminService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +19,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
         private final UserRepository userRepository;
         private final MailSender mailSender;
+        private String uuu;
 
     @Override
     public ResponseEntity<PagedResponse<UserResponse>> getAllUsers(Pageable pageable) {
@@ -90,3 +92,4 @@ public class AdminServiceImpl implements AdminService {
 
 
 }
+

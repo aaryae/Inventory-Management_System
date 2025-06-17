@@ -8,14 +8,16 @@ import com.example.inventorymanagementsystem.service.security.AuthService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auth")
+@RequestMapping("api/auth")
 public class AuthController {
 
     private final AuthService authService;
@@ -34,7 +36,11 @@ public class AuthController {
 
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestBody LoginRequest loginRequest, HttpServletRequest httpServletRequest) throws MessagingException, UnsupportedEncodingException {
-        return authService.forgotPassword(loginRequest, getSiteURL(httpServletRequest));
+
+        String siteURL = getSiteURL(httpServletRequest);
+        log.info("siteURL: {}", siteURL);
+
+        return authService.forgotPassword(loginRequest, siteURL);
     }
 
 

@@ -82,7 +82,7 @@ public class AuthServiceImpl implements AuthService {
             user.setVerificationCode(new Random().nextInt(999999));
             user.setStatus(Status.INACTIVE);
             userRepository.save(user);
-            mailService.sendVerification(user,siteUrl);
+//            mailService.sendVerification(user,siteUrl);
             return ResponseEntity.ok("Verify link send in Email");
 
         }

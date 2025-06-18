@@ -1,14 +1,14 @@
 package com.example.inventorymanagementsystem.controller.masterDataController;
 
+import com.example.inventorymanagementsystem.dtos.request.resource.ResourceClassRequestDTO;
+import com.example.inventorymanagementsystem.dtos.request.resource.ResourceStatusRequestDTO;
+import com.example.inventorymanagementsystem.dtos.request.resource.ResourceTypeRequestDTO;
 import com.example.inventorymanagementsystem.model.ResourceClass;
 import com.example.inventorymanagementsystem.model.ResourceStatus;
 import com.example.inventorymanagementsystem.model.ResourceType;
 import com.example.inventorymanagementsystem.service.MasterDataService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -55,5 +55,23 @@ public class MasterDataController {
     public ResponseEntity<ResourceStatus> getResourceStatusById(@PathVariable("resourceId") Long resourceId){
         ResourceStatus status = masterDataService.getResourceStatusById(resourceId);
         return ResponseEntity.ok(status);
+    }
+
+    @PostMapping("/resource-type")
+    public ResponseEntity<ResourceType> createResourceType(ResourceTypeRequestDTO dto){
+        ResourceType resourceType = masterDataService.createResourceType(dto);
+        return ResponseEntity.ok(resourceType);
+    }
+
+    @PostMapping("/resource-class")
+    public ResponseEntity<ResourceClass> createResourceClass(ResourceClassRequestDTO dto){
+        ResourceClass resourceClass = masterDataService.createResourceClass(dto);
+        return ResponseEntity.ok(resourceClass);
+    }
+
+    @PostMapping("/resource-status")
+    public ResponseEntity<ResourceStatus> createResourceStatus(ResourceStatusRequestDTO dto){
+        ResourceStatus resourceStatus = masterDataService.createResourceStatus(dto);
+        return ResponseEntity.ok(resourceStatus);
     }
 }

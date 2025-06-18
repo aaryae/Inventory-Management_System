@@ -1,5 +1,8 @@
 package com.example.inventorymanagementsystem.service.impl;
 
+import com.example.inventorymanagementsystem.dtos.request.resource.ResourceClassRequestDTO;
+import com.example.inventorymanagementsystem.dtos.request.resource.ResourceStatusRequestDTO;
+import com.example.inventorymanagementsystem.dtos.request.resource.ResourceTypeRequestDTO;
 import com.example.inventorymanagementsystem.model.ResourceClass;
 import com.example.inventorymanagementsystem.model.ResourceStatus;
 import com.example.inventorymanagementsystem.model.ResourceType;
@@ -7,6 +10,7 @@ import com.example.inventorymanagementsystem.repository.ResourceClassRepository;
 import com.example.inventorymanagementsystem.repository.ResourceStatusRepository;
 import com.example.inventorymanagementsystem.repository.ResourceTypeRepository;
 import com.example.inventorymanagementsystem.service.MasterDataService;
+import com.example.inventorymanagementsystem.service.ResourceService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -54,5 +58,29 @@ public class MasterDataServiceImpl implements MasterDataService {
     public ResourceStatus getResourceStatusById(Long resource_id) {
         return resourceStatusRepository.findById(resource_id)
                 .orElseThrow(() -> new RuntimeException("ResourceStatus not found with id: "    + resource_id));
+    }
+
+    @Override
+    public ResourceType createResourceType(ResourceTypeRequestDTO dto) {
+
+        ResourceType resourceType = new ResourceType();
+        resourceType.setResourceTypeName(dto.getTypeName());
+        return resourceTypeRepository.save(resourceType);
+    }
+
+    @Override
+    public ResourceClass createResourceClass(ResourceClassRequestDTO dto) {
+
+        ResourceClass resourceClass = new ResourceClass();
+        resourceClass.setResourceClassName(dto.getClassName());
+        return resourceClassRepository.save(resourceClass);
+    }
+
+    @Override
+    public ResourceStatus createResourceStatus(ResourceStatusRequestDTO dto) {
+
+        ResourceStatus resourceStatus = new ResourceStatus();
+        resourceStatus.setResourceStatusName(dto.getStatusName());
+        return resourceStatusRepository.save(resourceStatus);
     }
 }

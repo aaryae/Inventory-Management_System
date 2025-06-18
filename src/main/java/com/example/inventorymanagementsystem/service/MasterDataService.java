@@ -1,5 +1,8 @@
 package com.example.inventorymanagementsystem.service;
 
+import com.example.inventorymanagementsystem.dtos.request.resource.ResourceClassRequestDTO;
+import com.example.inventorymanagementsystem.dtos.request.resource.ResourceStatusRequestDTO;
+import com.example.inventorymanagementsystem.dtos.request.resource.ResourceTypeRequestDTO;
 import com.example.inventorymanagementsystem.model.ResourceClass;
 import com.example.inventorymanagementsystem.model.ResourceStatus;
 import com.example.inventorymanagementsystem.model.ResourceType;
@@ -25,4 +28,11 @@ public interface MasterDataService {
     ResourceClass getResourceClassById(Long resource_id);
 
     ResourceStatus getResourceStatusById(Long resource_id);
+
+    // This is used for the creation of resource type, class and status
+    ResourceType createResourceType(ResourceTypeRequestDTO dto);
+
+    ResourceClass createResourceClass(ResourceClassRequestDTO dto);
+
+    ResourceStatus createResourceStatus(ResourceStatusRequestDTO dto);
 }

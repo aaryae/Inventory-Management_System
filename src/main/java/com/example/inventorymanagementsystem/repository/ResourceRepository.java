@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ResourceRepository extends JpaRepository<Resources, Long> , JpaSpecificationExecutor<Resources> {
+    int countByBatch(Batch batch);
+
     List<Resources> findByResourceStatus(ResourceStatus resourceStatus);
 
     List<Resources> findByBatch(Batch batch);

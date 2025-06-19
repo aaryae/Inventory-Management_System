@@ -49,6 +49,12 @@ public  class ResourceServiceImpl implements ResourceService {
         if (request.getBatchId() != null){
             batch = batchRepository.findById(request.getBatchId())
                     .orElseThrow(() -> new RuntimeException("Batch not found with id: " + request.getBatchId()));
+
+            int currentCount = resourceRepository.countByBatch(batch);
+
+            if (currentCount >= batch.getQuantity()){
+                throw new RuntimeException("Cannot add more resources. Batch of " + batch.getQuantity() + "already reached.");
+            }
         }
 
 
@@ -96,7 +102,16 @@ public  class ResourceServiceImpl implements ResourceService {
             if (dto.getBatchId() != null){
                 batch= batchRepository.findById(dto.getBatchId())
                         .orElseThrow(() -> new RuntimeException("Batch not found with id: " + dto.getBatchId()));
+
+                int currentCount = resourceRepository.countByBatch(batch);
+                int incomingCount = requestDTOList.size();
+
+                if ((currentCount + incomingCount) > batch.getQuantity()){
+                    throw new RuntimeException("Cannot add " + incomingCount + " resources. Batch capacity of " + batch.getQuantity() +
+                            " would be exceeded (Currently " + currentCount + ").");
+                }
             }
+
 
             // Generating the resource code
             String resourceCode = generateUniqueResourceCode(type.getResourceTypeName());

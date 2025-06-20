@@ -29,7 +29,7 @@ public class AdminServiceImpl implements AdminService {
     public ResponseEntity<PagedResponse<UserResponse>> getAllUsers(Pageable pageable) {
         Page<User> users = userRepository.findAll(pageable);
         List<UserResponse> userData = users.getContent().stream()
-                .map(user -> new UserResponse(user.getId(), user.getUsername(), user.getRole()))
+                .map(user -> new UserResponse(user.getId(), user.getEmail(), user.getRole()))
                 .toList();
 
         PagedResponse<UserResponse> response = new PagedResponse<>(
@@ -50,7 +50,7 @@ public class AdminServiceImpl implements AdminService {
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            UserResponse response = new UserResponse(user.getId(), user.getUsername(),user.getRole());
+            UserResponse response = new UserResponse(user.getId(), user.getEmail(),user.getRole());
             return ResponseEntity.ok(response);
         } else {
             throw new DataNotFoundException("User not found with id: " + id);
@@ -63,7 +63,7 @@ public class AdminServiceImpl implements AdminService {
 
         if(userOptional.isPresent()){
             User user = userOptional.get();
-            user.setUsername(userResponse.getUsername());
+            user.setEmail(userResponse.getEmail());
             userRepository.save(user);
             return ResponseEntity.ok("User updated successfully.");
         }

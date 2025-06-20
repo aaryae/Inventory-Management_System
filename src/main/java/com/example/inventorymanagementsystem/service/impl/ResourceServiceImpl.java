@@ -203,27 +203,6 @@ public  class ResourceServiceImpl implements ResourceService {
         return response;
     }
 
-    @Override
-    public List<Resources> filterResources(String brand, String model, LocalDate purchaseDate, Long typeId) {
-        Specification<Resources> spec = (root, query, cb) -> cb.conjunction();
-        if (brand != null) {
-            spec = spec.and(ResourceSpecifications.brandContains(brand));
-        }
-
-        if (model != null) {
-            spec = spec.and(ResourceSpecifications.modelContains(model));
-        }
-
-        if (purchaseDate != null) {
-            spec = spec.and(ResourceSpecifications.purchasedAfter(purchaseDate));
-        }
-
-        if (typeId != null) {
-            spec = spec.and(ResourceSpecifications.typeEquals(typeId));
-        }
-
-        return resourceRepository.findAll(spec);
-    }
 
 
 

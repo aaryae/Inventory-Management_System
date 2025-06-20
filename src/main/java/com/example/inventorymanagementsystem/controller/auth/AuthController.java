@@ -27,12 +27,10 @@ public class AuthController {
 
     private final AuthService authService;
 
-
     @PostMapping("/register")
     @Operation(summary = "Register user")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         return authService.register(request);
-
     }
 
     @PostMapping("/login")

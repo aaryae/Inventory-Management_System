@@ -1,18 +1,14 @@
 package com.example.inventorymanagementsystem.service.impl;
 
-import com.example.inventorymanagementsystem.helper.MessageConstant;
-import com.example.inventorymanagementsystem.helper.Status;
 import com.example.inventorymanagementsystem.model.User;
 import com.example.inventorymanagementsystem.repository.securityRepo.UserRepository;
 import com.example.inventorymanagementsystem.service.MailService;
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Random;
 @Service
 @RequiredArgsConstructor
@@ -27,7 +23,7 @@ public class MailServiceImpl implements MailService {
         user.setVerificationCode(Integer.parseInt(code));
         userRepository.save(user);
 
-        String content = "<p>Hi " + user.getUsername() + ",</p>"
+        String content = "<p>Hi " + user.getEmail().substring(0, user.getEmail().indexOf("@")) + ",</p>"
                 + "<p>Your password reset code is:</p>"
                 + "<h3>" + code + "</h3>"
                 + "<p>If you didn’t request this, ignore this email.</p>";
@@ -45,7 +41,7 @@ public class MailServiceImpl implements MailService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-            helper.setFrom("no-reply@example.com", "YourApp");
+            helper.setFrom("admin@admin.com", "Inventory manager");
             helper.setTo(user.getEmail());
             helper.setSubject("Password Reset Code");
             helper.setText(content, true);

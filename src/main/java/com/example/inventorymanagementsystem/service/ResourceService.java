@@ -25,5 +25,4 @@ public interface ResourceService {
 
     void deleteResource(Long resource_id);
 
-    public List<Resources> filterResources(String brand, String model, LocalDate purchaseDate, Long typeId);
 }

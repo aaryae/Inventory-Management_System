@@ -4,6 +4,7 @@ import com.example.inventorymanagementsystem.dtos.request.BatchRequestDTO;
 import com.example.inventorymanagementsystem.dtos.response.resource.BatchResponseDTO;
 import com.example.inventorymanagementsystem.dtos.response.resource.ResourceResponseDTO;
 import com.example.inventorymanagementsystem.service.impl.BatchServiceImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +12,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/batches")
+@Tag(name = "Batch APIs", description = "APIs for batch")
+
 public class BatchController {
 
     private final BatchServiceImpl batchService;

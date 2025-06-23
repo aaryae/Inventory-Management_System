@@ -2,6 +2,7 @@ package com.example.inventorymanagementsystem.service.security;
 
 
 import com.example.inventorymanagementsystem.dtos.PasswordDTO;
+import com.example.inventorymanagementsystem.dtos.request.PasswordResetRequest;
 import com.example.inventorymanagementsystem.dtos.request.security.LoginRequest;
 import com.example.inventorymanagementsystem.dtos.request.security.RefreshTokenRequest;
 import com.example.inventorymanagementsystem.dtos.request.security.RegisterRequest;
@@ -22,8 +23,9 @@ public interface AuthService {
 
     public ResponseEntity<?> login(LoginRequest loginRequest);
 
-
-    ResponseEntity<?> forgotPassword(LoginRequest loginRequest, String siteUrl) throws MessagingException, UnsupportedEncodingException;
-
     public ResponseEntity<?> refreshToken(RefreshTokenRequest request);
-}
+
+    public void sendResetCode(String email);
+    public void verifyAndResetPassword(PasswordResetRequest request) ;
+
+    }

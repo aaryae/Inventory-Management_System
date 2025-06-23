@@ -2,19 +2,18 @@ package com.example.inventorymanagementsystem.model;
 
 
 import com.example.inventorymanagementsystem.helper.Role;
-import com.example.inventorymanagementsystem.helper.Status;
 import jakarta.persistence.*;
 import lombok.*;
+import java.time.LocalDateTime;
 
-import static com.example.inventorymanagementsystem.helper.Status.INACTIVE;
 
 @Entity
 @Getter
 @Setter
 @Builder
+@Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users")
 public class User {
 
     @Id
@@ -30,12 +29,13 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(name = "password_last_updated")
+    private LocalDateTime passwordLastUpdated;
+
+
     @Enumerated(EnumType.STRING)
     private Role role=Role.USER;
 
-
-    @Enumerated(EnumType.STRING)
-    private Status status=INACTIVE;
 
     @Column(name = "verification_code")
     private Integer verificationCode=null;

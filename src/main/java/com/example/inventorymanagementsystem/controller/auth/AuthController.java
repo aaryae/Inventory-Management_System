@@ -5,18 +5,13 @@ import com.example.inventorymanagementsystem.dtos.request.security.LoginRequest;
 import com.example.inventorymanagementsystem.dtos.request.security.RefreshTokenRequest;
 import com.example.inventorymanagementsystem.dtos.request.security.RegisterRequest;
 import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
-import com.example.inventorymanagementsystem.service.MailService;
 import com.example.inventorymanagementsystem.service.security.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.UnsupportedEncodingException;
 
 //@Slf4j
 @RestController

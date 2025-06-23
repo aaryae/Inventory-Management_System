@@ -5,8 +5,8 @@ import com.example.inventorymanagementsystem.dtos.request.security.LoginRequest;
 import com.example.inventorymanagementsystem.dtos.request.security.RefreshTokenRequest;
 import com.example.inventorymanagementsystem.dtos.request.security.RegisterRequest;
 import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
+import com.example.inventorymanagementsystem.exception.DataNotFoundException;
 import com.example.inventorymanagementsystem.helper.Role;
-import com.example.inventorymanagementsystem.helper.Status;
 import com.example.inventorymanagementsystem.model.User;
 import com.example.inventorymanagementsystem.repository.securityRepo.UserRepository;
 import com.example.inventorymanagementsystem.service.MailService;
@@ -15,18 +15,16 @@ import com.example.inventorymanagementsystem.service.security.JwtService;
 import com.example.inventorymanagementsystem.exception.DuplicateResourceException;
 import com.example.inventorymanagementsystem.exception.ResourceNotFoundExceptionHandler;
 import io.jsonwebtoken.JwtException;
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -47,26 +45,49 @@ public class AuthServiceImpl implements AuthService {
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .passwordLastUpdated(LocalDateTime.now())
                 .role(Role.USER)
                           .build();
         userRepository.save(user);
+        mailService.sendWelcomeMail(user);
         return ResponseEntity.ok().body(new ApiResponse("User registered successfully.", true));
     }
 
     @Override
     public ResponseEntity<?> login(LoginRequest loginRequest) {
+
         User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundExceptionHandler("User", "username", loginRequest.getEmail()));
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new ResourceNotFoundExceptionHandler("User", "credentials", "Invalid username or password");
         }
+        if (user.getPasswordLastUpdated().isBefore(LocalDateTime.now().minusYears(1))){
+            mailService.sendPasswordAboutToExpire(user);
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime passwordLastUpdated = user.getPasswordLastUpdated();
+
+        if (passwordLastUpdated.isBefore(now.minusYears(1))) {
+            mailService.sendPasswordReset(user);
+            throw new DataNotFoundException("Your password has expired. A reset link has been sent to your email.");
+        }
+
+        if (passwordLastUpdated.isBefore(now.minusMonths(11))) {
+            mailService.sendPasswordAboutToExpire(user);
+        }
+
+
         String token = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
+
+
         Map<String, String> response = new HashMap<>();
         response.put("message", "Login successful");
-        response.put("refreshToken", token);
-        response.put("accessToken", refreshToken);
+        response.put("accessToken", token);
+        response.put("refreshToken", refreshToken);
+
         return ResponseEntity.ok(response);
     }
 

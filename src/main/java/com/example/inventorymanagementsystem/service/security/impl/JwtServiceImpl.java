@@ -24,7 +24,7 @@ public class JwtServiceImpl implements JwtService {
     public String generateToken(User user) {
         try{
             return Jwts.builder()
-                    .setSubject(user.getUsername())
+                    .setSubject(user.getEmail())
                     .setIssuedAt(new Date())
                     .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                     .signWith(jwtSigningKey, SignatureAlgorithm.HS256)
@@ -51,7 +51,7 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public String generateRefreshToken(User user) {
         return Jwts.builder()
-                .setSubject(user.getUsername())
+                .setSubject(user.getEmail())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7))
                 .signWith(jwtSigningKey, SignatureAlgorithm.HS256)

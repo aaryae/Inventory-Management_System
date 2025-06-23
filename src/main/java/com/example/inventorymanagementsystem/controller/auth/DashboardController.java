@@ -1,6 +1,7 @@
 package com.example.inventorymanagementsystem.controller.auth;
 
 import com.example.inventorymanagementsystem.service.DashboardService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.support.ManagedProperties;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/admin/dashboard")
 @RequiredArgsConstructor
+@Tag(name="Dashboard APIs" , description = "Apis for dashboard")
+
 public class DashboardController {
 
     private final DashboardService dashboardService;
@@ -37,5 +40,6 @@ public class DashboardController {
     public ResponseEntity<Map<String, Long>> getCountByResourceTypeName(){
         return ResponseEntity.ok(dashboardService.getResourceCountByResourceTypeName());
     }
+
 
 }

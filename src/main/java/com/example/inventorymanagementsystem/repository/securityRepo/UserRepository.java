@@ -11,8 +11,11 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository <User, Long> {
-    Optional<User> findByUsername(String username);
+
+    Optional<User> findByEmail(String email);
 
     @Query("SELECT u FROM User u WHERE u.verificationCode = :verificationCode")
     User findByVerificationCode(@Param("verificationCode") int verificationCode);
+
+
 }

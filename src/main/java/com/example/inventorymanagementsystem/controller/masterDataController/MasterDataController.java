@@ -10,6 +10,7 @@ import com.example.inventorymanagementsystem.model.ResourceClass;
 import com.example.inventorymanagementsystem.model.ResourceStatus;
 import com.example.inventorymanagementsystem.model.ResourceType;
 import com.example.inventorymanagementsystem.service.MasterDataService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/master")
+@Tag(name = "Master APIs", description = "meta data for resource")
+
 public class MasterDataController {
     private final MasterDataService masterDataService;
 

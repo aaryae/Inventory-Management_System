@@ -17,15 +17,16 @@ public class ResourceSpecifications {
         return (root, query, cb) ->
                 model==null?null : cb.like(cb.lower(root.get("model")),"%"+model.toLowerCase()+"%");
     }
+
+
+    public static Specification<Resources> typeEquals(String  specification) {
+        return (root, query, cb) ->
+                specification == null ? null : cb.equal(root.get("specification"), specification);
+    }
+
     public static Specification<Resources> purchasedAfter(LocalDate date) {
         return (root, query, cb) ->
                 date == null ? null : cb.greaterThanOrEqualTo(root.get("purchaseDate"), date);
     }
-
-    public static Specification<Resources> typeEquals(Long typeId) {
-        return (root, query, cb) ->
-                typeId == null ? null : cb.equal(root.get("type").get("id"), typeId);
-    }
-
 
 }

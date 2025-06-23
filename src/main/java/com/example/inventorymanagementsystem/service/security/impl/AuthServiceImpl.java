@@ -1,10 +1,12 @@
 package com.example.inventorymanagementsystem.service.security.impl;
 
+import com.example.inventorymanagementsystem.dtos.request.PasswordResetRequest;
 import com.example.inventorymanagementsystem.dtos.request.security.LoginRequest;
 import com.example.inventorymanagementsystem.dtos.request.security.RefreshTokenRequest;
 import com.example.inventorymanagementsystem.dtos.request.security.RegisterRequest;
+import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
+import com.example.inventorymanagementsystem.exception.DataNotFoundException;
 import com.example.inventorymanagementsystem.helper.Role;
-import com.example.inventorymanagementsystem.helper.Status;
 import com.example.inventorymanagementsystem.model.User;
 import com.example.inventorymanagementsystem.repository.securityRepo.UserRepository;
 import com.example.inventorymanagementsystem.service.MailService;
@@ -13,18 +15,16 @@ import com.example.inventorymanagementsystem.service.security.JwtService;
 import com.example.inventorymanagementsystem.exception.DuplicateResourceException;
 import com.example.inventorymanagementsystem.exception.ResourceNotFoundExceptionHandler;
 import io.jsonwebtoken.JwtException;
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -33,75 +33,103 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-//    private final CustomUserDetailsService customUserDetailsService;
     private final MailService mailService;
 
     @Override
     public ResponseEntity<?> register(RegisterRequest request) {
-        Optional<User> existingUser = userRepository.findByUsername(request.getUsername());
+        Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
         if (existingUser.isPresent()) {
-            throw new DuplicateResourceException("User already exists with username " + request.getUsername());
+            throw new DuplicateResourceException("User already exists with username " + request.getEmail());
         }
-
         User user = User.builder()
-                .email(request.getEmail())
                 .username(request.getUsername())
+                .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .passwordLastUpdated(LocalDateTime.now())
                 .role(Role.USER)
                           .build();
         userRepository.save(user);
-
-        return ResponseEntity.ok("User registered successfully.");
+        mailService.sendWelcomeMail(user);
+        return ResponseEntity.ok().body(new ApiResponse("User registered successfully.", true));
     }
 
     @Override
     public ResponseEntity<?> login(LoginRequest loginRequest) {
-        User user = userRepository.findByUsername(loginRequest.getUsername())
-                .orElseThrow(() -> new ResourceNotFoundExceptionHandler("User", "username", loginRequest.getUsername()));
 
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+        User user = userRepository.findByEmail(loginRequest.email())
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler("User", "username", loginRequest.email()));
+
+        if (!passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
             throw new ResourceNotFoundExceptionHandler("User", "credentials", "Invalid username or password");
         }
+        if (user.getPasswordLastUpdated().isBefore(LocalDateTime.now().minusYears(1))){
+            mailService.sendPasswordAboutToExpire(user);
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime passwordLastUpdated = user.getPasswordLastUpdated();
+
+        if (passwordLastUpdated.isBefore(now.minusYears(1))) {
+            mailService.sendPasswordReset(user);
+            throw new DataNotFoundException("Your password has expired. A reset link has been sent to your email.");
+        }
+
+        if (passwordLastUpdated.isBefore(now.minusMonths(11))) {
+            mailService.sendPasswordAboutToExpire(user);
+        }
+
+
         String token = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
+
+
         Map<String, String> response = new HashMap<>();
         response.put("message", "Login successful");
-        response.put("refreshToken", token);
-        response.put("accessToken", refreshToken);
+        response.put("accessToken", token);
+        response.put("refreshToken", refreshToken);
+
         return ResponseEntity.ok(response);
     }
 
 
     @Override
-    public ResponseEntity<?> forgotPassword(LoginRequest loginRequest, String siteUrl) throws MessagingException, UnsupportedEncodingException {
-        User user= userRepository.findByUsername(loginRequest.getUsername())
-                .orElseThrow(() -> new ResourceNotFoundExceptionHandler("User", "username", loginRequest.getUsername()));
+    public void sendResetCode(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler("User", "email", email));
 
-        if(user!=null){
-            user.setPassword(passwordEncoder.encode(loginRequest.getPassword()));
-            user.setVerificationCode(new Random().nextInt(999999));
-            user.setStatus(Status.INACTIVE);
-            userRepository.save(user);
-//            mailService.sendVerification(user,siteUrl);
-            return ResponseEntity.ok("Verify link send in Email");
-
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid username or password. Please try again.");
-
+        mailService.sendPasswordReset(user);
     }
+
+
+    @Override
+    public void verifyAndResetPassword(PasswordResetRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler("User", "email", request.getEmail()));
+
+        boolean valid = mailService.verify(request.getCode(), user);
+
+        if (!valid) {
+            throw new IllegalArgumentException("Invalid or expired code.");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+    }
+
+
 
 
     @Override
     public ResponseEntity<?> refreshToken(RefreshTokenRequest request) {
         try {
-            String username = jwtService.validateToken(request.getRefreshToken());
+            String email = jwtService.validateToken(request.getAccessToken());
 
-            if (username.startsWith("error:")) {
+            if (email.startsWith("error:")) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
             }
 
-            User user = userRepository.findByUsername(username)
-                    .orElseThrow(() -> new ResourceNotFoundExceptionHandler("User", "username", username));
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new ResourceNotFoundExceptionHandler("User", "email", email));
 
             String newAccessToken = jwtService.generateRefreshToken(user);
 

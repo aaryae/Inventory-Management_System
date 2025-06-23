@@ -4,6 +4,7 @@ import com.example.inventorymanagementsystem.dtos.ResourceUpdateDTO;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceRequestDTO;
 import com.example.inventorymanagementsystem.dtos.response.resource.ResourceResponseDTO;
 import com.example.inventorymanagementsystem.service.impl.ResourceServiceImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +12,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/resources")
+@Tag(name = "Resource APIs", description = "crud for resources")
+
 public class ResourceController {
 
     private final ResourceServiceImpl resourceService;

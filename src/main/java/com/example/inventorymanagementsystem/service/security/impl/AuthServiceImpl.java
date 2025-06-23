@@ -56,10 +56,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity<?> login(LoginRequest loginRequest) {
 
-        User user = userRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundExceptionHandler("User", "username", loginRequest.getEmail()));
+        User user = userRepository.findByEmail(loginRequest.email())
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler("User", "username", loginRequest.email()));
 
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
             throw new ResourceNotFoundExceptionHandler("User", "credentials", "Invalid username or password");
         }
         if (user.getPasswordLastUpdated().isBefore(LocalDateTime.now().minusYears(1))){

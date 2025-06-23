@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/auth")
-@Tag(name = "Authentication", description = "Authentication API")
+@Tag(name = "Authentication", description = "Authentication APIs")
 public class AuthController {
 
     private final AuthService authService;
@@ -38,7 +38,7 @@ public class AuthController {
     @PostMapping("/request-reset")
     @Operation(summary = "Request password reset code")
     public ResponseEntity<?> requestReset(@RequestBody LoginRequest loginRequest) {
-        authService.sendResetCode(loginRequest.getEmail());
+        authService.sendResetCode(loginRequest.email());
         return ResponseEntity.ok().body(new ApiResponse( "Password reset code sent to your email.",true) );
     }
 

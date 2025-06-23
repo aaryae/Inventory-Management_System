@@ -16,6 +16,7 @@ public class ResourceClass {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long resourceClassId;
 
+    @Column(unique = true)
     private String resourceClassName;
 
     @OneToMany(mappedBy = "resourceClass", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

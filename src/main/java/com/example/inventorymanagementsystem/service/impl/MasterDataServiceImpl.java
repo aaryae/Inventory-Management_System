@@ -1,5 +1,11 @@
 package com.example.inventorymanagementsystem.service.impl;
 
+import com.example.inventorymanagementsystem.dtos.request.resource.ResourceClassRequestDTO;
+import com.example.inventorymanagementsystem.dtos.request.resource.ResourceStatusRequestDTO;
+import com.example.inventorymanagementsystem.dtos.request.resource.ResourceTypeRequestDTO;
+import com.example.inventorymanagementsystem.dtos.response.resource.ResourceClassResponseDTO;
+import com.example.inventorymanagementsystem.dtos.response.resource.ResourceTypeResponseDTO;
+import com.example.inventorymanagementsystem.helper.ResourceMapper;
 import com.example.inventorymanagementsystem.model.ResourceClass;
 import com.example.inventorymanagementsystem.model.ResourceStatus;
 import com.example.inventorymanagementsystem.model.ResourceType;
@@ -24,13 +30,17 @@ public class MasterDataServiceImpl implements MasterDataService {
     }
 
     @Override
-    public List<ResourceType> getAllResourceTypes() {
-        return resourceTypeRepository.findAll();
+    public List<ResourceTypeResponseDTO> getAllResourceTypes() {
+        return resourceTypeRepository.findAll().stream()
+                .map(ResourceMapper::toResourceTypeResponseDTO)
+                .toList();
     }
 
     @Override
-    public List<ResourceClass> getAllResourceClass() {
-        return resourceClassRepository.findAll();
+    public List<ResourceClassResponseDTO> getAllResourceClass() {
+        return resourceClassRepository.findAll().stream()
+                .map(ResourceMapper::toResourceClassResponseDTO)
+                .toList();
     }
 
     @Override
@@ -54,5 +64,40 @@ public class MasterDataServiceImpl implements MasterDataService {
     public ResourceStatus getResourceStatusById(Long resource_id) {
         return resourceStatusRepository.findById(resource_id)
                 .orElseThrow(() -> new RuntimeException("ResourceStatus not found with id: "    + resource_id));
+    }
+
+    @Override
+    public ResourceTypeResponseDTO createResourceType(ResourceTypeRequestDTO dto) {
+        ResourceClass resourceClass = resourceClassRepository.findById(dto.getResourceClassId())
+                .orElseThrow(() -> new RuntimeException("Class not found with id: " + dto.getResourceClassId()));
+
+
+        ResourceType resourceType = new ResourceType();
+        resourceType.setResourceTypeName(dto.getResourceTypeName());
+        resourceType.setResourceClass(resourceClass);
+
+        ResourceType saved = resourceTypeRepository.save(resourceType);
+
+        return ResourceMapper.toResourceTypeResponseDTO(saved);
+
+//        ResourceType resourceType = new ResourceType();
+//        resourceType.setResourceTypeName(dto.getResourceTypeName());
+//        return resourceTypeRepository.save(resourceType);
+    }
+
+    @Override
+    public ResourceClass createResourceClass(ResourceClassRequestDTO dto) {
+
+        ResourceClass resourceClass = new ResourceClass();
+        resourceClass.setResourceClassName(dto.getClassName());
+        return resourceClassRepository.save(resourceClass);
+    }
+
+    @Override
+    public ResourceStatus createResourceStatus(ResourceStatusRequestDTO dto) {
+
+        ResourceStatus resourceStatus = new ResourceStatus();
+        resourceStatus.setResourceStatusName(dto.getStatusName());
+        return resourceStatusRepository.save(resourceStatus);
     }
 }

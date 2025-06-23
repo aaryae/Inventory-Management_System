@@ -15,6 +15,7 @@ public class ResourceType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long resourceTypeId;
 
+    @Column(unique = true)
     private String resourceTypeName;
 
     @ManyToOne(fetch = FetchType.LAZY)

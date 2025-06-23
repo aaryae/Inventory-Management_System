@@ -3,6 +3,9 @@ package com.example.inventorymanagementsystem.controller.masterDataController;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceClassRequestDTO;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceStatusRequestDTO;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceTypeRequestDTO;
+import com.example.inventorymanagementsystem.dtos.response.resource.ResourceClassResponseDTO;
+import com.example.inventorymanagementsystem.dtos.response.resource.ResourceClassSimpleResponseDTO;
+import com.example.inventorymanagementsystem.dtos.response.resource.ResourceTypeResponseDTO;
 import com.example.inventorymanagementsystem.model.ResourceClass;
 import com.example.inventorymanagementsystem.model.ResourceStatus;
 import com.example.inventorymanagementsystem.model.ResourceType;
@@ -22,8 +25,8 @@ public class MasterDataController {
     }
 
     @GetMapping("/resource-type")
-    public ResponseEntity<List<ResourceType>> getAllResourceTypes(){
-        List<ResourceType> types = masterDataService.getAllResourceTypes();
+    public ResponseEntity<List<ResourceTypeResponseDTO>> getAllResourceTypes(){
+        List<ResourceTypeResponseDTO> types = masterDataService.getAllResourceTypes();
         return ResponseEntity.ok(types);
     }
 
@@ -34,8 +37,8 @@ public class MasterDataController {
     }
 
     @GetMapping("/resource-class")
-    public ResponseEntity<List<ResourceClass>> getAllResourceClass(){
-        List<ResourceClass> classes = masterDataService.getAllResourceClass();
+    public ResponseEntity<List<ResourceClassResponseDTO>> getAllResourceClass(){
+        List<ResourceClassResponseDTO> classes = masterDataService.getAllResourceClass();
         return ResponseEntity.ok(classes);
     }
 
@@ -58,8 +61,8 @@ public class MasterDataController {
     }
 
     @PostMapping("/resource-type")
-    public ResponseEntity<ResourceType> createResourceType(ResourceTypeRequestDTO dto){
-        ResourceType resourceType = masterDataService.createResourceType(dto);
+    public ResponseEntity<ResourceTypeResponseDTO> createResourceType(ResourceTypeRequestDTO dto){
+        ResourceTypeResponseDTO resourceType = masterDataService.createResourceType(dto);
         return ResponseEntity.ok(resourceType);
     }
 

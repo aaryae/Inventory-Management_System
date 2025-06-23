@@ -14,5 +14,6 @@ public class ResourceStatus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long resourceStatusId;
 
+    @Column(unique = true)
     private String resourceStatusName;
 }

@@ -3,6 +3,9 @@ package com.example.inventorymanagementsystem.service.impl;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceClassRequestDTO;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceStatusRequestDTO;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceTypeRequestDTO;
+import com.example.inventorymanagementsystem.dtos.response.resource.ResourceClassResponseDTO;
+import com.example.inventorymanagementsystem.dtos.response.resource.ResourceTypeResponseDTO;
+import com.example.inventorymanagementsystem.helper.ResourceMapper;
 import com.example.inventorymanagementsystem.model.ResourceClass;
 import com.example.inventorymanagementsystem.model.ResourceStatus;
 import com.example.inventorymanagementsystem.model.ResourceType;
@@ -10,7 +13,6 @@ import com.example.inventorymanagementsystem.repository.ResourceClassRepository;
 import com.example.inventorymanagementsystem.repository.ResourceStatusRepository;
 import com.example.inventorymanagementsystem.repository.ResourceTypeRepository;
 import com.example.inventorymanagementsystem.service.MasterDataService;
-import com.example.inventorymanagementsystem.service.ResourceService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,13 +30,17 @@ public class MasterDataServiceImpl implements MasterDataService {
     }
 
     @Override
-    public List<ResourceType> getAllResourceTypes() {
-        return resourceTypeRepository.findAll();
+    public List<ResourceTypeResponseDTO> getAllResourceTypes() {
+        return resourceTypeRepository.findAll().stream()
+                .map(ResourceMapper::toResourceTypeResponseDTO)
+                .toList();
     }
 
     @Override
-    public List<ResourceClass> getAllResourceClass() {
-        return resourceClassRepository.findAll();
+    public List<ResourceClassResponseDTO> getAllResourceClass() {
+        return resourceClassRepository.findAll().stream()
+                .map(ResourceMapper::toResourceClassResponseDTO)
+                .toList();
     }
 
     @Override
@@ -61,11 +67,22 @@ public class MasterDataServiceImpl implements MasterDataService {
     }
 
     @Override
-    public ResourceType createResourceType(ResourceTypeRequestDTO dto) {
+    public ResourceTypeResponseDTO createResourceType(ResourceTypeRequestDTO dto) {
+        ResourceClass resourceClass = resourceClassRepository.findById(dto.getResourceClassId())
+                .orElseThrow(() -> new RuntimeException("Class not found with id: " + dto.getResourceClassId()));
+
 
         ResourceType resourceType = new ResourceType();
-        resourceType.setResourceTypeName(dto.getTypeName());
-        return resourceTypeRepository.save(resourceType);
+        resourceType.setResourceTypeName(dto.getResourceTypeName());
+        resourceType.setResourceClass(resourceClass);
+
+        ResourceType saved = resourceTypeRepository.save(resourceType);
+
+        return ResourceMapper.toResourceTypeResponseDTO(saved);
+
+//        ResourceType resourceType = new ResourceType();
+//        resourceType.setResourceTypeName(dto.getResourceTypeName());
+//        return resourceTypeRepository.save(resourceType);
     }
 
     @Override

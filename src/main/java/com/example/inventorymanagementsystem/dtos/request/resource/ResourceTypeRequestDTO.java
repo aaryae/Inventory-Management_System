@@ -4,5 +4,6 @@ import lombok.Data;
 
 @Data
 public class ResourceTypeRequestDTO {
-    private String typeName;
+    private String resourceTypeName;
+    private Long resourceClassId;
 }

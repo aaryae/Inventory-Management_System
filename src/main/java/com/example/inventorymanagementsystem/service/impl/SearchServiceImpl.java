@@ -1,5 +1,6 @@
 package com.example.inventorymanagementsystem.service.impl;
 
+import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
 import com.example.inventorymanagementsystem.model.Resources;
 import com.example.inventorymanagementsystem.repository.ResourceRepository;
 import com.example.inventorymanagementsystem.repository.ResourceSpecifications;
@@ -9,7 +10,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.security.PrivateKey;
 import java.time.LocalDate;
 
 
@@ -20,7 +20,7 @@ public class SearchServiceImpl implements SearchService {
     private final ResourceRepository resourceRepository;
 
     @Override
-    public ResponseEntity<?> filterResources(String brand, String model, LocalDate purchaseDate, String specification){
+    public ResponseEntity<ApiResponse> filterResources(String brand, String model, LocalDate purchaseDate, String specification){
 
         Specification<Resources> spec = (root, query, cb) -> cb.conjunction();
         if (brand != null) {
@@ -35,8 +35,9 @@ public class SearchServiceImpl implements SearchService {
         if (specification != null) {
             spec = spec.and(ResourceSpecifications.typeEquals(specification));
         }
+        Object response= resourceRepository.findAll(spec);
 
-        return ResponseEntity.ok().body( resourceRepository.findAll(spec));
+        return ResponseEntity.ok().body(new ApiResponse("Resources fetched successfully.",true,response));
     }
 
 

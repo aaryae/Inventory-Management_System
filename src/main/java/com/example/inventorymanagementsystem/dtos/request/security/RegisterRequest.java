@@ -1,14 +1,6 @@
 package com.example.inventorymanagementsystem.dtos.request.security;
 
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+public record RegisterRequest(String username, String email, String password) {
 
-@Getter
-@Setter
-public class RegisterRequest {
-    private String username;
-    private String email;
-    private String password;
 }

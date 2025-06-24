@@ -1,4 +1,4 @@
-package com.example.inventorymanagementsystem.controller.resourceController;
+package com.example.inventorymanagementsystem.controller.resource;
 
 import com.example.inventorymanagementsystem.dtos.ResourceUpdateDTO;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceRequestDTO;

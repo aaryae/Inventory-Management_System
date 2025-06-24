@@ -13,21 +13,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<ApiResponse> handleDataNotFoundException(DataNotFoundException ex) {
         String message = ex.getMessage();
-        ApiResponse apiResponse=new ApiResponse(message, false);
-        return new ResponseEntity<>(apiResponse,HttpStatus.FORBIDDEN);
+        ApiResponse apiResponse = new ApiResponse(message, false);
+        return new ResponseEntity<>(apiResponse, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(ResourceNotFoundExceptionHandler.class)
     public ResponseEntity<ApiResponse> handleResourceNotFoundExceptionHandler(ResourceNotFoundExceptionHandler ex) {
         String message = ex.getMessage();
-        ApiResponse apiResponse=new ApiResponse(message, false);
-        return new ResponseEntity<>(apiResponse,HttpStatus.NOT_FOUND);
+        ApiResponse apiResponse = new ApiResponse(message, false);
+        return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(DuplicateResourceException.class)
     public ResponseEntity<ApiResponse> handleDuplicateResourceException(DuplicateResourceException ex) {
         String message = ex.getMessage();
-        ApiResponse apiResponse=new ApiResponse(message, false);
-        return new ResponseEntity<>(apiResponse,HttpStatus.CONFLICT);
+        ApiResponse apiResponse = new ApiResponse(message, false);
+        return new ResponseEntity<>(apiResponse, HttpStatus.CONFLICT);
     }
 }

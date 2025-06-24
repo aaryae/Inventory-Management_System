@@ -17,12 +17,12 @@ public class Assignment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int assignment_id;
+    int assignmentId;
 
-    int resource_id;
-    int employee_id;
+    int resourceId;
+    int employeeId;
 
-    LocalDate assigned_date;
-    LocalDate return_date;
+    LocalDate assignedDate;
+    LocalDate returnDate;
 
 }

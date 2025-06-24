@@ -7,7 +7,7 @@ import java.util.List;
 @JsonPropertyOrder({ "resourceClassId", "resourceClassName", "resourceTypes" })
 @Data
 public class ResourceClassResponseDTO {
-    private Long ResourceClassId;
-    private String ResourceClassName;
+    private Long resourceClassId;
+    private String resourceClassName;
     private List<ResourceTypeResponseDTO> resourceTypes;
 }

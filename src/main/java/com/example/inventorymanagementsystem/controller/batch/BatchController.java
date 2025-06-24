@@ -1,4 +1,4 @@
-package com.example.inventorymanagementsystem.controller.batchController;
+package com.example.inventorymanagementsystem.controller.batch;
 
 import com.example.inventorymanagementsystem.dtos.request.BatchRequestDTO;
 import com.example.inventorymanagementsystem.dtos.response.resource.BatchResponseDTO;

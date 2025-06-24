@@ -1,12 +1,8 @@
 package com.example.inventorymanagementsystem.dtos.request;
 
 
-import lombok.Data;
+import jakarta.validation.constraints.NotNull;
 
-@Data
-public class PasswordResetRequest {
-    private String email;
-    private String code;
-    private String newPassword;
+public record PasswordResetRequest(@NotNull String email,@NotNull String code,@NotNull String newPassword) {
 }
 

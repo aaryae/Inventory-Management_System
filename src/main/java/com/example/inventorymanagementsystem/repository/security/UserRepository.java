@@ -1,4 +1,4 @@
-package com.example.inventorymanagementsystem.repository.securityRepo;
+package com.example.inventorymanagementsystem.repository.security;
 
 import com.example.inventorymanagementsystem.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;

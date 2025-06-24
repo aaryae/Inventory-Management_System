@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 public class ResponseHandler {
 
     public static ResponseEntity<Object> generateResponse(String message, HttpStatus status, boolean success, Object data) {
-        ApiResponse response = new ApiResponse(message, success);
+        ApiResponse response = new ApiResponse(message, success,null);
         return new ResponseEntity<>(response, status);
     }
 

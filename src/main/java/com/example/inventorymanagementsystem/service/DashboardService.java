@@ -1,14 +1,15 @@
 package com.example.inventorymanagementsystem.service;
 
-import java.util.Map;
+import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
+import org.springframework.http.ResponseEntity;
 
 public interface DashboardService {
-   public Map<String, Long> getResourceCountByBrand();
+   public ResponseEntity<ApiResponse> getResourceCountByBrand();
 
-    public Map<String, Long> getResourceCountByModel();
+    public ResponseEntity<ApiResponse>  getResourceCountByModel();
 
-    public Map<String, Long> getResourceCountBySpecification();
+    public ResponseEntity<ApiResponse>  getResourceCountBySpecification();
 
 
-    public Map<String, Long> getResourceCountByResourceTypeName();
+    public ResponseEntity<ApiResponse>  getResourceCountByResourceTypeName();
 }

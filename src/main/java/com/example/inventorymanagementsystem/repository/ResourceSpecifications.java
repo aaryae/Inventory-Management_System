@@ -18,7 +18,6 @@ public class ResourceSpecifications {
                 model==null?null : cb.like(cb.lower(root.get("model")),"%"+model.toLowerCase()+"%");
     }
 
-
     public static Specification<Resources> typeEquals(String  specification) {
         return (root, query, cb) ->
                 specification == null ? null : cb.equal(root.get("specification"), specification);

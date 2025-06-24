@@ -1,7 +1,7 @@
 package com.example.inventorymanagementsystem.service.impl;
 
 import com.example.inventorymanagementsystem.model.User;
-import com.example.inventorymanagementsystem.repository.securityRepo.UserRepository;
+import com.example.inventorymanagementsystem.repository.security.UserRepository;
 import com.example.inventorymanagementsystem.service.MailService;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;

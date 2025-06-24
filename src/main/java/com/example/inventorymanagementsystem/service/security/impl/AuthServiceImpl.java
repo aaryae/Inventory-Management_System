@@ -8,7 +8,7 @@ import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
 import com.example.inventorymanagementsystem.exception.DataNotFoundException;
 import com.example.inventorymanagementsystem.helper.Role;
 import com.example.inventorymanagementsystem.model.User;
-import com.example.inventorymanagementsystem.repository.securityRepo.UserRepository;
+import com.example.inventorymanagementsystem.repository.security.UserRepository;
 import com.example.inventorymanagementsystem.service.MailService;
 import com.example.inventorymanagementsystem.service.security.AuthService;
 import com.example.inventorymanagementsystem.service.security.JwtService;
@@ -36,7 +36,7 @@ public class AuthServiceImpl implements AuthService {
     private final MailService mailService;
 
     @Override
-    public ResponseEntity<?> register(RegisterRequest request) {
+    public ResponseEntity<ApiResponse> register(RegisterRequest request) {
         Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
         if (existingUser.isPresent()) {
             throw new DuplicateResourceException("User already exists with username " + request.getEmail());
@@ -54,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity<?> login(LoginRequest loginRequest) {
+    public ResponseEntity<ApiResponse> login(LoginRequest loginRequest) {
 
         User user = userRepository.findByEmail(loginRequest.email())
                 .orElseThrow(() -> new ResourceNotFoundExceptionHandler("User", "username", loginRequest.email()));
@@ -84,11 +84,11 @@ public class AuthServiceImpl implements AuthService {
 
 
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Login successful");
         response.put("accessToken", token);
         response.put("refreshToken", refreshToken);
 
-        return ResponseEntity.ok(response);
+//        return ResponseEntity.ok(response);
+        return ResponseEntity.ok().body(new ApiResponse("Login Successful",true,response));
     }
 
 
@@ -120,12 +120,12 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public ResponseEntity<?> refreshToken(RefreshTokenRequest request) {
+    public ResponseEntity<ApiResponse> refreshToken(RefreshTokenRequest request) {
         try {
             String email = jwtService.validateToken(request.getAccessToken());
 
             if (email.startsWith("error:")) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body( new ApiResponse("Invalid refresh token",false ));
             }
 
             User user = userRepository.findByEmail(email)
@@ -136,23 +136,19 @@ public class AuthServiceImpl implements AuthService {
             Map<String, String> tokens = new HashMap<>();
             tokens.put("accessToken", newAccessToken);
 
-            return ResponseEntity.ok(tokens);
+            return ResponseEntity.ok(new ApiResponse("Successfully created RefreshToken",true, tokens));
         } catch (ResourceNotFoundExceptionHandler ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse( ex.getMessage(), false));
         } catch (JwtException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token validation failed: " + ex.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("Token validation failed: " + ex.getMessage(), false));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An unexpected error occurred: " + ex.getMessage());
+                    .body(new ApiResponse("An unexpected error occurred" + ex.getMessage(), false));
         }
     }
 
 
 }
-
-
-
-
 
 
 

@@ -1,9 +1,12 @@
 package com.example.inventorymanagementsystem.service.impl;
 
+import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
+import com.example.inventorymanagementsystem.helper.MessageConstant;
 import com.example.inventorymanagementsystem.repository.ResourceRepository;
 import com.example.inventorymanagementsystem.repository.ResourceTypeRepository;
 import com.example.inventorymanagementsystem.service.DashboardService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -26,23 +29,27 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public Map<String, Long> getResourceCountByBrand() {
-        return convertToMap(resourceRepository.countByBrand());
+   public ResponseEntity<ApiResponse> getResourceCountByBrand() {
+     Object response=  convertToMap(resourceRepository.countByBrand());
+         return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
     }
 
     @Override
-    public Map<String, Long> getResourceCountByModel(){
-        return convertToMap(resourceRepository.countByModel());
+    public ResponseEntity<ApiResponse> getResourceCountByModel(){
+        Object response= convertToMap(resourceRepository.countByModel());
+        return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
     }
 
     @Override
-    public Map<String, Long> getResourceCountBySpecification(){
-        return convertToMap(resourceRepository.countBySpecification());
+    public ResponseEntity<ApiResponse> getResourceCountBySpecification(){
+        Object response= convertToMap(resourceRepository.countBySpecification());
+        return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
     }
 
     @Override
-    public Map<String, Long> getResourceCountByResourceTypeName(){
-        return convertToMap(resourceTypeRepository.countByResourceType());
+    public ResponseEntity<ApiResponse> getResourceCountByResourceTypeName(){
+        Object response= convertToMap(resourceTypeRepository.countByResourceType());
+        return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
     }
 
 

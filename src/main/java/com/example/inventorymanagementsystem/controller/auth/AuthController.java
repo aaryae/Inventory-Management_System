@@ -24,27 +24,27 @@ public class AuthController {
 
     @PostMapping("/register")
     @Operation(summary = "Register user")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<ApiResponse> register(@RequestBody RegisterRequest request) {
         return authService.register(request);
     }
 
     @PostMapping("/login")
     @Operation(summary = "Login user")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<ApiResponse> login(@RequestBody LoginRequest request) {
         return authService.login(request);
     }
 
 
     @PostMapping("/request-reset")
     @Operation(summary = "Request password reset code")
-    public ResponseEntity<?> requestReset(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<ApiResponse> requestReset(@RequestBody LoginRequest loginRequest) {
         authService.sendResetCode(loginRequest.email());
         return ResponseEntity.ok().body(new ApiResponse( "Password reset code sent to your email.",true) );
     }
 
     @PostMapping("/verify-reset")
     @Operation(summary = "Verify password reset code and reset password")
-    public ResponseEntity<?> verifyReset(@RequestBody PasswordResetRequest request) {
+    public ResponseEntity<ApiResponse> verifyReset(@RequestBody PasswordResetRequest request) {
         authService.verifyAndResetPassword(request);
         return ResponseEntity.ok().body(new ApiResponse( "Password reset successfully.",true) );
     }
@@ -52,7 +52,7 @@ public class AuthController {
 
     @PostMapping("/refresh")
     @Operation(summary = "Generates refresh token")
-    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest token) {
+    public ResponseEntity<ApiResponse> refreshToken(@RequestBody RefreshTokenRequest token) {
         return authService.refreshToken(token);
     }
 }

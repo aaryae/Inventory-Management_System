@@ -1,7 +1,7 @@
 package com.example.inventorymanagementsystem.service.security.impl;
 
 import com.example.inventorymanagementsystem.model.User;
-import com.example.inventorymanagementsystem.repository.securityRepo.UserRepository;
+import com.example.inventorymanagementsystem.repository.security.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

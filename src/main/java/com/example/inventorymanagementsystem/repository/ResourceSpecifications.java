@@ -5,7 +5,11 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
 
-public class ResourceSpecifications {
+
+//this is called utility class
+public  class ResourceSpecifications {
+
+    private ResourceSpecifications(){}
 
 
     public static Specification<Resources> brandContains(String brand){

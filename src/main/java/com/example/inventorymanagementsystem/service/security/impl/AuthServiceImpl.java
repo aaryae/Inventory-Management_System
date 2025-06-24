@@ -90,7 +90,6 @@ public class AuthServiceImpl implements AuthService {
         return ResponseEntity.ok().body(new ApiResponse("Login Successful",true,response));
     }
 
-
     @Override
     public void sendResetCode(String email) {
         User user = userRepository.findByEmail(email)
@@ -98,7 +97,6 @@ public class AuthServiceImpl implements AuthService {
 
         mailService.sendPasswordReset(user);
     }
-
 
     @Override
     public void verifyAndResetPassword(PasswordResetRequest request) {
@@ -114,9 +112,6 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(passwordEncoder.encode(request.newPassword()));
         userRepository.save(user);
     }
-
-
-
 
     @Override
     public ResponseEntity<ApiResponse> refreshToken(RefreshTokenRequest request) {

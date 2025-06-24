@@ -1,10 +1,11 @@
 package com.example.inventorymanagementsystem.dtos.request.security;
 
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 
 @Builder
-public record RefreshTokenRequest(String accessToken) {
+public record RefreshTokenRequest(@NotNull String accessToken) {
 
 }

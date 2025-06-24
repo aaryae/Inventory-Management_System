@@ -1,6 +1,8 @@
 package com.example.inventorymanagementsystem.dtos.request.security;
 
 
-public record RegisterRequest(String username, String email, String password) {
+import jakarta.validation.constraints.NotNull;
+
+public record RegisterRequest(@NotNull String username,@NotNull String email,@NotNull String password) {
 
 }

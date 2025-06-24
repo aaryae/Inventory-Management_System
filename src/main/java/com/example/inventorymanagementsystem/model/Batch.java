@@ -26,7 +26,7 @@ public class Batch {
     @Column(updatable = false)
     private LocalDate createdDate;
 
-    private String Description;
+    private String description;
 
     private Integer quantity;
 

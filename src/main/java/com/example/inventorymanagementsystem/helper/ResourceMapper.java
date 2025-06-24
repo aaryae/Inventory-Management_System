@@ -7,11 +7,13 @@ import com.example.inventorymanagementsystem.model.ResourceClass;
 import com.example.inventorymanagementsystem.model.ResourceType;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class ResourceMapper {
+public final class ResourceMapper {
 
-    // ✅ ResourceType ➝ DTO with simplified class reference
+    private ResourceMapper(){
+        throw new UnsupportedOperationException("Utility class cannot be instantiated");
+    }
+
     public static ResourceTypeResponseDTO toResourceTypeResponseDTO(ResourceType resourceType) {
         if (resourceType == null) return null;
 
@@ -41,11 +43,6 @@ public class ResourceMapper {
                     ResourceTypeResponseDTO typeDTO = new ResourceTypeResponseDTO();
                     typeDTO.setResourceTypeId(type.getResourceTypeId());
                     typeDTO.setResourceTypeName(type.getResourceTypeName());
-//
-//                    ResourceClassSimpleResponseDTO classDto = new ResourceClassSimpleResponseDTO();
-//                    classDto.setResourceClassId(resourceClass.getResourceClassId());
-//                    classDto.setResourceClassName(resourceClass.getResourceClassName());
-                    typeDTO.setResourceClass(null);
 
                     return typeDTO;
                 }).toList();

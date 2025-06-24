@@ -8,7 +8,6 @@ import com.example.inventorymanagementsystem.dtos.response.resource.ResourceType
 import com.example.inventorymanagementsystem.model.ResourceClass;
 import com.example.inventorymanagementsystem.model.ResourceStatus;
 import com.example.inventorymanagementsystem.model.ResourceType;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -24,11 +23,11 @@ public interface MasterDataService {
 
 
     // This is used for validation and lookup by an ID
-    ResourceType getResourceTypeById(Long resource_id);
+    ResourceType getResourceTypeById(Long resourceId);
 
-    ResourceClass getResourceClassById(Long resource_id);
+    ResourceClass getResourceClassById(Long resourceId);
 
-    ResourceStatus getResourceStatusById(Long resource_id);
+    ResourceStatus getResourceStatusById(Long resourceId);
 
     // This is used for the creation of resource type, class and status
     ResourceTypeResponseDTO createResourceType(ResourceTypeRequestDTO dto);

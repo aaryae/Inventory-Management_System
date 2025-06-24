@@ -5,7 +5,7 @@ import com.example.inventorymanagementsystem.dtos.response.resource.BatchRespons
 import com.example.inventorymanagementsystem.dtos.response.resource.ResourceResponseDTO;
 import com.example.inventorymanagementsystem.model.Batch;
 import com.example.inventorymanagementsystem.model.ResourceType;
-import com.example.inventorymanagementsystem.model.Resources;
+import com.example.inventorymanagementsystem.model.Resource;
 import com.example.inventorymanagementsystem.repository.BatchRepository;
 import com.example.inventorymanagementsystem.repository.ResourceRepository;
 import com.example.inventorymanagementsystem.service.BatchService;
@@ -15,9 +15,11 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class BatchServiceImpl implements BatchService {
+
 
     private final BatchRepository batchRepository;
     private final MasterDataService masterDataService;
@@ -96,7 +98,7 @@ public class BatchServiceImpl implements BatchService {
                 .orElseThrow(() -> new RuntimeException("Batch not found with Id: " + batchId));
 
         // Fetches resources assigned to the batch
-        List<Resources> resources = resourceRepository.findByBatch(batch);
+        List<Resource> resources = resourceRepository.findByBatch(batch);
 
         // Maps to response DTO
         return resources.stream().map(resource -> {
@@ -117,9 +119,11 @@ public class BatchServiceImpl implements BatchService {
         }).toList();
     }
 
+    private static final Random r = new Random();
+
     private String generateBatchCode(String typePrefix){
         String date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        int random = (int) (Math.random()*1000);
+        int random = r.nextInt(999);
         return typePrefix.toUpperCase() + "-BATCH-" + date + "-" + String.format("%03d", random);
     }
 }

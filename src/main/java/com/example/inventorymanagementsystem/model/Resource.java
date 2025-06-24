@@ -2,6 +2,7 @@ package com.example.inventorymanagementsystem.model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Table(name = "resources")
-public class Resources {
+public class Resource {
 
 
     @Id
@@ -27,6 +28,8 @@ public class Resources {
     @Column(nullable = false)
     private String model;
 
+    @Size(min = 5, max = 50)
+    @Column(name = "specification", columnDefinition = "TEXT")
     private String specification;
 
     private LocalDate purchaseDate;

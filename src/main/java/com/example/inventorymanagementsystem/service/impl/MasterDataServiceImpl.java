@@ -49,21 +49,21 @@ public class MasterDataServiceImpl implements MasterDataService {
     }
 
     @Override
-    public ResourceType getResourceTypeById(Long resource_id) {
-        return resourceTypeRepository.findById(resource_id)
-                .orElseThrow(() -> new RuntimeException("ResourceType not found with id: " + resource_id));
+    public ResourceType getResourceTypeById(Long resourceId) {
+        return resourceTypeRepository.findById(resourceId)
+                .orElseThrow(() -> new RuntimeException("ResourceType not found with id: " + resourceId));
     }
 
     @Override
-    public ResourceClass getResourceClassById(Long resource_id) {
-        return resourceClassRepository.findById(resource_id)
-                .orElseThrow(() -> new RuntimeException("ResourceClass not found with id: " + resource_id));
+    public ResourceClass getResourceClassById(Long resourceId) {
+        return resourceClassRepository.findById(resourceId)
+                .orElseThrow(() -> new RuntimeException("ResourceClass not found with id: " + resourceId));
     }
 
     @Override
-    public ResourceStatus getResourceStatusById(Long resource_id) {
-        return resourceStatusRepository.findById(resource_id)
-                .orElseThrow(() -> new RuntimeException("ResourceStatus not found with id: "    + resource_id));
+    public ResourceStatus getResourceStatusById(Long resourceId) {
+        return resourceStatusRepository.findById(resourceId)
+                .orElseThrow(() -> new RuntimeException("ResourceStatus not found with id: "    + resourceId));
     }
 
     @Override
@@ -79,10 +79,6 @@ public class MasterDataServiceImpl implements MasterDataService {
         ResourceType saved = resourceTypeRepository.save(resourceType);
 
         return ResourceMapper.toResourceTypeResponseDTO(saved);
-
-//        ResourceType resourceType = new ResourceType();
-//        resourceType.setResourceTypeName(dto.getResourceTypeName());
-//        return resourceTypeRepository.save(resourceType);
     }
 
     @Override

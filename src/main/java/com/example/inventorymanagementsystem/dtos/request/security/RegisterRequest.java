@@ -1,14 +1,8 @@
 package com.example.inventorymanagementsystem.dtos.request.security;
 
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.NotNull;
 
-@Getter
-@Setter
-public class RegisterRequest {
-    private String username;
-    private String email;
-    private String password;
+public record RegisterRequest(@NotNull String username,@NotNull String email,@NotNull String password) {
+
 }

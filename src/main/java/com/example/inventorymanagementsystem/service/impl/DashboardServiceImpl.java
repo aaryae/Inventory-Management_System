@@ -51,6 +51,4 @@ public class DashboardServiceImpl implements DashboardService {
         Object response= convertToMap(resourceTypeRepository.countByResourceType());
         return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
     }
-
-
 }

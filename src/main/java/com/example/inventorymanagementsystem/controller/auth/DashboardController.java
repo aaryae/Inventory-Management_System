@@ -21,22 +21,22 @@ public class DashboardController {
 
     @GetMapping("/count-by-brand")
     public ResponseEntity<ApiResponse> getCountByBrand() {
-        return ResponseEntity.ok(dashboardService.getResourceCountByBrand());
+        return dashboardService.getResourceCountByBrand();
     }
 
     @GetMapping("/count-by-model")
     public ResponseEntity<ApiResponse> getCountByModel(){
-        return ResponseEntity.ok(dashboardService.getResourceCountByModel());
+        return dashboardService.getResourceCountByModel();
     }
 
     @GetMapping("/count-by-specification")
     public ResponseEntity<ApiResponse> getCountBySpecification(){
-        return ResponseEntity.ok(dashboardService.getResourceCountBySpecification());
+        return dashboardService.getResourceCountBySpecification();
     }
 
     @GetMapping("/count-by-resourceType")
     public ResponseEntity<ApiResponse> getCountByResourceTypeName(){
-        return ResponseEntity.ok(dashboardService.getResourceCountByResourceTypeName());
+        return dashboardService.getResourceCountByResourceTypeName();
     }
 
 

@@ -1,11 +1,10 @@
 package com.example.inventorymanagementsystem.dtos.request.security;
 
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
 
 
 @Builder
-public record  LoginRequest(String email, String password) {
+public record  LoginRequest(@NotNull String email,@NotNull String password) {
 }

@@ -37,14 +37,14 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseEntity<ApiResponse> register(RegisterRequest request) {
-        Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
+        Optional<User> existingUser = userRepository.findByEmail(request.email());
         if (existingUser.isPresent()) {
-            throw new DuplicateResourceException("User already exists with username " + request.getEmail());
+            throw new DuplicateResourceException("User already exists with username " + request.email());
         }
         User user = User.builder()
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
+                .username(request.username())
+                .email(request.email())
+                .password(passwordEncoder.encode(request.password()))
                 .passwordLastUpdated(LocalDateTime.now())
                 .role(Role.USER)
                           .build();
@@ -87,10 +87,8 @@ public class AuthServiceImpl implements AuthService {
         response.put("accessToken", token);
         response.put("refreshToken", refreshToken);
 
-//        return ResponseEntity.ok(response);
         return ResponseEntity.ok().body(new ApiResponse("Login Successful",true,response));
     }
-
 
     @Override
     public void sendResetCode(String email) {
@@ -100,29 +98,25 @@ public class AuthServiceImpl implements AuthService {
         mailService.sendPasswordReset(user);
     }
 
-
     @Override
     public void verifyAndResetPassword(PasswordResetRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundExceptionHandler("User", "email", request.getEmail()));
+        User user = userRepository.findByEmail(request.email())
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler("User", "email", request.email()));
 
-        boolean valid = mailService.verify(request.getCode(), user);
+        boolean valid = mailService.verify(request.code(), user);
 
         if (!valid) {
             throw new IllegalArgumentException("Invalid or expired code.");
         }
 
-        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setPassword(passwordEncoder.encode(request.newPassword()));
         userRepository.save(user);
     }
-
-
-
 
     @Override
     public ResponseEntity<ApiResponse> refreshToken(RefreshTokenRequest request) {
         try {
-            String email = jwtService.validateToken(request.getAccessToken());
+            String email = jwtService.validateToken(request.accessToken());
 
             if (email.startsWith("error:")) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body( new ApiResponse("Invalid refresh token",false ));

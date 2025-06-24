@@ -1,10 +1,9 @@
-package com.example.inventorymanagementsystem.controller.masterDataController;
+package com.example.inventorymanagementsystem.controller.master;
 
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceClassRequestDTO;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceStatusRequestDTO;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceTypeRequestDTO;
 import com.example.inventorymanagementsystem.dtos.response.resource.ResourceClassResponseDTO;
-import com.example.inventorymanagementsystem.dtos.response.resource.ResourceClassSimpleResponseDTO;
 import com.example.inventorymanagementsystem.dtos.response.resource.ResourceTypeResponseDTO;
 import com.example.inventorymanagementsystem.model.ResourceClass;
 import com.example.inventorymanagementsystem.model.ResourceStatus;

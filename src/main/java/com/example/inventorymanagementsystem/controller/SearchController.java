@@ -1,5 +1,6 @@
 package com.example.inventorymanagementsystem.controller;
 
+import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
 import com.example.inventorymanagementsystem.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,7 +17,7 @@ public class SearchController {
     private final SearchService searchService;
 
     @GetMapping("/filter")
-    public ResponseEntity<?> filterResources(
+    public ResponseEntity<ApiResponse> filterResources(
             @RequestParam(required = false) String brand,
             @RequestParam(required = false) String model,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate purchaseDate,

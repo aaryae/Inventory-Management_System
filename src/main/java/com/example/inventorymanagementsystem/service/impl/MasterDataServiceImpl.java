@@ -3,8 +3,10 @@ package com.example.inventorymanagementsystem.service.impl;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceClassRequestDTO;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceStatusRequestDTO;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceTypeRequestDTO;
-import com.example.inventorymanagementsystem.dtos.response.resource.ResourceClassResponseDTO;
+import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
+import com.example.inventorymanagementsystem.dtos.response.resource.ResourceStatusResponseDTO;
 import com.example.inventorymanagementsystem.dtos.response.resource.ResourceTypeResponseDTO;
+import com.example.inventorymanagementsystem.helper.MessageConstant;
 import com.example.inventorymanagementsystem.helper.ResourceMapper;
 import com.example.inventorymanagementsystem.model.ResourceClass;
 import com.example.inventorymanagementsystem.model.ResourceStatus;
@@ -13,9 +15,9 @@ import com.example.inventorymanagementsystem.repository.ResourceClassRepository;
 import com.example.inventorymanagementsystem.repository.ResourceStatusRepository;
 import com.example.inventorymanagementsystem.repository.ResourceTypeRepository;
 import com.example.inventorymanagementsystem.service.MasterDataService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 @Service
 public class MasterDataServiceImpl implements MasterDataService {
 
@@ -30,44 +32,61 @@ public class MasterDataServiceImpl implements MasterDataService {
     }
 
     @Override
-    public List<ResourceTypeResponseDTO> getAllResourceTypes() {
-        return resourceTypeRepository.findAll().stream()
+    public ResponseEntity<ApiResponse> getAllResourceTypes() {
+        Object response =  resourceTypeRepository.findAll().stream()
                 .map(ResourceMapper::toResourceTypeResponseDTO)
                 .toList();
+        return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
     }
 
     @Override
-    public List<ResourceClassResponseDTO> getAllResourceClass() {
-        return resourceClassRepository.findAll().stream()
+    public ResponseEntity<ApiResponse> getAllResourceClass() {
+        Object response =  resourceClassRepository.findAll().stream()
                 .map(ResourceMapper::toResourceClassResponseDTO)
                 .toList();
+        return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
     }
 
     @Override
-    public List<ResourceStatus> getAllResourceStatus() {
-        return resourceStatusRepository.findAll();
+    public ResponseEntity<ApiResponse> getAllResourceStatus() {
+        Object response = resourceStatusRepository.findAll().stream().map(status -> {
+            ResourceStatusResponseDTO statusResponseDTO = new ResourceStatusResponseDTO();
+            statusResponseDTO.setResourceStatusId(status.getResourceStatusId());
+            statusResponseDTO.setResourceStatusName(status.getResourceStatusName());
+            return statusResponseDTO;
+        }).toList();
+        return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
     }
 
     @Override
-    public ResourceType getResourceTypeById(Long resourceId) {
-        return resourceTypeRepository.findById(resourceId)
+    public ResponseEntity<ApiResponse> getResourceTypeById(Long resourceId) {
+        ResourceType resourceType = resourceTypeRepository.findById(resourceId)
                 .orElseThrow(() -> new RuntimeException("ResourceType not found with id: " + resourceId));
+        Object response =  ResourceMapper.toResourceTypeResponseDTO(resourceType);
+        return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
     }
 
     @Override
-    public ResourceClass getResourceClassById(Long resourceId) {
-        return resourceClassRepository.findById(resourceId)
+    public ResponseEntity<ApiResponse> getResourceClassById(Long resourceId) {
+        ResourceClass resourceClass =  resourceClassRepository.findById(resourceId)
                 .orElseThrow(() -> new RuntimeException("ResourceClass not found with id: " + resourceId));
+        Object response =  ResourceMapper.toResourceClassResponseDTO(resourceClass);
+        return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
     }
 
     @Override
-    public ResourceStatus getResourceStatusById(Long resourceId) {
-        return resourceStatusRepository.findById(resourceId)
+    public ResponseEntity<ApiResponse> getResourceStatusById(Long resourceId) {
+        ResourceStatus resourceStatus = resourceStatusRepository.findById(resourceId)
                 .orElseThrow(() -> new RuntimeException("ResourceStatus not found with id: "    + resourceId));
+        ResourceStatusResponseDTO statusResponseDTO = new ResourceStatusResponseDTO();
+        statusResponseDTO.setResourceStatusId(resourceStatus.getResourceStatusId());
+        statusResponseDTO.setResourceStatusName(resourceStatus.getResourceStatusName());
+
+        return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, statusResponseDTO));
     }
 
     @Override
-    public ResourceTypeResponseDTO createResourceType(ResourceTypeRequestDTO dto) {
+    public ResponseEntity<ApiResponse> createResourceType(ResourceTypeRequestDTO dto) {
         ResourceClass resourceClass = resourceClassRepository.findById(dto.getResourceClassId())
                 .orElseThrow(() -> new RuntimeException("Class not found with id: " + dto.getResourceClassId()));
 
@@ -78,22 +97,25 @@ public class MasterDataServiceImpl implements MasterDataService {
 
         ResourceType saved = resourceTypeRepository.save(resourceType);
 
-        return ResourceMapper.toResourceTypeResponseDTO(saved);
+        Object response =  ResourceMapper.toResourceTypeResponseDTO(saved);
+        return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
     }
 
     @Override
-    public ResourceClass createResourceClass(ResourceClassRequestDTO dto) {
+    public ResponseEntity<ApiResponse> createResourceClass(ResourceClassRequestDTO dto) {
 
         ResourceClass resourceClass = new ResourceClass();
         resourceClass.setResourceClassName(dto.getClassName());
-        return resourceClassRepository.save(resourceClass);
+        Object response =  resourceClassRepository.save(resourceClass);
+        return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
     }
 
     @Override
-    public ResourceStatus createResourceStatus(ResourceStatusRequestDTO dto) {
+    public ResponseEntity<ApiResponse> createResourceStatus(ResourceStatusRequestDTO dto) {
 
         ResourceStatus resourceStatus = new ResourceStatus();
         resourceStatus.setResourceStatusName(dto.getStatusName());
-        return resourceStatusRepository.save(resourceStatus);
+        Object response = resourceStatusRepository.save(resourceStatus);
+        return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
     }
 }

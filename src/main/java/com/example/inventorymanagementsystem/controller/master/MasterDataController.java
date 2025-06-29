@@ -3,6 +3,7 @@ package com.example.inventorymanagementsystem.controller.master;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceClassRequestDTO;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceStatusRequestDTO;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceTypeRequestDTO;
+import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
 import com.example.inventorymanagementsystem.dtos.response.resource.ResourceClassResponseDTO;
 import com.example.inventorymanagementsystem.dtos.response.resource.ResourceTypeResponseDTO;
 import com.example.inventorymanagementsystem.model.ResourceClass;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/master")
@@ -27,56 +29,47 @@ public class MasterDataController {
     }
 
     @GetMapping("/resource-type")
-    public ResponseEntity<List<ResourceTypeResponseDTO>> getAllResourceTypes(){
-        List<ResourceTypeResponseDTO> types = masterDataService.getAllResourceTypes();
-        return ResponseEntity.ok(types);
+    public ResponseEntity<ApiResponse> getAllResourceTypes(){
+        return masterDataService.getAllResourceTypes();
     }
 
     @GetMapping("/resource-type/{resourceId}")
-    public ResponseEntity<ResourceType> getResourceTypeById(@PathVariable("resourceId") Long resourceId){
-        ResourceType type = masterDataService.getResourceTypeById(resourceId);
-        return ResponseEntity.ok(type);
+    public ResponseEntity<ApiResponse> getResourceTypeById(@PathVariable("resourceId") Long resourceId){
+        return masterDataService.getResourceTypeById(resourceId);
     }
 
     @GetMapping("/resource-class")
-    public ResponseEntity<List<ResourceClassResponseDTO>> getAllResourceClass(){
-        List<ResourceClassResponseDTO> classes = masterDataService.getAllResourceClass();
-        return ResponseEntity.ok(classes);
+    public ResponseEntity<ApiResponse> getAllResourceClass(){
+        return masterDataService.getAllResourceClass();
     }
 
     @GetMapping("/resource-class/{resourceId}")
-    public ResponseEntity<ResourceClass> getResourceClassById(@PathVariable("resourceId") Long resourceId){
-        ResourceClass resourceClass = masterDataService.getResourceClassById(resourceId);
-        return ResponseEntity.ok(resourceClass);
+    public ResponseEntity<ApiResponse> getResourceClassById(@PathVariable("resourceId") Long resourceId){
+        return masterDataService.getResourceClassById(resourceId);
     }
 
     @GetMapping("/resource-status")
-    public ResponseEntity<List<ResourceStatus>> getAllResourceStatus(){
-        List<ResourceStatus> statusList = masterDataService.getAllResourceStatus();
-        return ResponseEntity.ok(statusList);
+    public ResponseEntity<ApiResponse> getAllResourceStatus(){
+        return masterDataService.getAllResourceStatus();
     }
 
     @GetMapping("/resource-status/{resourceId}")
-    public ResponseEntity<ResourceStatus> getResourceStatusById(@PathVariable("resourceId") Long resourceId){
-        ResourceStatus status = masterDataService.getResourceStatusById(resourceId);
-        return ResponseEntity.ok(status);
+    public ResponseEntity<ApiResponse> getResourceStatusById(@PathVariable("resourceId") Long resourceId){
+        return masterDataService.getResourceStatusById(resourceId);
     }
 
     @PostMapping("/resource-type")
-    public ResponseEntity<ResourceTypeResponseDTO> createResourceType(ResourceTypeRequestDTO dto){
-        ResourceTypeResponseDTO resourceType = masterDataService.createResourceType(dto);
-        return ResponseEntity.ok(resourceType);
+    public ResponseEntity<ApiResponse> createResourceType(ResourceTypeRequestDTO dto){
+        return masterDataService.createResourceType(dto);
     }
 
     @PostMapping("/resource-class")
-    public ResponseEntity<ResourceClass> createResourceClass(ResourceClassRequestDTO dto){
-        ResourceClass resourceClass = masterDataService.createResourceClass(dto);
-        return ResponseEntity.ok(resourceClass);
+    public ResponseEntity<ApiResponse> createResourceClass(ResourceClassRequestDTO dto){
+        return masterDataService.createResourceClass(dto);
     }
 
     @PostMapping("/resource-status")
-    public ResponseEntity<ResourceStatus> createResourceStatus(ResourceStatusRequestDTO dto){
-        ResourceStatus resourceStatus = masterDataService.createResourceStatus(dto);
-        return ResponseEntity.ok(resourceStatus);
+    public ResponseEntity<ApiResponse> createResourceStatus(ResourceStatusRequestDTO dto){
+        return masterDataService.createResourceStatus(dto);
     }
 }

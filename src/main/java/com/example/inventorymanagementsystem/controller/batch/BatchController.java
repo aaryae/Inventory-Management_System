@@ -1,6 +1,7 @@
 package com.example.inventorymanagementsystem.controller.batch;
 
 import com.example.inventorymanagementsystem.dtos.request.BatchRequestDTO;
+import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
 import com.example.inventorymanagementsystem.dtos.response.resource.BatchResponseDTO;
 import com.example.inventorymanagementsystem.dtos.response.resource.ResourceResponseDTO;
 import com.example.inventorymanagementsystem.service.impl.BatchServiceImpl;
@@ -23,26 +24,22 @@ public class BatchController {
     }
 
     @PostMapping
-    public ResponseEntity<BatchResponseDTO> createBatch(@RequestBody BatchRequestDTO requestDTO){
-        BatchResponseDTO responseDTO = batchService.createBatch(requestDTO);
-        return ResponseEntity.ok(responseDTO);
+    public ResponseEntity<ApiResponse> createBatch(@RequestBody BatchRequestDTO requestDTO){
+       return batchService.createBatch(requestDTO);
     }
 
     @GetMapping("/{batchId}")
-    public ResponseEntity<BatchResponseDTO> getBatchById(@PathVariable("batchId") Long batchId){
-        BatchResponseDTO responseDTO = batchService.getBatchById(batchId);
-        return ResponseEntity.ok(responseDTO);
+    public ResponseEntity<ApiResponse> getBatchById(@PathVariable("batchId") Long batchId){
+        return batchService.getBatchById(batchId);
     }
 
     @GetMapping
-    public ResponseEntity<List<BatchResponseDTO>> getAllBatches(){
-        List<BatchResponseDTO> responseDTOList = batchService.getAllBatches();
-        return ResponseEntity.ok(responseDTOList);
+    public List<ResponseEntity<ApiResponse>> getAllBatches(){
+        return batchService.getAllBatches();
     }
 
     @GetMapping("/{batchId}/resources")
-    public ResponseEntity<List<ResourceResponseDTO>> getResourcesByBatch(@PathVariable Long batchId){
-        List<ResourceResponseDTO> responseDTOList = batchService.getResourcesByBatchId(batchId);
-        return ResponseEntity.ok(responseDTOList);
+    public List<ResponseEntity<ApiResponse>> getResourcesByBatch(@PathVariable Long batchId){
+        return batchService.getResourcesByBatchId(batchId);
     }
 }

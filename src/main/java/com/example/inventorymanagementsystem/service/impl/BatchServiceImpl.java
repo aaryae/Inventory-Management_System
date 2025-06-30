@@ -4,11 +4,11 @@ import com.example.inventorymanagementsystem.dtos.request.BatchRequestDTO;
 import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
 import com.example.inventorymanagementsystem.dtos.response.resource.BatchResponseDTO;
 import com.example.inventorymanagementsystem.dtos.response.resource.ResourceResponseDTO;
-import com.example.inventorymanagementsystem.dtos.response.resource.ResourceTypeResponseDTO;
+import com.example.inventorymanagementsystem.exception.ResourceNotFoundExceptionHandler;
 import com.example.inventorymanagementsystem.helper.MessageConstant;
 import com.example.inventorymanagementsystem.model.Batch;
-import com.example.inventorymanagementsystem.model.ResourceType;
 import com.example.inventorymanagementsystem.model.Resource;
+import com.example.inventorymanagementsystem.model.ResourceType;
 import com.example.inventorymanagementsystem.repository.BatchRepository;
 import com.example.inventorymanagementsystem.repository.ResourceRepository;
 import com.example.inventorymanagementsystem.service.BatchService;
@@ -41,14 +41,14 @@ public class BatchServiceImpl implements BatchService {
         ResponseEntity<ApiResponse> responseEntity = masterDataService.getResourceTypeById(batchRequestDTO.getResourceTypeId());
 
         if (responseEntity == null || !responseEntity.getStatusCode().is2xxSuccessful() || responseEntity.getBody() == null) {
-            return ResponseEntity.status(404).body(new ApiResponse("Resource Type not found", false));
+            return ResponseEntity.status(404).body(new ApiResponse(MessageConstant.RESOURCE_TYPE_NOT_FOUND, false));
         }
 
         ApiResponse apiResponse = responseEntity.getBody();
         Object data = apiResponse.getData();
 
         if (!(data instanceof ResourceType resourceType)) {
-            return ResponseEntity.badRequest().body(new ApiResponse("Invalid resource type format", false));
+            return ResponseEntity.badRequest().body(new ApiResponse(MessageConstant.INVALID_RESOURCE_TYPE, false));
         }
 
         // Generation of batch code
@@ -78,7 +78,7 @@ public class BatchServiceImpl implements BatchService {
     @Override
     public ResponseEntity<ApiResponse> getBatchById(Long batchId) {
         Batch batch = batchRepository.findById(batchId)
-                .orElseThrow(() -> new RuntimeException("Batch not found with id: " + batchId));
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.BATCH, "id", batchId));
 
         BatchResponseDTO responseDTO = new BatchResponseDTO();
         responseDTO.setBatchId(batch.getBatchId());
@@ -110,7 +110,7 @@ public class BatchServiceImpl implements BatchService {
     public List<ResponseEntity<ApiResponse>> getResourcesByBatchId(Long batchId) {
         // Validation of batch Id
         Batch batch = batchRepository.findById(batchId)
-                .orElseThrow(() -> new RuntimeException("Batch not found with Id: " + batchId));
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.BATCH, "id", batchId));
 
         // Fetches resources assigned to the batch
         List<Resource> resources = resourceRepository.findByBatch(batch);

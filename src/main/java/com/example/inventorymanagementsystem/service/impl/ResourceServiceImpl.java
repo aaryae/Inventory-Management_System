@@ -4,6 +4,8 @@ import com.example.inventorymanagementsystem.dtos.ResourceUpdateDTO;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceRequestDTO;
 import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
 import com.example.inventorymanagementsystem.dtos.response.resource.ResourceResponseDTO;
+import com.example.inventorymanagementsystem.exception.BatchLimitExceedException;
+import com.example.inventorymanagementsystem.exception.ResourceNotFoundExceptionHandler;
 import com.example.inventorymanagementsystem.helper.MessageConstant;
 import com.example.inventorymanagementsystem.model.*;
 import com.example.inventorymanagementsystem.repository.BatchRepository;
@@ -26,9 +28,10 @@ public class ResourceServiceImpl implements ResourceService {
 
 
     private final ResourceRepository resourceRepository;
-
     private final MasterDataService masterDataService;
     private final BatchRepository batchRepository;
+
+
 
     @Autowired
     public ResourceServiceImpl(ResourceRepository resourceRepository, MasterDataService masterDataService, BatchRepository batchRepository) {
@@ -43,54 +46,54 @@ public class ResourceServiceImpl implements ResourceService {
         ResponseEntity<ApiResponse> typeResponse = masterDataService.getResourceTypeById(request.getResourceTypeId());
 
         if (typeResponse == null || !typeResponse.getStatusCode().is2xxSuccessful() || typeResponse.getBody() == null){
-            return ResponseEntity.status(404).body(new ApiResponse("Resource Type Not Found", false));
+            return ResponseEntity.status(404).body(new ApiResponse(MessageConstant.RESOURCE_TYPE_NOT_FOUND, false));
         }
 
         ApiResponse apiTypeResponse = typeResponse.getBody();
         Object typeData = apiTypeResponse.getData();
 
         if (!(typeData instanceof ResourceType resourceType)){
-            return ResponseEntity.badRequest().body(new ApiResponse("Invalid Resource Type Format", false));
+            return ResponseEntity.badRequest().body(new ApiResponse(MessageConstant.INVALID_RESOURCE_TYPE, false));
         }
 
 
         ResponseEntity<ApiResponse> classResponse = masterDataService.getResourceClassById(request.getResourceClassId());
 
         if (classResponse == null || !classResponse.getStatusCode().is2xxSuccessful() || classResponse.getBody() == null){
-            return ResponseEntity.status(404).body(new ApiResponse("Resource Class Not Found", false));
+            return ResponseEntity.status(404).body(new ApiResponse(MessageConstant.RESOURCE_CLASS_NOT_FOUND, false));
         }
 
         ApiResponse apiClassResponse = classResponse.getBody();
         Object classData = apiClassResponse.getData();
 
         if (!(classData instanceof ResourceClass resourceClass)){
-            return ResponseEntity.badRequest().body(new ApiResponse("Invalid Resource Class Format", false));
+            return ResponseEntity.badRequest().body(new ApiResponse(MessageConstant.INVALID_RESOURCE_CLASS, false));
         }
 
 
         ResponseEntity<ApiResponse> statusResponse = masterDataService.getResourceStatusById(request.getResourceStatusId());
 
         if (statusResponse == null || !statusResponse.getStatusCode().is2xxSuccessful() || statusResponse.getBody() == null){
-            return ResponseEntity.status(404).body(new ApiResponse("Resource Status Not Found", false));
+            return ResponseEntity.status(404).body(new ApiResponse(MessageConstant.RESOURCE_STATUS_NOT_FOUND, false));
         }
 
         ApiResponse apiStatusResponse = statusResponse.getBody();
         Object statusData = apiStatusResponse.getData();
 
         if (!(statusData instanceof ResourceStatus resourceStatus)){
-            return ResponseEntity.badRequest().body(new ApiResponse("Invalid Resource Status Format", false));
+            return ResponseEntity.badRequest().body(new ApiResponse(MessageConstant.INVALID_RESOURCE_STATUS, false));
         }
 
         // Fetch batch if the batch ID is provided
         Batch batch = null;
         if (request.getBatchId() != null) {
             batch = batchRepository.findById(request.getBatchId())
-                    .orElseThrow(() -> new RuntimeException("Batch not found with id: " + request.getBatchId()));
+                    .orElseThrow(() -> new ResourceNotFoundExceptionHandler("Batch", "id", request.getBatchId()));
 
             int currentCount = resourceRepository.countByBatch(batch);
 
             if (currentCount >= batch.getQuantity()) {
-                throw new RuntimeException("Cannot add more resources. Batch of " + batch.getQuantity() + "already reached.");
+                throw new BatchLimitExceedException("Cannot add more resources. Batch of " + batch.getQuantity() + "already reached.");
             }
         }
 
@@ -130,53 +133,53 @@ public class ResourceServiceImpl implements ResourceService {
             //Validation of master data
             ResponseEntity<ApiResponse> typeResponse = masterDataService.getResourceTypeById(requestDTOList.getFirst().getResourceTypeId());
             if (typeResponse == null || !typeResponse.getStatusCode().is2xxSuccessful() || typeResponse.getBody() == null){
-                return Collections.singletonList(ResponseEntity.status(404).body(new ApiResponse("Resource Type Not Found", false)));
+                return Collections.singletonList(ResponseEntity.status(404).body(new ApiResponse(MessageConstant.RESOURCE_TYPE_NOT_FOUND, false)));
             }
 
             ApiResponse apiTypeResponse = typeResponse.getBody();
             Object typeData = apiTypeResponse.getData();
 
             if (!(typeData instanceof ResourceType resourceType) ){
-                return Collections.singletonList(ResponseEntity.badRequest().body(new ApiResponse("Invalid Resource Type", false)));
+                return Collections.singletonList(ResponseEntity.badRequest().body(new ApiResponse(MessageConstant.INVALID_RESOURCE_TYPE, false)));
             }
 
             ResponseEntity<ApiResponse> classResponse = masterDataService.getResourceClassById(requestDTOList.getFirst().getResourceClassId());
 
             if (classResponse == null || !classResponse.getStatusCode().is2xxSuccessful() || classResponse.getBody() == null){
-                return Collections.singletonList(ResponseEntity.status(404).body(new ApiResponse("Resource Class Not Found", false)));
+                return Collections.singletonList(ResponseEntity.status(404).body(new ApiResponse(MessageConstant.RESOURCE_CLASS_NOT_FOUND, false)));
             }
 
             ApiResponse apiClassResponse = classResponse.getBody();
             Object classData = apiClassResponse.getData();
 
             if (!(classData instanceof ResourceClass resourceClass)){
-                return Collections.singletonList(ResponseEntity.badRequest().body(new ApiResponse("Invalid Class Format", false)));
+                return Collections.singletonList(ResponseEntity.badRequest().body(new ApiResponse(MessageConstant.INVALID_RESOURCE_CLASS, false)));
             }
 
             ResponseEntity<ApiResponse> statusResponse = masterDataService.getResourceStatusById(requestDTOList.getFirst().getResourceStatusId());
 
             if (statusResponse == null || !statusResponse.getStatusCode().is2xxSuccessful() || statusResponse.getBody() == null){
-                return Collections.singletonList(ResponseEntity.status(404).body(new ApiResponse("Resource Status Not Found", false)));
+                return Collections.singletonList(ResponseEntity.status(404).body(new ApiResponse(MessageConstant.RESOURCE_STATUS_NOT_FOUND, false)));
             }
 
             ApiResponse apiStatusResponse = statusResponse.getBody();
             Object statusData = apiStatusResponse.getData();
 
             if (!(statusData instanceof ResourceStatus resourceStatus)){
-                return Collections.singletonList(ResponseEntity.badRequest().body(new ApiResponse("Invalid Status Format", false)));
+                return Collections.singletonList(ResponseEntity.badRequest().body(new ApiResponse(MessageConstant.INVALID_RESOURCE_STATUS, false)));
             }
 
             // Fetching the batch
             Batch batch = null;
             if (dto.getBatchId() != null) {
                 batch = batchRepository.findById(dto.getBatchId())
-                        .orElseThrow(() -> new RuntimeException("Batch not found with id: " + dto.getBatchId()));
+                        .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.BATCH, "id", dto.getBatchId()));
 
                 int currentCount = resourceRepository.countByBatch(batch);
                 int incomingCount = requestDTOList.size();
 
                 if ((currentCount + incomingCount) > batch.getQuantity()) {
-                    throw new RuntimeException("Cannot add " + incomingCount + " resources. Batch capacity of " + batch.getQuantity() +
+                    throw new BatchLimitExceedException("Cannot add " + incomingCount + " resources. Batch capacity of " + batch.getQuantity() +
                             " would be exceeded (Currently " + currentCount + ").");
                 }
             }
@@ -211,7 +214,7 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public ResponseEntity<ApiResponse> getResourceById(Long resourceId) {
         Resource resource = resourceRepository.findById(resourceId)
-                .orElseThrow(() -> new RuntimeException("Resource not found with id" + resourceId));
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.RESOURCE, "id", resourceId));
         return convertToDto(resource);
     }
 
@@ -227,14 +230,14 @@ public class ResourceServiceImpl implements ResourceService {
         ResponseEntity<ApiResponse> statusResponse = masterDataService.getResourceStatusById(statusId);
 
         if (statusResponse == null || !statusResponse.getStatusCode().is2xxSuccessful() || statusResponse.getBody() == null){
-            return Collections.singletonList(ResponseEntity.status(404).body(new ApiResponse("Resource Status Not Found", false)));
+            return Collections.singletonList(ResponseEntity.status(404).body(new ApiResponse(MessageConstant.RESOURCE_STATUS_NOT_FOUND, false)));
         }
 
         ApiResponse apiStatusResponse = statusResponse.getBody();
         Object statusData = apiStatusResponse.getData();
 
         if (!(statusData instanceof ResourceStatus resourceStatus)){
-            return Collections.singletonList(ResponseEntity.badRequest().body(new ApiResponse("Invalid Status Format", false)));
+            return Collections.singletonList(ResponseEntity.badRequest().body(new ApiResponse(MessageConstant.INVALID_RESOURCE_STATUS, false)));
 
         }
         // Fetch all resources with this status
@@ -249,14 +252,14 @@ public class ResourceServiceImpl implements ResourceService {
     public ResponseEntity<ApiResponse> updateResource(Long resourceId, ResourceUpdateDTO updateDTO) {
         // Fetches the existing resource
         Resource resource = resourceRepository.findById(resourceId)
-                .orElseThrow(() -> new RuntimeException("Resource not found with id: " + resourceId));
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.RESOURCE, "id", resourceId));
 
 
         // Validation of new status
         ResponseEntity<ApiResponse> statusResponse = masterDataService.getResourceStatusById(updateDTO.getResourceStatusId());
 
         if (statusResponse == null || !statusResponse.getStatusCode().is2xxSuccessful() || statusResponse.getBody() == null){
-            return ResponseEntity.status(404).body(new ApiResponse("Resource Status Not Found", false));
+            return ResponseEntity.status(404).body(new ApiResponse(MessageConstant.RESOURCE_STATUS_NOT_FOUND, false));
         }
 
         ApiResponse apiStatusResponse = statusResponse.getBody();
@@ -283,7 +286,7 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public void deleteResource(Long resourceId) {
         Resource resource = resourceRepository.findById(resourceId)
-                .orElseThrow(() -> new RuntimeException("Resource not found with id: " + resourceId));
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.RESOURCE, "id", resourceId));
         resourceRepository.delete(resource);
     }
 

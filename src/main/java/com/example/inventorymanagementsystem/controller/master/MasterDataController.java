@@ -4,18 +4,10 @@ import com.example.inventorymanagementsystem.dtos.request.resource.ResourceClass
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceStatusRequestDTO;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceTypeRequestDTO;
 import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
-import com.example.inventorymanagementsystem.dtos.response.resource.ResourceClassResponseDTO;
-import com.example.inventorymanagementsystem.dtos.response.resource.ResourceTypeResponseDTO;
-import com.example.inventorymanagementsystem.model.ResourceClass;
-import com.example.inventorymanagementsystem.model.ResourceStatus;
-import com.example.inventorymanagementsystem.model.ResourceType;
 import com.example.inventorymanagementsystem.service.MasterDataService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/master")

@@ -2,8 +2,6 @@ package com.example.inventorymanagementsystem.controller.batch;
 
 import com.example.inventorymanagementsystem.dtos.request.BatchRequestDTO;
 import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
-import com.example.inventorymanagementsystem.dtos.response.resource.BatchResponseDTO;
-import com.example.inventorymanagementsystem.dtos.response.resource.ResourceResponseDTO;
 import com.example.inventorymanagementsystem.service.impl.BatchServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;

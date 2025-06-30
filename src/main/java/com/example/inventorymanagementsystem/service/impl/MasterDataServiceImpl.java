@@ -5,7 +5,7 @@ import com.example.inventorymanagementsystem.dtos.request.resource.ResourceStatu
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceTypeRequestDTO;
 import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
 import com.example.inventorymanagementsystem.dtos.response.resource.ResourceStatusResponseDTO;
-import com.example.inventorymanagementsystem.dtos.response.resource.ResourceTypeResponseDTO;
+import com.example.inventorymanagementsystem.exception.ResourceNotFoundExceptionHandler;
 import com.example.inventorymanagementsystem.helper.MessageConstant;
 import com.example.inventorymanagementsystem.helper.ResourceMapper;
 import com.example.inventorymanagementsystem.model.ResourceClass;
@@ -61,7 +61,7 @@ public class MasterDataServiceImpl implements MasterDataService {
     @Override
     public ResponseEntity<ApiResponse> getResourceTypeById(Long resourceId) {
         ResourceType resourceType = resourceTypeRepository.findById(resourceId)
-                .orElseThrow(() -> new RuntimeException("ResourceType not found with id: " + resourceId));
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.RESOURCE_TYPE, "id", resourceId));
         Object response =  ResourceMapper.toResourceTypeResponseDTO(resourceType);
         return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
     }
@@ -69,7 +69,7 @@ public class MasterDataServiceImpl implements MasterDataService {
     @Override
     public ResponseEntity<ApiResponse> getResourceClassById(Long resourceId) {
         ResourceClass resourceClass =  resourceClassRepository.findById(resourceId)
-                .orElseThrow(() -> new RuntimeException("ResourceClass not found with id: " + resourceId));
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.RESOURCE_CLASS, "id", resourceId));
         Object response =  ResourceMapper.toResourceClassResponseDTO(resourceClass);
         return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
     }
@@ -77,7 +77,7 @@ public class MasterDataServiceImpl implements MasterDataService {
     @Override
     public ResponseEntity<ApiResponse> getResourceStatusById(Long resourceId) {
         ResourceStatus resourceStatus = resourceStatusRepository.findById(resourceId)
-                .orElseThrow(() -> new RuntimeException("ResourceStatus not found with id: "    + resourceId));
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.RESOURCE_STATUS, "id", resourceId));
         ResourceStatusResponseDTO statusResponseDTO = new ResourceStatusResponseDTO();
         statusResponseDTO.setResourceStatusId(resourceStatus.getResourceStatusId());
         statusResponseDTO.setResourceStatusName(resourceStatus.getResourceStatusName());
@@ -88,7 +88,7 @@ public class MasterDataServiceImpl implements MasterDataService {
     @Override
     public ResponseEntity<ApiResponse> createResourceType(ResourceTypeRequestDTO dto) {
         ResourceClass resourceClass = resourceClassRepository.findById(dto.getResourceClassId())
-                .orElseThrow(() -> new RuntimeException("Class not found with id: " + dto.getResourceClassId()));
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.CLASS, "id", dto.getResourceClassId()));
 
 
         ResourceType resourceType = new ResourceType();

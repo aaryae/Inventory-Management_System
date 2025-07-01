@@ -15,11 +15,11 @@ public class ResourceType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long resourceTypeId;
 
-    @Column(unique = true)
+    @Column(name = "resourceTypeName", unique = true, nullable = false, columnDefinition = "text")
     private String resourceTypeName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resourceClassId")
+    @JoinColumn(name = "resourceClassId", nullable = false, columnDefinition = "bigint")
     private ResourceClass resourceClass;
 
 }

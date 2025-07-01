@@ -1,7 +1,10 @@
 package com.example.inventorymanagementsystem.helper;
 
 
-public class MessageConstant {
+public final class MessageConstant {
+    private MessageConstant(){
+        throw new UnsupportedOperationException("Utility class cannot be instantiated");
+    }
 
 //    public static final String fromAddress = "aaryaed@gmail.com";
 //    public static final String senderName = "admin";

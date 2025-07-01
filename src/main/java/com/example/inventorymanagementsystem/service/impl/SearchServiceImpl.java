@@ -1,5 +1,7 @@
 package com.example.inventorymanagementsystem.service.impl;
 
+import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
+import com.example.inventorymanagementsystem.helper.MessageConstant;
 import com.example.inventorymanagementsystem.model.Resource;
 import com.example.inventorymanagementsystem.repository.ResourceRepository;
 import com.example.inventorymanagementsystem.repository.ResourceSpecifications;
@@ -19,7 +21,7 @@ public class SearchServiceImpl implements SearchService {
     private final ResourceRepository resourceRepository;
 
     @Override
-    public ResponseEntity<?> filterResources(String brand, String model, LocalDate purchaseDate, String specification){
+    public ResponseEntity<ApiResponse> filterResources(String brand, String model, LocalDate purchaseDate, String specification){
 
         Specification<Resource> spec = (root, query, cb) -> cb.conjunction();
         if (brand != null) {
@@ -34,8 +36,9 @@ public class SearchServiceImpl implements SearchService {
         if (specification != null) {
             spec = spec.and(ResourceSpecifications.typeEquals(specification));
         }
+        Object response = resourceRepository.findAll(spec);
 
-        return ResponseEntity.ok().body( resourceRepository.findAll(spec));
+        return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
     }
 
 

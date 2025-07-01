@@ -19,37 +19,41 @@ public class Resource {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long resourceId;
 
-    @Column(unique = true)
+    @Column(name = "resourceCode", unique = true, nullable = false)
     private String resourceCode;
 
-    @Column(nullable = false)
+    @Size(min = 2, max = 10)
+    @Column(name = "brand", nullable = false, columnDefinition = "text")
     private String brand;
 
-    @Column(nullable = false)
+    @Size(min = 2, max = 15)
+    @Column(name = "model", nullable = false, columnDefinition = "text")
     private String model;
 
     @Size(min = 5, max = 50)
-    @Column(name = "specification", columnDefinition = "TEXT")
+    @Column(name = "specification", nullable = false, columnDefinition = "text")
     private String specification;
 
+    @Column(name = "purchaseDate", nullable = false, columnDefinition = "text")
     private LocalDate purchaseDate;
 
+    @Column(name = "warrantyExpiry", nullable = false, columnDefinition = "text")
     private LocalDate warrantyExpiry;
 
     // Foreign Keys
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resourceStatusId")
+    @JoinColumn(name = "resourceStatusId", nullable = false, columnDefinition = "bigint")
     private ResourceStatus resourceStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resourceTypeId")
+    @JoinColumn(name = "resourceTypeId", nullable = false, columnDefinition = "bigint")
     private ResourceType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resourceClassId")
+    @JoinColumn(name = "resourceClassId", nullable = false, columnDefinition = "bigint")
     private ResourceClass resourceClass;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resourceBatchId", nullable = true)
+    @JoinColumn(name = "resourceBatchId", columnDefinition = "bigint")
     private Batch batch;
 }

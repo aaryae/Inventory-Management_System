@@ -2,7 +2,6 @@ package com.example.inventorymanagementsystem.service.impl;
 
 import com.example.inventorymanagementsystem.dtos.ResourceUpdateDTO;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceRequestDTO;
-import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
 import com.example.inventorymanagementsystem.dtos.response.resource.ResourceResponseDTO;
 import com.example.inventorymanagementsystem.exception.BatchLimitExceedException;
 import com.example.inventorymanagementsystem.exception.ResourceNotFoundExceptionHandler;
@@ -13,13 +12,11 @@ import com.example.inventorymanagementsystem.repository.ResourceRepository;
 import com.example.inventorymanagementsystem.service.MasterDataService;
 import com.example.inventorymanagementsystem.service.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -28,10 +25,9 @@ public class ResourceServiceImpl implements ResourceService {
 
 
     private final ResourceRepository resourceRepository;
+
     private final MasterDataService masterDataService;
     private final BatchRepository batchRepository;
-
-
 
     @Autowired
     public ResourceServiceImpl(ResourceRepository resourceRepository, MasterDataService masterDataService, BatchRepository batchRepository) {
@@ -41,54 +37,18 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public ResponseEntity<ApiResponse> createResources(ResourceRequestDTO request) {
+    public ResourceResponseDTO createResources(ResourceRequestDTO request) {
         // Validating master data using MasterDataService
-        ResponseEntity<ApiResponse> typeResponse = masterDataService.getResourceTypeById(request.getResourceTypeId());
+        ResourceType type = masterDataService.getResourceTypeById(request.getResourceTypeId());
+        ResourceClass resourceClass = masterDataService.getResourceClassById(request.getResourceClassId());
+        ResourceStatus status = masterDataService.getResourceStatusById(request.getResourceStatusId());
 
-        if (typeResponse == null || !typeResponse.getStatusCode().is2xxSuccessful() || typeResponse.getBody() == null){
-            return ResponseEntity.status(404).body(new ApiResponse(MessageConstant.RESOURCE_TYPE_NOT_FOUND, false));
-        }
-
-        ApiResponse apiTypeResponse = typeResponse.getBody();
-        Object typeData = apiTypeResponse.getData();
-
-        if (!(typeData instanceof ResourceType resourceType)){
-            return ResponseEntity.badRequest().body(new ApiResponse(MessageConstant.INVALID_RESOURCE_TYPE, false));
-        }
-
-
-        ResponseEntity<ApiResponse> classResponse = masterDataService.getResourceClassById(request.getResourceClassId());
-
-        if (classResponse == null || !classResponse.getStatusCode().is2xxSuccessful() || classResponse.getBody() == null){
-            return ResponseEntity.status(404).body(new ApiResponse(MessageConstant.RESOURCE_CLASS_NOT_FOUND, false));
-        }
-
-        ApiResponse apiClassResponse = classResponse.getBody();
-        Object classData = apiClassResponse.getData();
-
-        if (!(classData instanceof ResourceClass resourceClass)){
-            return ResponseEntity.badRequest().body(new ApiResponse(MessageConstant.INVALID_RESOURCE_CLASS, false));
-        }
-
-
-        ResponseEntity<ApiResponse> statusResponse = masterDataService.getResourceStatusById(request.getResourceStatusId());
-
-        if (statusResponse == null || !statusResponse.getStatusCode().is2xxSuccessful() || statusResponse.getBody() == null){
-            return ResponseEntity.status(404).body(new ApiResponse(MessageConstant.RESOURCE_STATUS_NOT_FOUND, false));
-        }
-
-        ApiResponse apiStatusResponse = statusResponse.getBody();
-        Object statusData = apiStatusResponse.getData();
-
-        if (!(statusData instanceof ResourceStatus resourceStatus)){
-            return ResponseEntity.badRequest().body(new ApiResponse(MessageConstant.INVALID_RESOURCE_STATUS, false));
-        }
 
         // Fetch batch if the batch ID is provided
         Batch batch = null;
         if (request.getBatchId() != null) {
             batch = batchRepository.findById(request.getBatchId())
-                    .orElseThrow(() -> new ResourceNotFoundExceptionHandler("Batch", "id", request.getBatchId()));
+                    .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.BATCH, "id", request.getBatchId()));
 
             int currentCount = resourceRepository.countByBatch(batch);
 
@@ -99,7 +59,7 @@ public class ResourceServiceImpl implements ResourceService {
 
 
         // It generates unique resource code
-        String resourceCode = generateUniqueResourceCode(resourceType.getResourceTypeName());
+        String resourceCode = generateUniqueResourceCode(type.getResourceTypeName());
 
 
         // It creates the resource entity
@@ -110,9 +70,9 @@ public class ResourceServiceImpl implements ResourceService {
         resource.setPurchaseDate(request.getPurchaseDate());
         resource.setWarrantyExpiry(request.getWarrantyExpiry());
         resource.setResourceCode(resourceCode);
-        resource.setType(resourceType);
+        resource.setType(type);
         resource.setResourceClass(resourceClass);
-        resource.setResourceStatus(resourceStatus);
+        resource.setResourceStatus(status);
         resource.setBatch(batch);
 
 
@@ -125,49 +85,15 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public List<ResponseEntity<ApiResponse>> createResourcesInBatch(List<ResourceRequestDTO> requestDTOList) {
+    public List<ResourceResponseDTO> createResourcesInBatch(List<ResourceRequestDTO> requestDTOList) {
 
         List<Resource> resourceToSave = new ArrayList<>();
 
         for (ResourceRequestDTO dto : requestDTOList) {
             //Validation of master data
-            ResponseEntity<ApiResponse> typeResponse = masterDataService.getResourceTypeById(requestDTOList.getFirst().getResourceTypeId());
-            if (typeResponse == null || !typeResponse.getStatusCode().is2xxSuccessful() || typeResponse.getBody() == null){
-                return Collections.singletonList(ResponseEntity.status(404).body(new ApiResponse(MessageConstant.RESOURCE_TYPE_NOT_FOUND, false)));
-            }
-
-            ApiResponse apiTypeResponse = typeResponse.getBody();
-            Object typeData = apiTypeResponse.getData();
-
-            if (!(typeData instanceof ResourceType resourceType) ){
-                return Collections.singletonList(ResponseEntity.badRequest().body(new ApiResponse(MessageConstant.INVALID_RESOURCE_TYPE, false)));
-            }
-
-            ResponseEntity<ApiResponse> classResponse = masterDataService.getResourceClassById(requestDTOList.getFirst().getResourceClassId());
-
-            if (classResponse == null || !classResponse.getStatusCode().is2xxSuccessful() || classResponse.getBody() == null){
-                return Collections.singletonList(ResponseEntity.status(404).body(new ApiResponse(MessageConstant.RESOURCE_CLASS_NOT_FOUND, false)));
-            }
-
-            ApiResponse apiClassResponse = classResponse.getBody();
-            Object classData = apiClassResponse.getData();
-
-            if (!(classData instanceof ResourceClass resourceClass)){
-                return Collections.singletonList(ResponseEntity.badRequest().body(new ApiResponse(MessageConstant.INVALID_RESOURCE_CLASS, false)));
-            }
-
-            ResponseEntity<ApiResponse> statusResponse = masterDataService.getResourceStatusById(requestDTOList.getFirst().getResourceStatusId());
-
-            if (statusResponse == null || !statusResponse.getStatusCode().is2xxSuccessful() || statusResponse.getBody() == null){
-                return Collections.singletonList(ResponseEntity.status(404).body(new ApiResponse(MessageConstant.RESOURCE_STATUS_NOT_FOUND, false)));
-            }
-
-            ApiResponse apiStatusResponse = statusResponse.getBody();
-            Object statusData = apiStatusResponse.getData();
-
-            if (!(statusData instanceof ResourceStatus resourceStatus)){
-                return Collections.singletonList(ResponseEntity.badRequest().body(new ApiResponse(MessageConstant.INVALID_RESOURCE_STATUS, false)));
-            }
+            ResourceType type = masterDataService.getResourceTypeById(requestDTOList.getFirst().getResourceTypeId());
+            ResourceClass resourceClass = masterDataService.getResourceClassById(requestDTOList.getFirst().getResourceClassId());
+            ResourceStatus status = masterDataService.getResourceStatusById(requestDTOList.getFirst().getResourceStatusId());
 
             // Fetching the batch
             Batch batch = null;
@@ -186,7 +112,7 @@ public class ResourceServiceImpl implements ResourceService {
 
 
             // Generating the resource code
-            String resourceCode = generateUniqueResourceCode(resourceType.getResourceTypeName());
+            String resourceCode = generateUniqueResourceCode(type.getResourceTypeName());
 
             // Creating resource entity
             Resource resource = new Resource();
@@ -196,9 +122,9 @@ public class ResourceServiceImpl implements ResourceService {
             resource.setPurchaseDate(dto.getPurchaseDate());
             resource.setWarrantyExpiry(dto.getWarrantyExpiry());
             resource.setResourceCode(resourceCode);
-            resource.setType(resourceType);
+            resource.setType(type);
             resource.setResourceClass(resourceClass);
-            resource.setResourceStatus(resourceStatus);
+            resource.setResourceStatus(status);
             resource.setBatch(batch);
 
             resourceToSave.add(resource);
@@ -212,36 +138,27 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public ResponseEntity<ApiResponse> getResourceById(Long resourceId) {
+    public ResourceResponseDTO getResourceById(Long resourceId) {
         Resource resource = resourceRepository.findById(resourceId)
                 .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.RESOURCE, "id", resourceId));
+
         return convertToDto(resource);
     }
 
     @Override
-    public List<ResponseEntity<ApiResponse>> getAllResources() {
+    public List<ResourceResponseDTO> getAllResources() {
         List<Resource> resources = resourceRepository.findAll();
+
         return resources.stream().map(this::convertToDto).toList();
     }
 
     @Override
-    public List<ResponseEntity<ApiResponse>> getResourcesByStatus(Long statusId) {
+    public List<ResourceResponseDTO> getResourcesByStatus(Long statusId) {
         // Validates if the status exists
-        ResponseEntity<ApiResponse> statusResponse = masterDataService.getResourceStatusById(statusId);
+        ResourceStatus status = masterDataService.getResourceStatusById(statusId);
 
-        if (statusResponse == null || !statusResponse.getStatusCode().is2xxSuccessful() || statusResponse.getBody() == null){
-            return Collections.singletonList(ResponseEntity.status(404).body(new ApiResponse(MessageConstant.RESOURCE_STATUS_NOT_FOUND, false)));
-        }
-
-        ApiResponse apiStatusResponse = statusResponse.getBody();
-        Object statusData = apiStatusResponse.getData();
-
-        if (!(statusData instanceof ResourceStatus resourceStatus)){
-            return Collections.singletonList(ResponseEntity.badRequest().body(new ApiResponse(MessageConstant.INVALID_RESOURCE_STATUS, false)));
-
-        }
         // Fetch all resources with this status
-        List<Resource> resources = resourceRepository.findByResourceStatus(resourceStatus);
+        List<Resource> resources = resourceRepository.findByResourceStatus(status);
 
         // Converts to response dto
         return resources.stream().map(this::convertToDto).toList();
@@ -249,32 +166,21 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public ResponseEntity<ApiResponse> updateResource(Long resourceId, ResourceUpdateDTO updateDTO) {
+    public ResourceResponseDTO updateResource(Long resourceId, ResourceUpdateDTO updateDTO) {
         // Fetches the existing resource
         Resource resource = resourceRepository.findById(resourceId)
                 .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.RESOURCE, "id", resourceId));
 
 
         // Validation of new status
-        ResponseEntity<ApiResponse> statusResponse = masterDataService.getResourceStatusById(updateDTO.getResourceStatusId());
-
-        if (statusResponse == null || !statusResponse.getStatusCode().is2xxSuccessful() || statusResponse.getBody() == null){
-            return ResponseEntity.status(404).body(new ApiResponse(MessageConstant.RESOURCE_STATUS_NOT_FOUND, false));
-        }
-
-        ApiResponse apiStatusResponse = statusResponse.getBody();
-        Object statusData = apiStatusResponse.getData();
-
-        if (!(statusData instanceof ResourceStatus resourceStatus)){
-            return ResponseEntity.badRequest().body(new ApiResponse("Invalid Status Type", false));
-        }
+        ResourceStatus status = masterDataService.getResourceStatusById(updateDTO.getResourceStatusId());
 
         resource.setModel(updateDTO.getModel());
         resource.setBrand(updateDTO.getBrand());
         resource.setSpecification(updateDTO.getSpecification());
         resource.setPurchaseDate(updateDTO.getPurchaseDate());
         resource.setWarrantyExpiry(updateDTO.getWarrantyExpiry());
-        resource.setResourceStatus(resourceStatus);
+        resource.setResourceStatus(status);
 
         // Save and update the resources
         Resource updated = resourceRepository.save(resource);
@@ -297,7 +203,7 @@ public class ResourceServiceImpl implements ResourceService {
         return typePrefix.toUpperCase() + "-" + date + "-" + String.format("%03d", random);
     }
 
-    private ResponseEntity<ApiResponse> convertToDto(Resource resource) {
+    private ResourceResponseDTO convertToDto(Resource resource) {
         ResourceResponseDTO response = new ResourceResponseDTO();
         response.setResourceId(resource.getResourceId());
         response.setResourceCode(resource.getResourceCode());
@@ -311,7 +217,7 @@ public class ResourceServiceImpl implements ResourceService {
         response.setResourceStatus(resource.getResourceStatus().getResourceStatusName());
         response.setBatchCode(resource.getBatch() != null ? resource.getBatch().getBatchCode() : null);
 
-        return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
+        return response;
     }
 
 

@@ -38,4 +38,10 @@ public class GlobalExceptionHandler   {
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(BusinessLogicException.class)
+    public ResponseEntity<ApiResponse> handleBusinessLogicException(BusinessLogicException ex){
+        String message = ex.getMessage();
+        ApiResponse apiResponse = new ApiResponse(message, ex.success, ex.data);
+        return new ResponseEntity<>(apiResponse, ex.status);
+    }
 }

@@ -3,31 +3,36 @@ package com.example.inventorymanagementsystem.service;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceClassRequestDTO;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceStatusRequestDTO;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceTypeRequestDTO;
-import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
-import org.springframework.http.ResponseEntity;
+import com.example.inventorymanagementsystem.dtos.response.resource.ResourceClassResponseDTO;
+import com.example.inventorymanagementsystem.dtos.response.resource.ResourceTypeResponseDTO;
+import com.example.inventorymanagementsystem.model.ResourceClass;
+import com.example.inventorymanagementsystem.model.ResourceStatus;
+import com.example.inventorymanagementsystem.model.ResourceType;
+
+import java.util.List;
 
 public interface MasterDataService {
 
     // This is used to fetch all the master data
-    ResponseEntity<ApiResponse> getAllResourceTypes();
+    List<ResourceTypeResponseDTO> getAllResourceTypes();
 
-    ResponseEntity<ApiResponse> getAllResourceClass();
+    List<ResourceClassResponseDTO> getAllResourceClass();
 
-    ResponseEntity<ApiResponse> getAllResourceStatus();
+    List<ResourceStatus> getAllResourceStatus();
 
 
 
     // This is used for validation and lookup by an ID
-    ResponseEntity<ApiResponse> getResourceTypeById(Long resourceId);
+    ResourceType getResourceTypeById(Long resourceId);
 
-    ResponseEntity<ApiResponse> getResourceClassById(Long resourceId);
+    ResourceClass getResourceClassById(Long resourceId);
 
-    ResponseEntity<ApiResponse> getResourceStatusById(Long resourceId);
+    ResourceStatus getResourceStatusById(Long resourceId);
 
     // This is used for the creation of resource type, class and status
-    ResponseEntity<ApiResponse> createResourceType(ResourceTypeRequestDTO dto);
+    ResourceTypeResponseDTO createResourceType(ResourceTypeRequestDTO dto);
 
-    ResponseEntity<ApiResponse> createResourceClass(ResourceClassRequestDTO dto);
+    ResourceClass createResourceClass(ResourceClassRequestDTO dto);
 
-    ResponseEntity<ApiResponse> createResourceStatus(ResourceStatusRequestDTO dto);
+    ResourceStatus createResourceStatus(ResourceStatusRequestDTO dto);
 }

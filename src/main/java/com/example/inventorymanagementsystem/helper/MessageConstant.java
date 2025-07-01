@@ -10,6 +10,7 @@ public final class MessageConstant {
 //    public static final String senderName = "admin";
 //    public static final String subject = "Please verify your account";
     public static final String SUCCESSFULLY_FETCHED = "Successfully fetched data";
+    public static final String SUCCESSFULLY_DELETED = "Successfully deleted data";
     public static final String RESOURCE = "Resource";
     public static final String BATCH = "Batch";
     public static final String CLASS = "Class";

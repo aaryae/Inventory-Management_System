@@ -2,24 +2,24 @@ package com.example.inventorymanagementsystem.service;
 
 import com.example.inventorymanagementsystem.dtos.ResourceUpdateDTO;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceRequestDTO;
-import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
-import org.springframework.http.ResponseEntity;
+import com.example.inventorymanagementsystem.dtos.response.resource.ResourceResponseDTO;
+
 
 import java.util.List;
 
 public interface ResourceService {
 
-    ResponseEntity<ApiResponse> createResources(ResourceRequestDTO request);
+    ResourceResponseDTO createResources(ResourceRequestDTO request);
 
-    List<ResponseEntity<ApiResponse>> createResourcesInBatch(List<ResourceRequestDTO> requestDTOList);
+    List<ResourceResponseDTO> createResourcesInBatch(List<ResourceRequestDTO> requestDTOList);
 
-    ResponseEntity<ApiResponse> getResourceById(Long resourceId);
+    ResourceResponseDTO getResourceById(Long resourceId);
 
-    List<ResponseEntity<ApiResponse>> getAllResources();
+    List<ResourceResponseDTO> getAllResources();
 
-    List<ResponseEntity<ApiResponse>> getResourcesByStatus(Long statusId);
+    List<ResourceResponseDTO> getResourcesByStatus(Long statusId);
 
-    ResponseEntity<ApiResponse> updateResource(Long resourceId, ResourceUpdateDTO updateDTO);
+    ResourceResponseDTO updateResource(Long resourceId, ResourceUpdateDTO updateDTO);
 
     void deleteResource(Long resourceId);
 

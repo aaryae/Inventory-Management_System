@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class BatchRequestDTO {
-    private Long resourceTypeId;
+    private String resourceTypeName;
     private Integer quantity;
     private String description;
 }

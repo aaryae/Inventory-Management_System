@@ -6,12 +6,12 @@ import java.time.LocalDate;
 
 @Data
 public class ResourceUpdateDTO {
-    private String model;
     private String brand;
+    private String model;
     private String specification;
 
     private LocalDate purchaseDate;
     private LocalDate warrantyExpiry;
 
-    private Long resourceStatusId;
+    private String resourceStatusName;
 }

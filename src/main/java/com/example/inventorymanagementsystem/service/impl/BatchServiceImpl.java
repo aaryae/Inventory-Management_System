@@ -36,7 +36,7 @@ public class BatchServiceImpl implements BatchService {
     @Override
     public BatchResponseDTO createBatch(BatchRequestDTO batchRequestDTO) {
         // Validate the resource type
-        ResourceType resourceType = masterDataService.getResourceTypeById(batchRequestDTO.getResourceTypeId());
+        ResourceType resourceType = masterDataService.getResourceTypeByName(batchRequestDTO.getResourceTypeName());
 
         // Generation of batch code
         String batchCode = generateBatchCode(resourceType.getResourceTypeName());

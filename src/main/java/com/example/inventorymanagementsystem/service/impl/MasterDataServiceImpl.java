@@ -71,8 +71,8 @@ public class MasterDataServiceImpl implements MasterDataService {
 
     @Override
     public ResourceTypeResponseDTO createResourceType(ResourceTypeRequestDTO dto) {
-        ResourceClass resourceClass = resourceClassRepository.findById(dto.getResourceClassId())
-                .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.CLASS, "id", dto.getResourceClassId()));
+        ResourceClass resourceClass = resourceClassRepository.findByResourceClassNameIgnoreCase(dto.getResourceClassName())
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.RESOURCE_CLASS, "id", dto.getResourceClassName()));
 
 
         ResourceType resourceType = new ResourceType();
@@ -99,4 +99,24 @@ public class MasterDataServiceImpl implements MasterDataService {
         resourceStatus.setResourceStatusName(dto.getStatusName());
         return resourceStatusRepository.save(resourceStatus);
     }
+
+    @Override
+    public ResourceType getResourceTypeByName(String resourceTypeName) {
+        return resourceTypeRepository.findByResourceTypeNameIgnoreCase(resourceTypeName)
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.RESOURCE_TYPE, "name", resourceTypeName));
+    }
+
+    @Override
+    public ResourceClass getResourceClassByName(String resourceClassName) {
+        return resourceClassRepository.findByResourceClassNameIgnoreCase(resourceClassName)
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.RESOURCE_CLASS, "name", resourceClassName));
+    }
+
+    @Override
+    public ResourceStatus getResourceStatusByName(String resourceStatusName) {
+        return resourceStatusRepository.findByResourceStatusNameIgnoreCase(resourceStatusName)
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.RESOURCE_STATUS, "name", resourceStatusName));
+    }
+
+
 }

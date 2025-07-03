@@ -39,9 +39,9 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public ResourceResponseDTO createResources(ResourceRequestDTO request) {
         // Validating master data using MasterDataService
-        ResourceType type = masterDataService.getResourceTypeById(request.getResourceTypeId());
-        ResourceClass resourceClass = masterDataService.getResourceClassById(request.getResourceClassId());
-        ResourceStatus status = masterDataService.getResourceStatusById(request.getResourceStatusId());
+        ResourceType type = masterDataService.getResourceTypeByName(request.getResourceTypeName());
+        ResourceClass resourceClass = masterDataService.getResourceClassByName(request.getResourceClassName());
+        ResourceStatus status = masterDataService.getResourceStatusByName(request.getResourceStatusName());
 
 
         // Fetch batch if the batch ID is provided
@@ -91,9 +91,11 @@ public class ResourceServiceImpl implements ResourceService {
 
         for (ResourceRequestDTO dto : requestDTOList) {
             //Validation of master data
-            ResourceType type = masterDataService.getResourceTypeById(requestDTOList.getFirst().getResourceTypeId());
-            ResourceClass resourceClass = masterDataService.getResourceClassById(requestDTOList.getFirst().getResourceClassId());
-            ResourceStatus status = masterDataService.getResourceStatusById(requestDTOList.getFirst().getResourceStatusId());
+            ResourceType type = masterDataService.getResourceTypeByName(requestDTOList.getFirst().getResourceTypeName());
+            ResourceClass resourceClass = masterDataService.getResourceClassByName(requestDTOList.getFirst().getResourceClassName());
+            ResourceStatus status = masterDataService.getResourceStatusByName(requestDTOList.getFirst().getResourceStatusName());
+
+
 
             // Fetching the batch
             Batch batch = null;
@@ -173,7 +175,7 @@ public class ResourceServiceImpl implements ResourceService {
 
 
         // Validation of new status
-        ResourceStatus status = masterDataService.getResourceStatusById(updateDTO.getResourceStatusId());
+        ResourceStatus status = masterDataService.getResourceStatusByName(updateDTO.getResourceStatusName());
 
         resource.setModel(updateDTO.getModel());
         resource.setBrand(updateDTO.getBrand());

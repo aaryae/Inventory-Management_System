@@ -13,8 +13,8 @@ public class ResourceRequestDTO {
     private LocalDate purchaseDate;
     private LocalDate warrantyExpiry;
 
-    private Long resourceTypeId;
-    private Long resourceClassId;
-    private Long resourceStatusId;
+    private String resourceTypeName;
+    private String resourceClassName;
+    private String resourceStatusName;
     private Long batchId; // This is nullable
 }

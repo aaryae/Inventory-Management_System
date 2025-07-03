@@ -71,12 +71,12 @@ public class MasterDataServiceImpl implements MasterDataService {
 
     @Override
     public ResourceTypeResponseDTO createResourceType(ResourceTypeRequestDTO dto) {
-        ResourceClass resourceClass = resourceClassRepository.findByResourceClassNameIgnoreCase(dto.getResourceClassName())
-                .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.RESOURCE_CLASS, "id", dto.getResourceClassName()));
+        ResourceClass resourceClass = resourceClassRepository.findByResourceClassNameIgnoreCase(dto.resourceClassName())
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.RESOURCE_CLASS, "id", dto.resourceClassName()));
 
 
         ResourceType resourceType = new ResourceType();
-        resourceType.setResourceTypeName(dto.getResourceTypeName());
+        resourceType.setResourceTypeName(dto.resourceTypeName());
         resourceType.setResourceClass(resourceClass);
 
         ResourceType saved = resourceTypeRepository.save(resourceType);
@@ -88,7 +88,7 @@ public class MasterDataServiceImpl implements MasterDataService {
     public ResourceClass createResourceClass(ResourceClassRequestDTO dto) {
 
         ResourceClass resourceClass = new ResourceClass();
-        resourceClass.setResourceClassName(dto.getClassName());
+        resourceClass.setResourceClassName(dto.className());
         return resourceClassRepository.save(resourceClass);
     }
 
@@ -96,7 +96,7 @@ public class MasterDataServiceImpl implements MasterDataService {
     public ResourceStatus createResourceStatus(ResourceStatusRequestDTO dto) {
 
         ResourceStatus resourceStatus = new ResourceStatus();
-        resourceStatus.setResourceStatusName(dto.getStatusName());
+        resourceStatus.setResourceStatusName(dto.statusName());
         return resourceStatusRepository.save(resourceStatus);
     }
 

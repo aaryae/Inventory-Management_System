@@ -36,7 +36,7 @@ public class BatchServiceImpl implements BatchService {
     @Override
     public BatchResponseDTO createBatch(BatchRequestDTO batchRequestDTO) {
         // Validate the resource type
-        ResourceType resourceType = masterDataService.getResourceTypeByName(batchRequestDTO.getResourceTypeName());
+        ResourceType resourceType = masterDataService.getResourceTypeByName(batchRequestDTO.resourceTypeName());
 
         // Generation of batch code
         String batchCode = generateBatchCode(resourceType.getResourceTypeName());
@@ -44,22 +44,21 @@ public class BatchServiceImpl implements BatchService {
         // Creating the batch entity
         Batch batch = new Batch();
         batch.setBatchCode(batchCode);
-        batch.setQuantity(batchRequestDTO.getQuantity());
-        batch.setDescription(batchRequestDTO.getDescription());
+        batch.setQuantity(batchRequestDTO.quantity());
+        batch.setDescription(batchRequestDTO.description());
         batch.setType(resourceType);
 
         // Saving the batch
         Batch saved =batchRepository.save(batch);
 
         // Map to the response DTO
-        BatchResponseDTO response = new BatchResponseDTO();
-        response.setBatchId(saved.getBatchId());
-        response.setBatchCode(saved.getBatchCode());
-        response.setQuantity(saved.getQuantity());
-        response.setDescription(saved.getDescription());
-        response.setResourceType(saved.getType().getResourceTypeName());
-
-        return response;
+        return new BatchResponseDTO(
+                saved.getBatchId(),
+                saved.getBatchCode(),
+                saved.getQuantity(),
+                saved.getDescription(),
+                saved.getType().getResourceTypeName()
+        );
     }
 
     @Override
@@ -67,30 +66,26 @@ public class BatchServiceImpl implements BatchService {
         Batch batch = batchRepository.findById(batchId)
                 .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.BATCH, "id", batchId));
 
-        BatchResponseDTO responseDTO = new BatchResponseDTO();
-        responseDTO.setBatchId(batch.getBatchId());
-        responseDTO.setBatchCode(batch.getBatchCode());
-        responseDTO.setQuantity(batch.getQuantity());
-        responseDTO.setDescription(batch.getDescription());
-        responseDTO.setResourceType(batch.getType().getResourceTypeName());
-
-        return responseDTO;
+        return new BatchResponseDTO(
+                batch.getBatchId(),
+                batch.getBatchCode(),
+                batch.getQuantity(),
+                batch.getDescription(),
+                batch.getType().getResourceTypeName()
+        );
     }
 
     @Override
     public List<BatchResponseDTO> getAllBatches() {
         List<Batch> batches = batchRepository.findAll();
 
-        return batches.stream().map(batch -> {
-            BatchResponseDTO responseDTO = new BatchResponseDTO();
-            responseDTO.setBatchId(batch.getBatchId());
-            responseDTO.setBatchCode(batch.getBatchCode());
-            responseDTO.setQuantity(batch.getQuantity());
-            responseDTO.setDescription(batch.getDescription());
-            responseDTO.setResourceType(batch.getType().getResourceTypeName());
-
-            return responseDTO;
-        }).toList();
+        return batches.stream().map(batch -> new BatchResponseDTO(
+                batch.getBatchId(),
+                batch.getBatchCode(),
+                batch.getQuantity(),
+                batch.getDescription(),
+                batch.getType().getResourceTypeName()
+        )).toList();
     }
 
     @Override
@@ -103,22 +98,19 @@ public class BatchServiceImpl implements BatchService {
         List<Resource> resources = resourceRepository.findByBatch(batch);
 
         // Maps to response DTO
-        return resources.stream().map(resource -> {
-            ResourceResponseDTO responseDTO = new ResourceResponseDTO();
-            responseDTO.setResourceId(resource.getResourceId());
-            responseDTO.setResourceCode(resource.getResourceCode());
-            responseDTO.setBrand(resource.getBrand());
-            responseDTO.setModel(resource.getModel());
-            responseDTO.setSpecification(resource.getSpecification());
-            responseDTO.setPurchaseDate(resource.getPurchaseDate());
-            responseDTO.setWarrantyExpiry(resource.getWarrantyExpiry());
-            responseDTO.setResourceType(resource.getType().getResourceTypeName());
-            responseDTO.setResourceClass(resource.getResourceClass().getResourceClassName());
-            responseDTO.setResourceStatus(resource.getResourceStatus().getResourceStatusName());
-            responseDTO.setBatchCode(resource.getBatch().getBatchCode());
-
-            return responseDTO;
-        }).toList();
+        return resources.stream().map(resource -> new ResourceResponseDTO(
+                    resource.getResourceId(),
+                    resource.getResourceCode(),
+                    resource.getBrand(),
+                    resource.getModel(),
+                    resource.getSpecification(),
+                    resource.getPurchaseDate(),
+                    resource.getWarrantyExpiry(),
+                    resource.getType().getResourceTypeName(),
+                    resource.getResourceClass().getResourceClassName(),
+                    resource.getResourceStatus().getResourceStatusName(),
+                    resource.getBatch() != null ? resource.getBatch().getBatchCode() : null
+            )).toList();
     }
 
     private static final Random r = new Random();

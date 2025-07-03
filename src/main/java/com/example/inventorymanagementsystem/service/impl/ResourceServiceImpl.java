@@ -39,16 +39,16 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public ResourceResponseDTO createResources(ResourceRequestDTO request) {
         // Validating master data using MasterDataService
-        ResourceType type = masterDataService.getResourceTypeByName(request.getResourceTypeName());
-        ResourceClass resourceClass = masterDataService.getResourceClassByName(request.getResourceClassName());
-        ResourceStatus status = masterDataService.getResourceStatusByName(request.getResourceStatusName());
+        ResourceType type = masterDataService.getResourceTypeByName(request.resourceTypeName());
+        ResourceClass resourceClass = masterDataService.getResourceClassByName(request.resourceClassName());
+        ResourceStatus status = masterDataService.getResourceStatusByName(request.resourceStatusName());
 
 
         // Fetch batch if the batch ID is provided
         Batch batch = null;
-        if (request.getBatchId() != null) {
-            batch = batchRepository.findById(request.getBatchId())
-                    .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.BATCH, "id", request.getBatchId()));
+        if (request.batchId() != null) {
+            batch = batchRepository.findById(request.batchId())
+                    .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.BATCH, "id", request.batchId()));
 
             int currentCount = resourceRepository.countByBatch(batch);
 
@@ -64,11 +64,11 @@ public class ResourceServiceImpl implements ResourceService {
 
         // It creates the resource entity
         Resource resource = new Resource();
-        resource.setBrand(request.getBrand());
-        resource.setModel(request.getModel());
-        resource.setSpecification(request.getSpecification());
-        resource.setPurchaseDate(request.getPurchaseDate());
-        resource.setWarrantyExpiry(request.getWarrantyExpiry());
+        resource.setBrand(request.brand());
+        resource.setModel(request.model());
+        resource.setSpecification(request.specification());
+        resource.setPurchaseDate(request.purchaseDate());
+        resource.setWarrantyExpiry(request.warrantyExpiry());
         resource.setResourceCode(resourceCode);
         resource.setType(type);
         resource.setResourceClass(resourceClass);
@@ -91,17 +91,17 @@ public class ResourceServiceImpl implements ResourceService {
 
         for (ResourceRequestDTO dto : requestDTOList) {
             //Validation of master data
-            ResourceType type = masterDataService.getResourceTypeByName(requestDTOList.getFirst().getResourceTypeName());
-            ResourceClass resourceClass = masterDataService.getResourceClassByName(requestDTOList.getFirst().getResourceClassName());
-            ResourceStatus status = masterDataService.getResourceStatusByName(requestDTOList.getFirst().getResourceStatusName());
+            ResourceType type = masterDataService.getResourceTypeByName(requestDTOList.getFirst().resourceTypeName());
+            ResourceClass resourceClass = masterDataService.getResourceClassByName(requestDTOList.getFirst().resourceClassName());
+            ResourceStatus status = masterDataService.getResourceStatusByName(requestDTOList.getFirst().resourceStatusName());
 
 
 
             // Fetching the batch
             Batch batch = null;
-            if (dto.getBatchId() != null) {
-                batch = batchRepository.findById(dto.getBatchId())
-                        .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.BATCH, "id", dto.getBatchId()));
+            if (dto.batchId() != null) {
+                batch = batchRepository.findById(dto.batchId())
+                        .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.BATCH, "id", dto.batchId()));
 
                 int currentCount = resourceRepository.countByBatch(batch);
                 int incomingCount = requestDTOList.size();
@@ -118,11 +118,11 @@ public class ResourceServiceImpl implements ResourceService {
 
             // Creating resource entity
             Resource resource = new Resource();
-            resource.setBrand(dto.getBrand());
-            resource.setModel(dto.getModel());
-            resource.setSpecification(dto.getSpecification());
-            resource.setPurchaseDate(dto.getPurchaseDate());
-            resource.setWarrantyExpiry(dto.getWarrantyExpiry());
+            resource.setBrand(dto.brand());
+            resource.setModel(dto.model());
+            resource.setSpecification(dto.specification());
+            resource.setPurchaseDate(dto.purchaseDate());
+            resource.setWarrantyExpiry(dto.warrantyExpiry());
             resource.setResourceCode(resourceCode);
             resource.setType(type);
             resource.setResourceClass(resourceClass);
@@ -175,13 +175,13 @@ public class ResourceServiceImpl implements ResourceService {
 
 
         // Validation of new status
-        ResourceStatus status = masterDataService.getResourceStatusByName(updateDTO.getResourceStatusName());
+        ResourceStatus status = masterDataService.getResourceStatusByName(updateDTO.resourceStatusName());
 
-        resource.setModel(updateDTO.getModel());
-        resource.setBrand(updateDTO.getBrand());
-        resource.setSpecification(updateDTO.getSpecification());
-        resource.setPurchaseDate(updateDTO.getPurchaseDate());
-        resource.setWarrantyExpiry(updateDTO.getWarrantyExpiry());
+        resource.setModel(updateDTO.model());
+        resource.setBrand(updateDTO.brand());
+        resource.setSpecification(updateDTO.specification());
+        resource.setPurchaseDate(updateDTO.purchaseDate());
+        resource.setWarrantyExpiry(updateDTO.warrantyExpiry());
         resource.setResourceStatus(status);
 
         // Save and update the resources
@@ -206,20 +206,19 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     private ResourceResponseDTO convertToDto(Resource resource) {
-        ResourceResponseDTO response = new ResourceResponseDTO();
-        response.setResourceId(resource.getResourceId());
-        response.setResourceCode(resource.getResourceCode());
-        response.setBrand(resource.getBrand());
-        response.setModel(resource.getModel());
-        response.setSpecification(resource.getSpecification());
-        response.setPurchaseDate(resource.getPurchaseDate());
-        response.setWarrantyExpiry(resource.getWarrantyExpiry());
-        response.setResourceType(resource.getType().getResourceTypeName());
-        response.setResourceClass(resource.getResourceClass().getResourceClassName());
-        response.setResourceStatus(resource.getResourceStatus().getResourceStatusName());
-        response.setBatchCode(resource.getBatch() != null ? resource.getBatch().getBatchCode() : null);
-
-        return response;
+        return new ResourceResponseDTO(
+                resource.getResourceId(),
+                resource.getResourceCode(),
+                resource.getBrand(),
+                resource.getModel(),
+                resource.getSpecification(),
+                resource.getPurchaseDate(),
+                resource.getWarrantyExpiry(),
+                resource.getType().getResourceTypeName(),
+                resource.getResourceClass().getResourceClassName(),
+                resource.getResourceStatus().getResourceStatusName(),
+                resource.getBatch() != null ? resource.getBatch().getBatchCode() : null
+        );
     }
 
 

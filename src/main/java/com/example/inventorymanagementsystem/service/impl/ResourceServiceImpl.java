@@ -4,6 +4,7 @@ import com.example.inventorymanagementsystem.dtos.ResourceUpdateDTO;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceRequestDTO;
 import com.example.inventorymanagementsystem.dtos.response.resource.ResourceResponseDTO;
 import com.example.inventorymanagementsystem.exception.BatchLimitExceedException;
+import com.example.inventorymanagementsystem.exception.InvalidBatchException;
 import com.example.inventorymanagementsystem.exception.ResourceNotFoundExceptionHandler;
 import com.example.inventorymanagementsystem.helper.MessageConstant;
 import com.example.inventorymanagementsystem.model.*;
@@ -36,58 +37,16 @@ public class ResourceServiceImpl implements ResourceService {
         this.batchRepository = batchRepository;
     }
 
-    @Override
-    public ResourceResponseDTO createResources(ResourceRequestDTO request) {
-        // Validating master data using MasterDataService
-        ResourceType type = masterDataService.getResourceTypeByName(request.resourceTypeName());
-        ResourceClass resourceClass = masterDataService.getResourceClassByName(request.resourceClassName());
-        ResourceStatus status = masterDataService.getResourceStatusByName(request.resourceStatusName());
-
-
-        // Fetch batch if the batch ID is provided
-        Batch batch = null;
-        if (request.batchId() != null) {
-            batch = batchRepository.findById(request.batchId())
-                    .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.BATCH, "id", request.batchId()));
-
-            int currentCount = resourceRepository.countByBatch(batch);
-
-            if (currentCount >= batch.getQuantity()) {
-                throw new BatchLimitExceedException("Cannot add more resources. Batch of " + batch.getQuantity() + "already reached.");
-            }
-        }
-
-
-        // It generates unique resource code
-        String resourceCode = generateUniqueResourceCode(type.getResourceTypeName());
-
-
-        // It creates the resource entity
-        Resource resource = new Resource();
-        resource.setBrand(request.brand());
-        resource.setModel(request.model());
-        resource.setSpecification(request.specification());
-        resource.setPurchaseDate(request.purchaseDate());
-        resource.setWarrantyExpiry(request.warrantyExpiry());
-        resource.setResourceCode(resourceCode);
-        resource.setType(type);
-        resource.setResourceClass(resourceClass);
-        resource.setResourceStatus(status);
-        resource.setBatch(batch);
-
-
-        // It saves the data to Database
-        Resource saved = resourceRepository.save(resource);
-
-
-        // It maps the entity to respond DTO
-        return convertToDto(saved);
-    }
 
     @Override
-    public List<ResourceResponseDTO> createResourcesInBatch(List<ResourceRequestDTO> requestDTOList) {
+    public List<ResourceResponseDTO> createResources(List<ResourceRequestDTO> requestDTOList) {
 
         List<Resource> resourceToSave = new ArrayList<>();
+
+        if (requestDTOList.size() > 1 && requestDTOList.getFirst().batchId() == null) {
+            throw new InvalidBatchException("Cannot add multiple resources without assigning a batchId.");
+        }
+
 
         for (ResourceRequestDTO dto : requestDTOList) {
             //Validation of master data

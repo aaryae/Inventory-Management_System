@@ -5,6 +5,7 @@ import com.example.inventorymanagementsystem.dtos.request.resource.ResourceStatu
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceTypeRequestDTO;
 import com.example.inventorymanagementsystem.dtos.response.resource.ResourceClassResponseDTO;
 import com.example.inventorymanagementsystem.dtos.response.resource.ResourceTypeResponseDTO;
+import com.example.inventorymanagementsystem.exception.DuplicateResourceException;
 import com.example.inventorymanagementsystem.exception.ResourceNotFoundExceptionHandler;
 import com.example.inventorymanagementsystem.helper.MessageConstant;
 import com.example.inventorymanagementsystem.helper.ResourceMapper;
@@ -71,6 +72,10 @@ public class MasterDataServiceImpl implements MasterDataService {
 
     @Override
     public ResourceTypeResponseDTO createResourceType(ResourceTypeRequestDTO dto) {
+        if (resourceTypeExistByName(dto.resourceTypeName())){
+            throw new DuplicateResourceException("Resource Type with name '" + dto.resourceTypeName() + "' already exists.");
+        }
+
         ResourceClass resourceClass = resourceClassRepository.findByResourceClassNameIgnoreCase(dto.resourceClassName())
                 .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.RESOURCE_CLASS, "id", dto.resourceClassName()));
 
@@ -86,6 +91,9 @@ public class MasterDataServiceImpl implements MasterDataService {
 
     @Override
     public ResourceClass createResourceClass(ResourceClassRequestDTO dto) {
+        if (resourceClassExistByName(dto.className())){
+            throw new DuplicateResourceException("Resource Class with name '" + dto.className() + "' already exists.");
+        }
 
         ResourceClass resourceClass = new ResourceClass();
         resourceClass.setResourceClassName(dto.className());
@@ -116,6 +124,16 @@ public class MasterDataServiceImpl implements MasterDataService {
     public ResourceStatus getResourceStatusByName(String resourceStatusName) {
         return resourceStatusRepository.findByResourceStatusNameIgnoreCase(resourceStatusName)
                 .orElseThrow(() -> new ResourceNotFoundExceptionHandler(MessageConstant.RESOURCE_STATUS, "name", resourceStatusName));
+    }
+
+    @Override
+    public boolean resourceClassExistByName(String name) {
+        return resourceClassRepository.existsByResourceClassNameIgnoreCase(name);
+    }
+
+    @Override
+    public boolean resourceTypeExistByName(String name) {
+        return resourceTypeRepository.existsByResourceTypeNameIgnoreCase(name);
     }
 
 

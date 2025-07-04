@@ -42,4 +42,9 @@ public interface MasterDataService {
     ResourceClass getResourceClassByName (String name);
 
     ResourceStatus getResourceStatusByName (String name);
+
+
+    boolean resourceClassExistByName(String name);
+
+    boolean resourceTypeExistByName(String name);
 }

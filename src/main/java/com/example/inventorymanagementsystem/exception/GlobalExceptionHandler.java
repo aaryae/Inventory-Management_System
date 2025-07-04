@@ -39,7 +39,27 @@ public class GlobalExceptionHandler   {
             return new ResponseEntity<>(apiResponse, HttpStatus.UNAUTHORIZED);
         }
 
-
-
+    @ExceptionHandler(BatchLimitExceedException.class)
+    public ResponseEntity<ApiResponse> handleBatchLimitExceedException(BatchLimitExceedException ex){
+        String message = ex.getMessage();
+        ApiResponse apiResponse = new ApiResponse(message, false);
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(BusinessLogicException.class)
+    public ResponseEntity<ApiResponse> handleBusinessLogicException(BusinessLogicException ex){
+        String message = ex.getMessage();
+        ApiResponse apiResponse = new ApiResponse(message, ex.success, ex.data);
+        return new ResponseEntity<>(apiResponse, ex.status);
+    }
+
+    @ExceptionHandler(InvalidBatchException.class)
+    public ResponseEntity<ApiResponse> handleInvalidBatchException(InvalidBatchException ex){
+        String message = ex.getMessage();
+        ApiResponse apiResponse = new ApiResponse(message, false);
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
+
+
+}
 

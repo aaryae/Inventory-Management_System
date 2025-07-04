@@ -6,6 +6,7 @@ import com.example.inventorymanagementsystem.dtos.request.security.RefreshTokenR
 import com.example.inventorymanagementsystem.dtos.request.security.RegisterRequest;
 import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
 import com.example.inventorymanagementsystem.exception.DataNotFoundException;
+import com.example.inventorymanagementsystem.exception.ValidationException;
 import com.example.inventorymanagementsystem.helper.Role;
 import com.example.inventorymanagementsystem.model.User;
 import com.example.inventorymanagementsystem.repository.security.UserRepository;
@@ -37,6 +38,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseEntity<ApiResponse> register(RegisterRequest request) {
+
         Optional<User> existingUser = userRepository.findByEmail(request.email());
         if (existingUser.isPresent()) {
             throw new DuplicateResourceException("User already exists with username " + request.email());
@@ -106,9 +108,8 @@ public class AuthServiceImpl implements AuthService {
         boolean valid = mailService.verify(request.code(), user);
 
         if (!valid) {
-            throw new IllegalArgumentException("Invalid or expired code.");
+            throw new ValidationException("Invalid or expired code.");
         }
-
         user.setPassword(passwordEncoder.encode(request.newPassword()));
         userRepository.save(user);
     }

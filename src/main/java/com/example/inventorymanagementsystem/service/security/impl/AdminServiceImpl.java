@@ -23,22 +23,11 @@ public class AdminServiceImpl implements AdminService {
         private final UserRepository userRepository;
 
     @Override
-    public ResponseEntity<ApiResponse> getAllUsers(Pageable pageable) {
-        Page<User> users = userRepository.findAll(pageable);
-        List<UserResponse> userData = users.getContent().stream()
-                .map(user -> new UserResponse(user.getId(), user.getEmail(), user.getRole()))
-                .toList();
+    public ResponseEntity<ApiResponse> getAllUsers() {
+        List<User> users = userRepository.findAll();
 
-        PagedResponse<UserResponse> response = new PagedResponse<>(
-                userData,
-                users.getNumber(),
-                users.getSize(),
-                users.getTotalElements(),
-                users.getTotalPages(),
-                users.isLast()
-        );
 
-        return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
+        return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, users));
     }
 
     @Override

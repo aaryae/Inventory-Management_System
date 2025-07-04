@@ -16,12 +16,12 @@ public interface ResourceRepository extends JpaRepository<Resource, Long> , JpaS
 
     List<Resource> findByBatch(Batch batch);
 
-    @Query("SELECT r.brand, COUNT(r) FROM Resources r GROUP BY r.brand")
+    @Query("SELECT r.brand, COUNT(r) FROM Resource r GROUP BY r.brand")
     List<Object[]> countByBrand();
 
-    @Query("SELECT r.model, COUNT(r) FROM Resources r GROUP BY r.model")
+    @Query("SELECT r.model, COUNT(r) FROM Resource r GROUP BY r.model")
     List<Object[]> countByModel();
 
-    @Query("SELECT r.specification, COUNT(r) FROM Resources r GROUP BY r.specification")
+    @Query("SELECT r.specification, COUNT(r) FROM Resource r GROUP BY r.specification")
     List<Object[]> countBySpecification();
 }

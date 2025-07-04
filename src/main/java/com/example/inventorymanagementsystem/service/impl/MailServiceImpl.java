@@ -1,5 +1,6 @@
 package com.example.inventorymanagementsystem.service.impl;
 
+import com.example.inventorymanagementsystem.exception.DuplicateResourceException;
 import com.example.inventorymanagementsystem.model.User;
 import com.example.inventorymanagementsystem.repository.security.UserRepository;
 import com.example.inventorymanagementsystem.service.MailService;
@@ -63,7 +64,7 @@ public class MailServiceImpl implements MailService {
 
             mailSender.send(message);
         } catch (Exception e) {
-            throw new IllegalStateException("Failed to send email", e);
+            throw new DuplicateResourceException("Failed to send email");
         }
     }
 }

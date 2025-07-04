@@ -31,4 +31,15 @@ public class GlobalExceptionHandler   {
         return new ResponseEntity<>(apiResponse, HttpStatus.CONFLICT);
     }
 
-}
+
+    @ExceptionHandler(ValidationException.class)
+        public ResponseEntity<ApiResponse> handleValidationException(ValidationException ex){
+            String message =ex.getMessage();
+            ApiResponse apiResponse=new ApiResponse(message, false);
+            return new ResponseEntity<>(apiResponse, HttpStatus.UNAUTHORIZED);
+        }
+
+
+
+    }
+

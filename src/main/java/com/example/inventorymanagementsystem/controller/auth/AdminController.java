@@ -23,7 +23,7 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/users")
     public ResponseEntity<ApiResponse> getAllUsers(Pageable pageable){
-        return adminService.getAllUsers(pageable);
+        return adminService.getAllUsers();
     }
 
     @PreAuthorize("hasRole('ADMIN')")

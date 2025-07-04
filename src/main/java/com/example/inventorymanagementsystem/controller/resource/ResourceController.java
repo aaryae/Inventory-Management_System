@@ -2,7 +2,10 @@ package com.example.inventorymanagementsystem.controller.resource;
 
 import com.example.inventorymanagementsystem.dtos.ResourceUpdateDTO;
 import com.example.inventorymanagementsystem.dtos.request.resource.ResourceRequestDTO;
+import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
 import com.example.inventorymanagementsystem.dtos.response.resource.ResourceResponseDTO;
+import com.example.inventorymanagementsystem.helper.MessageConstant;
+import com.example.inventorymanagementsystem.service.ResourceService;
 import com.example.inventorymanagementsystem.service.impl.ResourceServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -16,51 +19,51 @@ import java.util.List;
 
 public class ResourceController {
 
-    private final ResourceServiceImpl resourceService;
+    private final ResourceService resourceService;
 
     public ResourceController(ResourceServiceImpl resourceService){
         this.resourceService = resourceService;
     }
 
     @PostMapping
-    public ResponseEntity<ResourceResponseDTO> createResource(ResourceRequestDTO requestDTO){
+    public ResponseEntity<ApiResponse> createResource(ResourceRequestDTO requestDTO){
         ResourceResponseDTO response = resourceService.createResources(requestDTO);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
     }
 
     @PostMapping("/batch")
-    public ResponseEntity<List<ResourceResponseDTO>> createResourceBatch(@RequestBody List<ResourceRequestDTO> requestDTOList){
+    public ResponseEntity<ApiResponse> createResourceBatch(@RequestBody List<ResourceRequestDTO> requestDTOList){
         List<ResourceResponseDTO> responseDTOList = resourceService.createResourcesInBatch(requestDTOList);
-        return ResponseEntity.ok(responseDTOList);
+        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, responseDTOList));
     }
 
     @GetMapping("/{resourceId}")
-    public ResponseEntity<ResourceResponseDTO> getResourceById(@PathVariable("resourceId") Long resourceId){
+    public ResponseEntity<ApiResponse> getResourceById(@PathVariable("resourceId") Long resourceId){
         ResourceResponseDTO responseDTO = resourceService.getResourceById(resourceId);
-        return ResponseEntity.ok(responseDTO);
+        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, responseDTO));
     }
 
     @GetMapping
-    public ResponseEntity<List<ResourceResponseDTO>> getAllResources(){
+    public ResponseEntity<ApiResponse> getAllResources(){
         List<ResourceResponseDTO> responseDTOList= resourceService.getAllResources();
-        return ResponseEntity.ok(responseDTOList);
+        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, responseDTOList));
     }
 
     @GetMapping("/status/{statusId}")
-    public ResponseEntity<List<ResourceResponseDTO>> getByStatusId(@PathVariable("statusId") Long statusId){
+    public ResponseEntity<ApiResponse> getByStatusId(@PathVariable("statusId") Long statusId){
         List<ResourceResponseDTO> responseDTOList = resourceService.getResourcesByStatus(statusId);
-        return ResponseEntity.ok(responseDTOList);
+        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, responseDTOList));
     }
 
     @PutMapping("/{resourceId}")
-    public ResponseEntity<ResourceResponseDTO> updateResource(@PathVariable("resourceId") Long resourceId, @RequestBody ResourceUpdateDTO resourceUpdate){
+    public ResponseEntity<ApiResponse> updateResource(@PathVariable("resourceId") Long resourceId, @RequestBody ResourceUpdateDTO resourceUpdate){
         ResourceResponseDTO responseDTO = resourceService.updateResource(resourceId, resourceUpdate);
-        return ResponseEntity.ok(responseDTO);
+        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, responseDTO));
     }
 
     @DeleteMapping("/{resourceId}")
-    public ResponseEntity<Void> deleteResource(@PathVariable("resourceId") Long resourceId){
+    public ResponseEntity<ApiResponse> deleteResource(@PathVariable("resourceId") Long resourceId){
         resourceService.deleteResource(resourceId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_DELETED, true));
     }
 }

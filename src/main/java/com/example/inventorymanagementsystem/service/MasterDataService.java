@@ -35,4 +35,11 @@ public interface MasterDataService {
     ResourceClass createResourceClass(ResourceClassRequestDTO dto);
 
     ResourceStatus createResourceStatus(ResourceStatusRequestDTO dto);
+
+
+    ResourceType getResourceTypeByName (String name);
+
+    ResourceClass getResourceClassByName (String name);
+
+    ResourceStatus getResourceStatusByName (String name);
 }

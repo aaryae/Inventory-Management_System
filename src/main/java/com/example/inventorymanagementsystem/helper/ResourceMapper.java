@@ -10,45 +10,40 @@ import java.util.List;
 
 public final class ResourceMapper {
 
-    private ResourceMapper(){
+    private ResourceMapper() {
         throw new UnsupportedOperationException("Utility class cannot be instantiated");
     }
 
     public static ResourceTypeResponseDTO toResourceTypeResponseDTO(ResourceType resourceType) {
         if (resourceType == null) return null;
 
-        ResourceTypeResponseDTO dto = new ResourceTypeResponseDTO();
-        dto.setResourceTypeId(resourceType.getResourceTypeId());
-        dto.setResourceTypeName(resourceType.getResourceTypeName());
+        ResourceClassSimpleResponseDTO classDto = new ResourceClassSimpleResponseDTO(
+                resourceType.getResourceClass().getResourceClassId(),
+                resourceType.getResourceClass().getResourceClassName()
+        );
 
-        ResourceClassSimpleResponseDTO classDto = new ResourceClassSimpleResponseDTO();
-        classDto.setResourceClassId(resourceType.getResourceClass().getResourceClassId());
-        classDto.setResourceClassName(resourceType.getResourceClass().getResourceClassName());
-
-        dto.setResourceClass(classDto);
-
-        return dto;
+        return new ResourceTypeResponseDTO(
+                resourceType.getResourceTypeId(),
+                resourceType.getResourceTypeName(),
+                classDto
+        );
     }
 
     public static ResourceClassResponseDTO toResourceClassResponseDTO(ResourceClass resourceClass) {
         if (resourceClass == null) return null;
 
-        ResourceClassResponseDTO dto = new ResourceClassResponseDTO();
-        dto.setResourceClassId(resourceClass.getResourceClassId());
-        dto.setResourceClassName(resourceClass.getResourceClassName());
-
         List<ResourceTypeResponseDTO> typeDTOs = resourceClass.getResourceTypes()
                 .stream()
-                .map(type -> {
-                    ResourceTypeResponseDTO typeDTO = new ResourceTypeResponseDTO();
-                    typeDTO.setResourceTypeId(type.getResourceTypeId());
-                    typeDTO.setResourceTypeName(type.getResourceTypeName());
+                .map(type -> new ResourceTypeResponseDTO(
+                        type.getResourceTypeId(),
+                        type.getResourceTypeName(),
+                        null // Avoid circular nesting
+                )).toList();
 
-                    return typeDTO;
-                }).toList();
-
-        dto.setResourceTypes(typeDTOs);
-        return dto;
+        return new ResourceClassResponseDTO(
+                resourceClass.getResourceClassId(),
+                resourceClass.getResourceClassName(),
+                typeDTOs
+        );
     }
-
 }

@@ -1,17 +1,13 @@
 package com.example.inventorymanagementsystem.dtos;
 
-import lombok.Data;
-
 import java.time.LocalDate;
 
-@Data
-public class ResourceUpdateDTO {
-    private String model;
-    private String brand;
-    private String specification;
-
-    private LocalDate purchaseDate;
-    private LocalDate warrantyExpiry;
-
-    private Long resourceStatusId;
+public record ResourceUpdateDTO(
+        String brand,
+        String model,
+        String specification,
+        LocalDate purchaseDate,
+        LocalDate warrantyExpiry,
+        String resourceStatusName
+){
 }

@@ -1,29 +1,43 @@
 package com.example.inventorymanagementsystem.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Getter;
-import lombok.Setter;
+
+import com.example.inventorymanagementsystem.helper.Role;
+import jakarta.persistence.*;
+import lombok.*;
+import java.time.LocalDateTime;
 
 
 @Entity
 @Getter
 @Setter
+@Builder
+@Table(name = "users")
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int user_id;
-    String username;
-    String password_hash;
+    private Long id;
 
-    boolean account_locked;
-    boolean password_expired;
+    @Column(nullable = false, unique = true)
+    private String email;
 
-    public enum Role{
-        ADMIN, USER;
-    }
+    @Column( nullable = false)
+    private String username;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column(name = "password_last_updated")
+    private LocalDateTime passwordLastUpdated;
+
+
+    @Enumerated(EnumType.STRING)
+    private Role role=Role.USER;
+
+
+    @Column(name = "verification_code")
+    private Integer verificationCode=null;
 
 }

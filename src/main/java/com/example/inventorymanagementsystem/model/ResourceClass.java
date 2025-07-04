@@ -1,20 +1,26 @@
 package com.example.inventorymanagementsystem.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
+@Table(name = "resource_class")
 public class ResourceClass {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int resource_class_id;
+    private Long resourceClassId;
 
-    int resource_class_name;
+    @Size(min = 2, max = 12)
+    @Column(name = "resourceClassName", unique = true, nullable = false, columnDefinition = "text")
+    private String resourceClassName;
+
+    @OneToMany(mappedBy = "resourceClass", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ResourceType> resourceTypes;
+
 }

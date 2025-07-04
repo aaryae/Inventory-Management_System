@@ -1,0 +1,59 @@
+package com.example.inventorymanagementsystem.model;
+
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDate;
+
+@Entity
+@Getter
+@Setter
+@Table(name = "resources")
+public class Resource {
+
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long resourceId;
+
+    @Column(name = "resourceCode", unique = true, nullable = false)
+    private String resourceCode;
+
+    @Size(min = 2, max = 10)
+    @Column(name = "brand", nullable = false, columnDefinition = "text")
+    private String brand;
+
+    @Size(min = 2, max = 15)
+    @Column(name = "model", nullable = false, columnDefinition = "text")
+    private String model;
+
+    @Size(min = 5, max = 50)
+    @Column(name = "specification", nullable = false, columnDefinition = "text")
+    private String specification;
+
+    @Column(name = "purchaseDate", nullable = false, columnDefinition = "text")
+    private LocalDate purchaseDate;
+
+    @Column(name = "warrantyExpiry", nullable = false, columnDefinition = "text")
+    private LocalDate warrantyExpiry;
+
+    // Foreign Keys
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "resourceStatusId", nullable = false, columnDefinition = "bigint")
+    private ResourceStatus resourceStatus;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "resourceTypeId", nullable = false, columnDefinition = "bigint")
+    private ResourceType type;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "resourceClassId", nullable = false, columnDefinition = "bigint")
+    private ResourceClass resourceClass;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "resourceBatchId", columnDefinition = "bigint")
+    private Batch batch;
+}

@@ -25,15 +25,10 @@ public class ResourceController {
         this.resourceService = resourceService;
     }
 
-    @PostMapping
-    public ResponseEntity<ApiResponse> createResource(ResourceRequestDTO requestDTO){
-        ResourceResponseDTO response = resourceService.createResources(requestDTO);
-        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
-    }
 
-    @PostMapping("/batch")
-    public ResponseEntity<ApiResponse> createResourceBatch(@RequestBody List<ResourceRequestDTO> requestDTOList){
-        List<ResourceResponseDTO> responseDTOList = resourceService.createResourcesInBatch(requestDTOList);
+    @PostMapping
+    public ResponseEntity<ApiResponse> createResources(@RequestBody List<ResourceRequestDTO> requestDTOList){
+        List<ResourceResponseDTO> responseDTOList = resourceService.createResources(requestDTOList);
         return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, responseDTOList));
     }
 

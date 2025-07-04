@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface AdminService {
 
-    public ResponseEntity<ApiResponse> getAllUsers(Pageable page);
+    public ResponseEntity<ApiResponse> getAllUsers();
 
     public ResponseEntity<ApiResponse> getUserById(Long id);
 

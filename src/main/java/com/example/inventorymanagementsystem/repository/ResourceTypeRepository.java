@@ -10,6 +10,9 @@ import java.util.Optional;
 public interface ResourceTypeRepository extends JpaRepository<ResourceType, Long> {
     Optional<ResourceType> findByResourceTypeNameIgnoreCase(String name);
 
+    boolean existsByResourceTypeNameIgnoreCase(String name);
+
+
 
     @Query("SELECT r.resourceTypeName, COUNT(r) FROM ResourceType r GROUP BY r.resourceTypeName ")
     List<Object[]> countByResourceType();

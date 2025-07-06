@@ -28,7 +28,7 @@ public class BatchController {
     @PostMapping
     public ResponseEntity<ApiResponse> createBatch(@RequestBody BatchRequestDTO requestDTO){
         BatchResponseDTO responseDTO = batchService.createBatch(requestDTO);
-        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, responseDTO));
+        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_ADDED, true, responseDTO));
     }
 
     @GetMapping("/{batchId}")

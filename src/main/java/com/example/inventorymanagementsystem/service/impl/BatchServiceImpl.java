@@ -99,17 +99,19 @@ public class BatchServiceImpl implements BatchService {
 
         // Maps to response DTO
         return resources.stream().map(resource -> new ResourceResponseDTO(
-                    resource.getResourceId(),
-                    resource.getResourceCode(),
-                    resource.getBrand(),
-                    resource.getModel(),
-                    resource.getSpecification(),
-                    resource.getPurchaseDate(),
-                    resource.getWarrantyExpiry(),
-                    resource.getType().getResourceTypeName(),
-                    resource.getResourceClass().getResourceClassName(),
-                    resource.getResourceStatus().getResourceStatusName(),
-                    resource.getBatch() != null ? resource.getBatch().getBatchCode() : null
+                resource.getResourceId(),
+                resource.getResourceCode(),
+                resource.getBrand(),
+                resource.getModel(),
+                resource.getSpecification(),
+                resource.getPurchaseDate(),
+                resource.getWarrantyExpiry(),
+                resource.getType().getResourceTypeName(),
+                resource.getResourceClass().getResourceClassName(),
+                resource.getResourceStatus().getResourceStatusName(),
+                resource.getBatch() != null ? resource.getBatch().getBatchCode() : null,
+                resource.getCreatedAt(),
+                resource.getUpdatedAt()
             )).toList();
     }
 

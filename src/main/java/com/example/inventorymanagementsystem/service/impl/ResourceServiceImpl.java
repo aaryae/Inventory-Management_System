@@ -176,7 +176,9 @@ public class ResourceServiceImpl implements ResourceService {
                 resource.getType().getResourceTypeName(),
                 resource.getResourceClass().getResourceClassName(),
                 resource.getResourceStatus().getResourceStatusName(),
-                resource.getBatch() != null ? resource.getBatch().getBatchCode() : null
+                resource.getBatch() != null ? resource.getBatch().getBatchCode() : null,
+                resource.getCreatedAt(),
+                resource.getUpdatedAt()
         );
     }
 

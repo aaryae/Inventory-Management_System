@@ -1,16 +1,22 @@
 package com.example.inventorymanagementsystem.model;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "resources")
 public class Resource {
 
@@ -39,6 +45,16 @@ public class Resource {
 
     @Column(name = "warrantyExpiry", nullable = false, columnDefinition = "text")
     private LocalDate warrantyExpiry;
+
+    @CreatedDate
+    @Column(name = "createdAt", updatable = false, columnDefinition = "timestamp")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updatedAt", updatable = false, columnDefinition = "timestamp")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    private LocalDateTime updatedAt;
 
     // Foreign Keys
     @ManyToOne(fetch = FetchType.LAZY)

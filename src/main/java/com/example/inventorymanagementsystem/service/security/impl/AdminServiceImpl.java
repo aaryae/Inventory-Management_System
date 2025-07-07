@@ -1,7 +1,6 @@
 package com.example.inventorymanagementsystem.service.security.impl;
 
 import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
-import com.example.inventorymanagementsystem.dtos.response.PagedResponse;
 import com.example.inventorymanagementsystem.dtos.response.security.UserResponse;
 import com.example.inventorymanagementsystem.exception.DataNotFoundException;
 import com.example.inventorymanagementsystem.helper.MessageConstant;
@@ -9,8 +8,6 @@ import com.example.inventorymanagementsystem.model.User;
 import com.example.inventorymanagementsystem.repository.security.UserRepository;
 import com.example.inventorymanagementsystem.service.security.AdminService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +22,6 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public ResponseEntity<ApiResponse> getAllUsers() {
         List<User> users = userRepository.findAll();
-
-
         return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, users));
     }
 

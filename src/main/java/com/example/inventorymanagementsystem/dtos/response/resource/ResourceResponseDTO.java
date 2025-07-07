@@ -3,6 +3,7 @@ package com.example.inventorymanagementsystem.dtos.response.resource;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Builder
 public record ResourceResponseDTO(
@@ -16,6 +17,8 @@ public record ResourceResponseDTO(
         String resourceType,
         String resourceClass,
         String resourceStatus,
-        String batchCode
+        String batchCode,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
 ) {
 }

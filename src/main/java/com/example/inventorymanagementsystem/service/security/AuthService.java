@@ -5,21 +5,20 @@ import com.example.inventorymanagementsystem.dtos.request.PasswordResetRequest;
 import com.example.inventorymanagementsystem.dtos.request.security.LoginRequest;
 import com.example.inventorymanagementsystem.dtos.request.security.RefreshTokenRequest;
 import com.example.inventorymanagementsystem.dtos.request.security.RegisterRequest;
-import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 public interface AuthService {
+    void register(RegisterRequest request);
 
+    Map<String, String> login(LoginRequest loginRequest);
 
-    public ResponseEntity<ApiResponse> register(RegisterRequest request);
+    Map<String, String> refreshToken(RefreshTokenRequest request);
 
-    public ResponseEntity<ApiResponse> login(LoginRequest loginRequest);
+    void sendResetCode(String email);
 
-    public ResponseEntity<ApiResponse> refreshToken(RefreshTokenRequest request);
+    void verifyAndResetPassword(PasswordResetRequest request);
+}
 
-    public void sendResetCode(String email);
-    public void verifyAndResetPassword(PasswordResetRequest request) ;
-
-    }

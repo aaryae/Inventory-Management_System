@@ -27,28 +27,24 @@ public class DashboardServiceImpl implements DashboardService {
         }
         return result;
     }
-
     @Override
-   public ResponseEntity<ApiResponse> getResourceCountByBrand() {
-     Object response=  convertToMap(resourceRepository.countByBrand());
-         return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
+    public Map<String, Long> getResourceCountByBrand() {
+        return convertToMap(resourceRepository.countByBrand());
     }
 
     @Override
-    public ResponseEntity<ApiResponse> getResourceCountByModel(){
-        Object response= convertToMap(resourceRepository.countByModel());
-        return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
+    public Map<String, Long> getResourceCountByModel() {
+        return convertToMap(resourceRepository.countByModel());
     }
 
     @Override
-    public ResponseEntity<ApiResponse> getResourceCountBySpecification(){
-        Object response= convertToMap(resourceRepository.countBySpecification());
-        return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
+    public Map<String, Long> getResourceCountBySpecification() {
+        return convertToMap(resourceRepository.countBySpecification());
     }
 
     @Override
-    public ResponseEntity<ApiResponse> getResourceCountByResourceTypeName(){
-        Object response= convertToMap(resourceTypeRepository.countByResourceType());
-        return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, response));
+    public Map<String, Long> getResourceCountByResourceTypeName() {
+        return convertToMap(resourceTypeRepository.countByResourceType());
     }
+
 }

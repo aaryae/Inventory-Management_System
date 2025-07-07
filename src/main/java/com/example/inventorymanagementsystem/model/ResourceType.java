@@ -1,24 +1,25 @@
 package com.example.inventorymanagementsystem.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@Table(name = "resource_type")
 public class ResourceType {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int resource_type_id;
+    private Long resourceTypeId;
 
-    int resource_type_name;
+    @Column(name = "resourceTypeName", unique = true, nullable = false, columnDefinition = "text")
+    private String resourceTypeName;
 
-    int resource_class_id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "resourceClassId", nullable = false, columnDefinition = "bigint")
+    private ResourceClass resourceClass;
+
 }

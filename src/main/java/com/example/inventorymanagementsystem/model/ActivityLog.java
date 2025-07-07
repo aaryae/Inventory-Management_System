@@ -17,10 +17,10 @@ public class ActivityLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int log_id;
+    int logId;
 
     LocalDate timestamp;
-     int resource_id;
-     int action_type;
-     int user_id;
+     int resourceId;
+     int actionType;
+     int userId;
 }

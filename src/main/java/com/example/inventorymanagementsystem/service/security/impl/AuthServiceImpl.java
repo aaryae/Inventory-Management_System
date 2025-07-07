@@ -37,8 +37,7 @@ public class AuthServiceImpl implements AuthService {
     private final MailService mailService;
 
     @Override
-    public ResponseEntity<ApiResponse> register(RegisterRequest request) {
-
+    public void register(RegisterRequest request) {
         Optional<User> existingUser = userRepository.findByEmail(request.email());
         if (existingUser.isPresent()) {
             throw new DuplicateResourceException("User already exists with username " + request.email());
@@ -49,23 +48,18 @@ public class AuthServiceImpl implements AuthService {
                 .password(passwordEncoder.encode(request.password()))
                 .passwordLastUpdated(LocalDateTime.now())
                 .role(Role.USER)
-                          .build();
+                .build();
         userRepository.save(user);
         mailService.sendWelcomeMail(user);
-        return ResponseEntity.ok().body(new ApiResponse("User registered successfully.", true));
     }
 
-    @Override
-    public ResponseEntity<ApiResponse> login(LoginRequest loginRequest) {
 
+    public Map<String, String> login(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.email())
                 .orElseThrow(() -> new ResourceNotFoundExceptionHandler("User", "username", loginRequest.email()));
 
         if (!passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
             throw new ResourceNotFoundExceptionHandler("User", "credentials", "Invalid username or password");
-        }
-        if (user.getPasswordLastUpdated().isBefore(LocalDateTime.now().minusYears(1))){
-            mailService.sendPasswordAboutToExpire(user);
         }
 
         LocalDateTime now = LocalDateTime.now();
@@ -80,16 +74,13 @@ public class AuthServiceImpl implements AuthService {
             mailService.sendPasswordAboutToExpire(user);
         }
 
-
         String token = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
-
 
         Map<String, String> response = new HashMap<>();
         response.put("accessToken", token);
         response.put("refreshToken", refreshToken);
-
-        return ResponseEntity.ok().body(new ApiResponse("Login Successful",true,response));
+        return response;
     }
 
     @Override
@@ -115,31 +106,21 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity<ApiResponse> refreshToken(RefreshTokenRequest request) {
-        try {
-            String email = jwtService.validateToken(request.accessToken());
+    public Map<String, String> refreshToken(RefreshTokenRequest request) {
+        String email = jwtService.validateToken(request.accessToken());
 
-            if (email.startsWith("error:")) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body( new ApiResponse("Invalid refresh token",false ));
-            }
-
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new ResourceNotFoundExceptionHandler("User", "email", email));
-
-            String newAccessToken = jwtService.generateRefreshToken(user);
-
-            Map<String, String> tokens = new HashMap<>();
-            tokens.put("accessToken", newAccessToken);
-
-            return ResponseEntity.ok(new ApiResponse("Successfully created RefreshToken",true, tokens));
-        } catch (ResourceNotFoundExceptionHandler ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse( ex.getMessage(), false));
-        } catch (JwtException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("Token validation failed: " + ex.getMessage(), false));
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse("An unexpected error occurred" + ex.getMessage(), false));
+        if (email.startsWith("error:")) {
+            throw new ValidationException("Invalid refresh token");
         }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundExceptionHandler("User", "email", email));
+
+        String newAccessToken = jwtService.generateRefreshToken(user);
+
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("accessToken", newAccessToken);
+        return tokens;
     }
 
 

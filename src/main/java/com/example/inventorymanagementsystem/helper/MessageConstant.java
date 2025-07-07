@@ -6,9 +6,7 @@ public final class MessageConstant {
         throw new UnsupportedOperationException("Utility class cannot be instantiated");
     }
 
-//    public static final String fromAddress = "aaryaed@gmail.com";
-//    public static final String senderName = "admin";
-//    public static final String subject = "Please verify your account";
+
     public static final String SUCCESSFULLY_FETCHED = "Successfully Fetched Data";
     public static final String SUCCESSFULLY_DELETED = "Successfully Deleted Data";
     public static final String SUCCESSFULLY_UPDATED = "Successfully Updated Data";

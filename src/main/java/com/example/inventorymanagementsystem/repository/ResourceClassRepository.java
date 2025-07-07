@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface ResourceClassRepository extends JpaRepository<ResourceClass, Long> {
     Optional<ResourceClass> findByResourceClassNameIgnoreCase(String name);
+    boolean existsByResourceClassNameIgnoreCase(String name);
+
 }

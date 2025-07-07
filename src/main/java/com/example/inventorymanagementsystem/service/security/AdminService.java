@@ -1,18 +1,16 @@
 package com.example.inventorymanagementsystem.service.security;
 
-import com.example.inventorymanagementsystem.dtos.response.ApiResponse;
 import com.example.inventorymanagementsystem.dtos.response.security.UserResponse;
-import org.springframework.http.ResponseEntity;
+import com.example.inventorymanagementsystem.model.User;
+
+import java.util.List;
 
 public interface AdminService {
+    List<User> getAllUsers();
 
-    public ResponseEntity<ApiResponse> getAllUsers();
+    UserResponse getUserById(Long id);
 
-    public ResponseEntity<ApiResponse> getUserById(Long id);
+    void updateUserById(Long id, UserResponse userResponse);
 
-    public ResponseEntity<ApiResponse> updateUserById(Long id, UserResponse userResponse);
-
-    public ResponseEntity<ApiResponse> deleteUserById(Long id);
-
-
+    void deleteUserById(Long id);
 }

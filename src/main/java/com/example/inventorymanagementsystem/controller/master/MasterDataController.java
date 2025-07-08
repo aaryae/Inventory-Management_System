@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/master")
+@RequestMapping("/api/master")
 @Tag(name = "Master APIs", description = "meta data for resource")
 
 public class MasterDataController {

@@ -29,7 +29,7 @@ public class ResourceController {
     @PostMapping
     public ResponseEntity<ApiResponse> createResources(@RequestBody List<ResourceRequestDTO> requestDTOList){
         List<ResourceResponseDTO> responseDTOList = resourceService.createResources(requestDTOList);
-        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, responseDTOList));
+        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_ADDED, true, responseDTOList));
     }
 
     @GetMapping("/{resourceId}")
@@ -53,7 +53,7 @@ public class ResourceController {
     @PutMapping("/{resourceId}")
     public ResponseEntity<ApiResponse> updateResource(@PathVariable("resourceId") Long resourceId, @RequestBody ResourceUpdateDTO resourceUpdate){
         ResourceResponseDTO responseDTO = resourceService.updateResource(resourceId, resourceUpdate);
-        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, responseDTO));
+        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_UPDATED, true, responseDTO));
     }
 
     @DeleteMapping("/{resourceId}")

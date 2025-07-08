@@ -67,18 +67,18 @@ public class MasterDataController {
     @PostMapping("/resource-type")
     public ResponseEntity<ApiResponse> createResourceType(ResourceTypeRequestDTO dto){
         ResourceTypeResponseDTO resourceType = masterDataService.createResourceType(dto);
-        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, resourceType));
+        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_ADDED, true, resourceType));
     }
 
     @PostMapping("/resource-class")
     public ResponseEntity<ApiResponse> createResourceClass(ResourceClassRequestDTO dto){
         ResourceClass resourceClass = masterDataService.createResourceClass(dto);
-        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, resourceClass));
+        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_ADDED, true, resourceClass));
     }
 
     @PostMapping("/resource-status")
     public ResponseEntity<ApiResponse> createResourceStatus(ResourceStatusRequestDTO dto){
         ResourceStatus resourceStatus = masterDataService.createResourceStatus(dto);
-        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, resourceStatus));
+        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_ADDED, true, resourceStatus));
     }
 }

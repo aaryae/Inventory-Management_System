@@ -1,10 +1,13 @@
 package com.example.inventorymanagementsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
@@ -20,6 +23,40 @@ public class Assignment {
     @Column(name = "assignment_id")
     private Long assignmentId;
 
+    @Column(name = "assigned_date", nullable = false)
+    @CreationTimestamp
+    private LocalDateTime assignedDate;
+
+    @Column(name = "return_date")
+    private LocalDateTime returnDate;
+
+    @Column(name = "expectedReturnDate")
+    private LocalDateTime expectedReturnDate;
+
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive = true;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private AssignmentStatus status = AssignmentStatus.ACTIVE;
+
+    @CreatedDate
+    @Column(name = "createdAt", updatable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updatedAt")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    private LocalDateTime updatedAt;
+
+    @Column(name = "assigned_by")
+    private String assignedBy; //Username of admin who assigned the resources.
+
+    @Column(name = "return_notes")
+    private String returnNotes;
+
+    //Foreign Keys
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resource_id", nullable = false)
     private Resource resource;
@@ -28,27 +65,33 @@ public class Assignment {
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 
-    @Column(name = "assigned_date", nullable = false)
-    @CreationTimestamp
-    private LocalDateTime assignedDate;
-
-    @Column(name = "return_date")
-    private LocalDateTime returnDate;
-
-    @Column(name = "is_active", nullable = false)
-    private Boolean isActive = true;
-
-    @Column(name = "assigned_by")
-    private String assignedBy; //Username of admin who assigned the resources.
-
-    @Column(name = "return_notes")
-    private String returnNotes;
-
     //Constructors for new assignment.
-    public Assignment(Resource resource, Employee employee, String assignedBy){
+    public Assignment(Resource resource, Employee employee, LocalDateTime assignedDate) {
         this.resource = resource;
         this.employee = employee;
-        this.assignedBy = assignedBy;
+        this.assignedDate = assignedDate;
         this.isActive = true;
+        this.status = AssignmentStatus.ACTIVE;
+    }
+
+    public Assignment(Employee employee,Resource resource, LocalDateTime assignedDate, LocalDateTime returnDate, LocalDateTime expectedReturnDate, String assignedBy, String returnNotes) {
+        this.employee = employee;
+        this.resource = resource;
+        this.assignedDate = assignedDate;
+        this.returnDate = returnDate;
+        this.expectedReturnDate = expectedReturnDate;
+        this.assignedBy = assignedBy;
+        this.returnNotes = returnNotes;
+        this.isActive = true;
+        this.status = AssignmentStatus.ACTIVE;
+    }
+
+    //Enum for Assignment Status
+    public enum AssignmentStatus {
+        ACTIVE,
+        RETURNED,
+        OVERDUE,
+        LOST,
+        DAMAGED
     }
 }

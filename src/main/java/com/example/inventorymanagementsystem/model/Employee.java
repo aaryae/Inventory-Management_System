@@ -1,9 +1,7 @@
 package com.example.inventorymanagementsystem.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -28,24 +26,28 @@ public class Employee {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "department", nullable = false)
     private String department;
+
+    @Column(name = "isActive", nullable = false)
+    private boolean isActive = true;
 
     @OneToMany(mappedBy = "employee",  cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Assignment> assignments;
 
     @CreationTimestamp
     @Column(name = "created_at")
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
 
-    //Constructor without ID for Creation
-    public Employee(String name, String email, String department) {
-        this.name = name;
-        this.email = email;
-        this.department = department;
-    }
+//    //Constructor without ID for Creation
+//    public Employee(String name, String email, String department) {
+//        this.name = name;
+//        this.email = email;
+//        this.department = department;
+//        this.isActive = true;
+//    }
 }

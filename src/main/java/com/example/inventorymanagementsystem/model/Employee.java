@@ -43,11 +43,4 @@ public class Employee {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-//    //Constructor without ID for Creation
-//    public Employee(String name, String email, String department) {
-//        this.name = name;
-//        this.email = email;
-//        this.department = department;
-//        this.isActive = true;
-//    }
 }

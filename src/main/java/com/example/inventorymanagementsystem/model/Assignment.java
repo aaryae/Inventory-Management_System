@@ -36,10 +36,6 @@ public class Assignment {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
-    private AssignmentStatus status = AssignmentStatus.ACTIVE;
-
     @CreatedDate
     @Column(name = "createdAt", updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
@@ -65,33 +61,4 @@ public class Assignment {
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 
-    //Constructors for new assignment.
-    public Assignment(Resource resource, Employee employee, LocalDateTime assignedDate) {
-        this.resource = resource;
-        this.employee = employee;
-        this.assignedDate = assignedDate;
-        this.isActive = true;
-        this.status = AssignmentStatus.ACTIVE;
-    }
-
-    public Assignment(Employee employee,Resource resource, LocalDateTime assignedDate, LocalDateTime returnDate, LocalDateTime expectedReturnDate, String assignedBy, String returnNotes) {
-        this.employee = employee;
-        this.resource = resource;
-        this.assignedDate = assignedDate;
-        this.returnDate = returnDate;
-        this.expectedReturnDate = expectedReturnDate;
-        this.assignedBy = assignedBy;
-        this.returnNotes = returnNotes;
-        this.isActive = true;
-        this.status = AssignmentStatus.ACTIVE;
-    }
-
-    //Enum for Assignment Status
-    public enum AssignmentStatus {
-        ACTIVE,
-        RETURNED,
-        OVERDUE,
-        LOST,
-        DAMAGED
-    }
 }

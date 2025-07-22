@@ -24,6 +24,13 @@ public class GlobalExceptionHandler   {
         return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(EmployeeNotFoundExceptionHandler.class)
+    public ResponseEntity<ApiResponse> handleEmployeeNotFoundExceptionHandler(EmployeeNotFoundExceptionHandler ex) {
+        String message = ex.getMessage();
+        ApiResponse apiResponse = new ApiResponse(message, false);
+        return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(DuplicateResourceException.class)
     public ResponseEntity<ApiResponse> handleDuplicateResourceException(DuplicateResourceException ex) {
         String message = ex.getMessage();
@@ -31,6 +38,12 @@ public class GlobalExceptionHandler   {
         return new ResponseEntity<>(apiResponse, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(DuplicateEmployeeException.class)
+    public ResponseEntity<ApiResponse> handleDuplicateEmployeeException(DuplicateEmployeeException ex){
+        String message = ex.getMessage();
+        ApiResponse apiResponse = new ApiResponse(message, false);
+        return new ResponseEntity<>(apiResponse, HttpStatus.CONFLICT);
+    }
 
     @ExceptionHandler(ValidationException.class)
         public ResponseEntity<ApiResponse> handleValidationException(ValidationException ex){

@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface EmployeeService {
     //CRUD Operations
+    EmployeeResponseDTO createEmployee(EmployeeRequestDTO employeeRequestDTO);
+
     List<EmployeeResponseDTO> createEmployees(List<EmployeeRequestDTO> employeeRequestDTOList);
 
     EmployeeResponseDTO getEmployeeById(Long employeeId);

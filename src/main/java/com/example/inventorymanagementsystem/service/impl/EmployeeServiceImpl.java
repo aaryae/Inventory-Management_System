@@ -4,11 +4,13 @@ import com.example.inventorymanagementsystem.dtos.EmployeeUpdateDTO;
 import com.example.inventorymanagementsystem.dtos.request.employee.EmployeeRequestDTO;
 import com.example.inventorymanagementsystem.dtos.response.employee.EmployeeResponseDTO;
 import com.example.inventorymanagementsystem.exception.ConflictException;
+import com.example.inventorymanagementsystem.exception.DuplicateEmployeeException;
 import com.example.inventorymanagementsystem.exception.EmployeeNotFoundExceptionHandler;
 import com.example.inventorymanagementsystem.helper.MessageConstant;
 import com.example.inventorymanagementsystem.model.Employee;
 import com.example.inventorymanagementsystem.repository.EmployeeRepository;
 import com.example.inventorymanagementsystem.service.EmployeeService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,22 +27,24 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<EmployeeResponseDTO> createEmployees(List<EmployeeRequestDTO> employeeRequestDTOList) {
-    // Check for duplicate emails in the request
-    List<Employee> employees = employeeRequestDTOList.stream()
-            .map(dto -> {
-                Employee employee = new Employee();
-                employee.setName(dto.name());
-                employee.setEmail(dto.email());
-                employee.setDepartment(dto.department());
-                return employee;
-            })
-            .toList();
+    public EmployeeResponseDTO createEmployee(EmployeeRequestDTO employeeRequestDTO) {
+        if (employeeRepository.existsByEmail(employeeRequestDTO.email())){
+            throw new DuplicateEmployeeException("Employee already exists with this email"+ employeeRequestDTO.email());
+        }
 
-    List<Employee> savedEmployees = employeeRepository.saveAll(employees);
-    return savedEmployees.stream()
-            .map(this::convertToDto)
-            .toList();
+        Employee employee = new Employee();
+        employee.setName(employeeRequestDTO.name());
+        employee.setEmail(employeeRequestDTO.email());
+        employee.setDepartment(employeeRequestDTO.department());
+
+        Employee savedEmployee = employeeRepository.save(employee);
+        return convertToDto(savedEmployee);
+    }
+
+    @Override
+    @Transactional
+    public List<EmployeeResponseDTO> createEmployees(List<EmployeeRequestDTO> employeeRequestDTO) {
+        return employeeRequestDTO.stream().map(this::createEmployee).toList();
     }
 
     @Override
@@ -53,7 +57,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeResponseDTO getEmployeeByEmail(String email) {
-        Employee employee = employeeRepository.findByEmailIgnoreCase(email)
+        Employee employee = employeeRepository.findByEmail(email)
                 .orElseThrow(() -> new EmployeeNotFoundExceptionHandler(
                         MessageConstant.EMPLOYEE, "email", email));
         return convertToDto(employee);
@@ -74,7 +78,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow(() -> new EmployeeNotFoundExceptionHandler(
                         MessageConstant.EMPLOYEE, "id", employeeId));
         //Check if email is being updated and if it already exists
-        if (updateDTO.email() != null && !updateDTO.email().equals(employee.getEmail()) && employeeRepository.existsByEmailIgnoreCase(updateDTO.email())) {
+        if (updateDTO.email() != null && !updateDTO.email().equals(employee.getEmail()) && employeeRepository.existsByEmail(updateDTO.email())) {
             throw new ConflictException("An employee with this email" + updateDTO.email() + "already exists");
         }
         //Update Fields if provided
@@ -89,8 +93,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (updateDTO.department() != null) {
             employee.setDepartment(updateDTO.department());
         }
-        Employee savedEmployee = employeeRepository.save(employee);
-        return convertToDto(savedEmployee);
+        Employee updatedEmployee = employeeRepository.save(employee);
+        return convertToDto(updatedEmployee);
     }
 
 

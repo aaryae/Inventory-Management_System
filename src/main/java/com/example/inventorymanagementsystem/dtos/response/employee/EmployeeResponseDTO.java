@@ -10,7 +10,7 @@ public record EmployeeResponseDTO(
         String name,
         String email,
         String department,
-        LocalDateTime created_at,
-        LocalDateTime updated_at
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
 ){
 }

@@ -25,9 +25,15 @@ public class EmployeeController {
         this.employeeService = employeeService; }
 
     @PostMapping
-    public ResponseEntity<ApiResponse> createEmployees(@RequestBody List<EmployeeRequestDTO> employeeRequestDTOList) {
-        List<EmployeeResponseDTO> employeeResponseDTOList = employeeService.createEmployees(employeeRequestDTOList);
-        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_ADDED,true,employeeResponseDTOList));
+    public ResponseEntity<ApiResponse> createEmployee(@RequestBody EmployeeRequestDTO employeeRequestDTO) {
+        EmployeeResponseDTO employeeResponseDTO = employeeService.createEmployee(employeeRequestDTO);
+        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_ADDED,true,employeeResponseDTO));
+    }
+
+    @PostMapping("/bulk")
+    public ResponseEntity<ApiResponse> createEmployees(@RequestBody List<EmployeeRequestDTO> employeeRequestDTO) {
+        List<EmployeeResponseDTO> employeeResponseDTO = employeeService.createEmployees(employeeRequestDTO);
+        return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_ADDED,true,employeeResponseDTO));
     }
 
     @GetMapping("/{employeeId}")
@@ -36,8 +42,8 @@ public class EmployeeController {
         return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED,true,employeeResponseDTO));
     }
 
-    @GetMapping("/{email}")
-    public ResponseEntity<ApiResponse> getEmployeeByEmail(@PathVariable("email") String email){
+    @GetMapping(params = "email")
+    public ResponseEntity<ApiResponse> getEmployeeByEmail(@RequestParam("email") String email){
         EmployeeResponseDTO employeeResponseDTO = employeeService.getEmployeeByEmail(email);
         return ResponseEntity.ok(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED,true,employeeResponseDTO));
     }

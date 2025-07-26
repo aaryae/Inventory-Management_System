@@ -35,7 +35,6 @@ public class SecurityConfig {
                                                    JwtService jwtService) throws Exception {
 
         JwtAuthenticationFilter jwtAuthFilter = new JwtAuthenticationFilter(jwtService, userDetailsService);
-
         http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
@@ -53,7 +52,7 @@ public class SecurityConfig {
                                 "/docs/**",
                                 "/swagger-resources/**"
                         ).permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )

@@ -8,9 +8,12 @@ import com.example.inventorymanagementsystem.dtos.response.resource.ResourceResp
 import com.example.inventorymanagementsystem.helper.MessageConstant;
 import com.example.inventorymanagementsystem.service.ResourceService;
 import com.example.inventorymanagementsystem.service.impl.ResourceServiceImpl;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -68,5 +71,15 @@ public class ResourceController {
         String barcodeBase64 = resourceService.generateBarcode(resourceId);
         return ResponseEntity.ok().body(new ApiResponse(MessageConstant.SUCCESSFULLY_FETCHED, true, barcodeBase64));
     }
+
+    @PostMapping(value = "/upload-excel", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse> uploadResourcesViaExcel(
+            @Parameter(description = "Excel file to upload")
+            @RequestParam("excel") MultipartFile file) {
+        List<ResourceRequestDTO> resources = resourceService.parseExcelToResources(file);
+        List<ResourceResponseDTO> saved = resourceService.createResources(resources);
+        return ResponseEntity.ok(new ApiResponse("Resources uploaded via Excel", true, saved));
+    }
+
 
 }
